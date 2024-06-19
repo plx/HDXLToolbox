@@ -1,6 +1,7 @@
 import Foundation
 
 extension Collection {
+  
   @inlinable
   package func fatalAttemptToSubscriptEndIndex(
     _ index: Index,

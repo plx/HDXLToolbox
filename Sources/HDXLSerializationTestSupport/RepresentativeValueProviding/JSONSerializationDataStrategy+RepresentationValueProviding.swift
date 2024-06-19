@@ -7,9 +7,25 @@ extension JSONSerializationDataStrategy : @retroactive RepresentativeProbeProvid
 extension JSONSerializationKeyStrategy : @retroactive RepresentativeProbeProviding { }
 extension JSONSerializationDateStrategy: @retroactive RepresentativeProbeProviding { }
 extension JSONSerializationFormatOptions: @retroactive RepresentativeProbeProviding { }
+extension JSONSerializationNonConformingFloatStrategy: @retroactive RepresentativeProbeProviding {
+  
+  public static let allRepresentativeProbes: [Self] = evaluate {
+    var result: [Self] = [.throw]
+    result.append(
+      contentsOf: NonConformingFloatMapping
+        .allRepresentativeProbes
+        .lazy
+        .map(Self.convertToString(_:))
+    )
+    
+    return result
+  }
+
+}
+
 extension NonConformingFloatMapping: @retroactive RepresentativeProbeProviding {
   
-  public static let allRepresentativeProbes: [NonConformingFloatMapping] = evaluate {
+  public static let allRepresentativeProbes: [Self] = evaluate {
     var result: [NonConformingFloatMapping] = []
     
     for positiveInfinity in ["∞", "+∞", "inf", "+inf"] {
@@ -30,3 +46,14 @@ extension NonConformingFloatMapping: @retroactive RepresentativeProbeProviding {
   }
 }
 
+extension JSONSerializationConfiguration: @retroactive RepresentativeProbeProviding {
+  
+  public static let allRepresentativeProbes: [Self] = [Self].transformedCartesianProduct(
+    JSONSerializationKeyStrategy.allRepresentativeProbes,
+    JSONSerializationDateStrategy.allRepresentativeProbes,
+    JSONSerializationDataStrategy.allRepresentativeProbes,
+    JSONSerializationNonConformingFloatStrategy.allRepresentativeProbes,
+    JSONSerializationFormatOptions.allRepresentativeProbes,
+    Self.init(keyStrategy:dateStrategy:dataStrategy:nonConformingFloatStrategy:formatOptions:)
+  )
+}
