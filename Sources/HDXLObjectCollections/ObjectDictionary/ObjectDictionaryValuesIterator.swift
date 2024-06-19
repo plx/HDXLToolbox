@@ -1,5 +1,9 @@
 import Foundation
 
+// ------------------------------------------------------------------------- //
+// MARK: ObjectDictionaryValuesIterator
+// ------------------------------------------------------------------------- //
+
 @frozen
 public struct ObjectDictionaryValuesIterator<Key, Value>: IteratorProtocol where Key: AnyObject {
   
@@ -22,4 +26,3 @@ public struct ObjectDictionaryValuesIterator<Key, Value>: IteratorProtocol where
   }
   
 }
-

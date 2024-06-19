@@ -1,4 +1,9 @@
 import Foundation
+import HDXLCollectionSupport
+
+// ------------------------------------------------------------------------- //
+// MARK: ObjectDictionary
+// ------------------------------------------------------------------------- //
 
 @frozen
 public struct ObjectDictionary<Key, Value> where Key: AnyObject {
@@ -25,10 +30,180 @@ public struct ObjectDictionary<Key, Value> where Key: AnyObject {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// ------------------------------------------------------------------------- //
+
 extension ObjectDictionary: Sendable where Key: Sendable, Value: Sendable { }
 extension ObjectDictionary: Equatable where Value: Equatable { }
 extension ObjectDictionary: Hashable where Value: Hashable { }
 extension ObjectDictionary: Codable where Key: Codable, Value: Codable { }
+
+// ------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionary : CustomStringConvertible {
+  
+  @inlinable
+  public var description: String {
+    "ObjectDictionary(storage: \(String(describing: storage)))"
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - CustomDebugStringConvertible
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionary : CustomDebugStringConvertible {
+  
+  @inlinable
+  public var debugDescription: String {
+    "ObjectDictionary<\(String(reflecting: Key.self)), \(String(reflecting: Value.self))>(storage: \(String(reflecting: storage)))"
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - CustomReflectable
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionary : CustomReflectable {
+  
+  @inlinable
+  public var customMirror: Mirror {
+    // TODO: validate this is useful
+    storage.customMirror
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - Sequence
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionary : Sequence {
+  
+  @inlinable
+  public var underestimatedCount: Int {
+    storage.underestimatedCount
+  }
+  
+  @inlinable
+  public func makeIterator() -> Iterator {
+    Iterator(iterator: storage.makeIterator())
+  }
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - Collection
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionary : Collection {
+  
+  @inlinable
+  public var isEmpty: Bool {
+    storage.isEmpty
+  }
+  
+  @inlinable
+  public var count: Int {
+    storage.count
+  }
+  
+  @inlinable
+  public var startIndex: Index {
+    Index(index: storage.startIndex)
+  }
+  
+  @inlinable
+  public var endIndex: Index {
+    Index(index: storage.endIndex)
+  }
+  
+  @inlinable
+  public func distance(
+    from start: Index,
+    to end: Index
+  ) -> Int {
+    storage.distance(
+      from: start.index,
+      to: end.index
+    )
+  }
+  
+  @inlinable
+  public func index(after i: Index) -> Index {
+    Index(
+      index: storage.index(
+        after: i.index
+      )
+    )
+  }
+  
+  @inlinable
+  public func index(
+    _ i: Index,
+    offsetBy distance: Int
+  ) -> Index {
+    Index(
+      index: storage.index(
+        i.index,
+        offsetBy: distance
+      )
+    )
+  }
+  
+  @inlinable
+  public func index(
+    _ i: Index,
+    offsetBy distance: Int,
+    limitedBy limit: Index
+  ) -> Index? {
+    Index(
+      possibleIndex: storage.index(
+        i.index,
+        offsetBy: distance,
+        limitedBy: limit.index
+      )
+    )
+  }
+  
+  @inlinable
+  public func formIndex(after i: inout Index) {
+    storage.formIndex(after: &i.index)
+  }
+  
+  @inlinable
+  public func formIndex(
+    _ i: inout Index,
+    offsetBy distance: Int
+  ) {
+    storage.formIndex(
+      &i.index,
+      offsetBy: distance
+    )
+  }
+  
+  @inlinable
+  public func formIndex(
+    _ i: inout Index,
+    offsetBy distance: Int,
+    limitedBy limit: Index
+  ) -> Bool {
+    storage.formIndex(
+      &i.index,
+      offsetBy: distance,
+      limitedBy: limit.index
+    )
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - Internal API
+// ------------------------------------------------------------------------- //
 
 extension ObjectDictionary {
   
@@ -66,8 +241,17 @@ extension ObjectDictionary {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Dictionary API
+// ------------------------------------------------------------------------- //
+
 extension ObjectDictionary {
-  
+
+  @inlinable
+  public var capacity: Int {
+    storage.capacity
+  }
+
   @inlinable
   public init() {
     self.init(storage: Storage())
@@ -123,24 +307,11 @@ extension ObjectDictionary {
       }
     )
   }
-  
-}
-
-extension ObjectDictionary {
-  
-  @inlinable
-  public var capacity: Int {
-    storage.capacity
-  }
-  
-}
-
-extension ObjectDictionary {
-  
+    
   @inlinable
   public subscript(key: Key) -> Value? {
     get {
-      return storage[ObjectWrapper(object: key)]
+      storage[ObjectWrapper(object: key)]
     }
     set {
       storage[ObjectWrapper(object: key)] = newValue
@@ -153,7 +324,7 @@ extension ObjectDictionary {
     default defaultValue: @autoclosure () -> Value
   ) -> Value {
     get {
-      return storage[
+      storage[
         ObjectWrapper(object: key),
         default: defaultValue()
       ]
@@ -168,7 +339,7 @@ extension ObjectDictionary {
   
   @inlinable
   public func index(forKey key: Key) -> Index? {
-    return Index(
+    Index(
       possibleIndex: storage.index(
         forKey: ObjectWrapper(object: key)
       )
@@ -177,7 +348,7 @@ extension ObjectDictionary {
   
   @inlinable
   public subscript(index: Index) -> Element {
-    return publicElement(fromStorageElement: storage[index.index])
+    publicElement(fromStorageElement: storage[index.index])
   }
   
   @inlinable
@@ -192,14 +363,14 @@ extension ObjectDictionary {
   
   @inlinable
   public var first: Element? {
-    return possiblePublicElement(
+    possiblePublicElement(
       fromPossibleStorageElement: storage.first
     )
   }
   
   @inlinable
   public func randomElement() -> Element? {
-    return possiblePublicElement(
+    possiblePublicElement(
       fromPossibleStorageElement: storage.randomElement()
     )
   }
@@ -208,16 +379,12 @@ extension ObjectDictionary {
   public func randomElement<T>(
     using generator: inout T
   ) -> Element? where T : RandomNumberGenerator {
-    return possiblePublicElement(
+    possiblePublicElement(
       fromPossibleStorageElement: storage.randomElement(
         using: &generator
       )
     )
   }
-  
-}
-
-extension ObjectDictionary {
   
   @inlinable
   public mutating func updateValue(
@@ -303,10 +470,6 @@ extension ObjectDictionary {
     storage.reserveCapacity(minimumCapacity)
   }
 
-}
-
-extension ObjectDictionary {
-  
   @inlinable
   public func filter(
     _ predicate: (Element) throws -> Bool
@@ -332,7 +495,7 @@ extension ObjectDictionary {
   
   @inlinable
   public mutating func remove(at index: Index) -> Element {
-    return publicElement(
+    publicElement(
       fromStorageElement: storage.remove(
         at: index.index
       )
@@ -344,10 +507,6 @@ extension ObjectDictionary {
     storage.removeAll(keepingCapacity: keepingCapacity)
   }
   
-}
-
-extension ObjectDictionary {
-
   @inlinable
   public func mapValues<T>(
     _ transform: (Value) throws -> T
@@ -361,139 +520,9 @@ extension ObjectDictionary {
   public func compactMapValues<T>(
     _ transform: (Value) throws -> T?
   ) rethrows -> ObjectDictionary<Key, T> {
-    return ObjectDictionary<Key, T>(
+    ObjectDictionary<Key, T>(
       storage: try storage.compactMapValues(transform)
     )
   }
 
-}
-
-extension ObjectDictionary : Sequence {
-  
-  @inlinable
-  public var underestimatedCount: Int {
-    storage.underestimatedCount
-  }
-  
-  @inlinable
-  public func makeIterator() -> Iterator {
-    Iterator(iterator: storage.makeIterator())
-  }
-}
-
-extension ObjectDictionary : Collection {
-
-  @inlinable
-  public var isEmpty: Bool {
-    storage.isEmpty
-  }
-  
-  @inlinable
-  public var count: Int {
-    storage.count
-  }
-  
-  @inlinable
-  public var startIndex: Index {
-    Index(index: storage.startIndex)
-  }
-  
-  @inlinable
-  public var endIndex: Index {
-    Index(index: storage.endIndex)
-  }
-  
-  @inlinable
-  public func distance(
-    from start: Index,
-    to end: Index
-  ) -> Int {
-    return storage.distance(
-      from: start.index,
-      to: end.index
-    )
-  }
-  
-  @inlinable
-  public func index(after i: Index) -> Index {
-    return Index(
-      index: storage.index(after: i.index)
-    )
-  }
-  
-  @inlinable
-  public func index(
-    _ i: Index,
-    offsetBy distance: Int
-  ) -> Index {
-    return Index(
-      index: storage.index(
-        i.index,
-        offsetBy: distance
-      )
-    )
-  }
-  
-  @inlinable
-  public func index(
-    _ i: Index,
-    offsetBy distance: Int,
-    limitedBy limit: Index
-  ) -> Index? {
-    return Index(
-      possibleIndex: storage.index(
-        i.index,
-        offsetBy: distance,
-        limitedBy: limit.index
-      )
-    )
-  }
-  
-  @inlinable
-  public func formIndex(after i: inout Index) {
-    storage.formIndex(after: &i.index)
-  }
-  
-  @inlinable
-  public func formIndex(
-    _ i: inout Index,
-    offsetBy distance: Int
-  ) {
-    storage.formIndex(
-      &i.index,
-      offsetBy: distance
-    )
-  }
-  
-  @inlinable
-  public func formIndex(
-    _ i: inout Index,
-    offsetBy distance: Int,
-    limitedBy limit: Index
-  ) -> Bool {
-    storage.formIndex(
-      &i.index,
-      offsetBy: distance,
-      limitedBy: limit.index
-    )
-  }
-  
-}
-
-extension ObjectDictionary : CustomStringConvertible {
-  
-  @inlinable
-  public var description: String {
-    return "ObjectDictionary(storage: \(String(describing: storage)))"
-  }
-  
-}
-
-extension ObjectDictionary : CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    return "ObjectDictionary<\(String(reflecting: Key.self)), \(String(reflecting: Value.self))>(storage: \(String(reflecting: storage)))"
-  }
-  
 }

@@ -1,7 +1,3 @@
-//
-//  ObjectSetIndex.swift
-//
-
 import Foundation
 
 // -------------------------------------------------------------------------- //
@@ -25,27 +21,27 @@ public struct ObjectSetIndex<T:AnyObject> {
   internal init(index: Index) {
     self.index = index
   }
-  
-}
 
-// -------------------------------------------------------------------------- //
-// MARK: ObjectSetIndex - Equatable
-// -------------------------------------------------------------------------- //
-
-extension ObjectSetIndex : Equatable {
-  
   @inlinable
-  public static func == (
-    lhs: ObjectSetIndex<T>,
-    rhs: ObjectSetIndex<T>
-  ) -> Bool {
-    return lhs.index == rhs.index
+  internal init?(possibleIndex: Index?) {
+    guard let index = possibleIndex else {
+      return nil
+    }
+    self.init(index: index)
   }
-  
+
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: ObjectSetIndex - Comparable
+// MARK: - Synthesized Conformances
+// -------------------------------------------------------------------------- //
+
+extension ObjectSetIndex: Sendable where T: Sendable { }
+extension ObjectSetIndex: Equatable { }
+extension ObjectSetIndex: Hashable { }
+
+// -------------------------------------------------------------------------- //
+// MARK: - Comparable
 // -------------------------------------------------------------------------- //
 
 extension ObjectSetIndex : Comparable {
@@ -55,7 +51,7 @@ extension ObjectSetIndex : Comparable {
     lhs: ObjectSetIndex<T>,
     rhs: ObjectSetIndex<T>
   ) -> Bool {
-    return lhs.index < rhs.index
+    lhs.index < rhs.index
   }
   
 }
@@ -68,9 +64,7 @@ extension ObjectSetIndex : CustomStringConvertible {
   
   @inlinable
   public var description: String {
-    get {
-      return "object-set-index: \(String(describing: index))"
-    }
+    String(describing: index)
   }
   
 }
@@ -83,9 +77,7 @@ extension ObjectSetIndex : CustomDebugStringConvertible {
   
   @inlinable
   public var debugDescription: String {
-    get {
-      return "ObjectSetIndex<\(String(reflecting: T.self))>(index: \(String(reflecting: index)))"
-    }
+    "ObjectSetIndex<\(String(reflecting: T.self))>(index: \(String(reflecting: index)))"
   }
   
 }

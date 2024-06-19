@@ -15,7 +15,15 @@ let package = Package(
     .library(
       name: "HDXLToolbox",
       targets: [
-        "HDXLCollectionSupport"
+        "HDXLSerialization",
+        "HDXLObjectCollections"
+      ]
+    ),
+    
+    .library(
+      name: "HDXLTestingSupport",
+      targets: [
+        "HDXLTestingSupport"
       ]
     )
   ],
@@ -23,12 +31,89 @@ let package = Package(
   ],
   targets: [
     .target(
+      name: "HDXLEssentialPrecursors",
+      dependencies: []
+    ),
+    .testTarget(
+      name: "HDXLEssentialPrecursorsTests",
+      dependencies: [
+        "HDXLTestingSupport",
+        "HDXLEssentialPrecursors"
+      ]
+    ),
+    
+    .target(
         name: "HDXLCollectionSupport",
         dependencies: []
     ),
     .testTarget(
         name: "HDXLCollectionSupportTests",
-        dependencies: ["HDXLCollectionSupport"]
+        dependencies: [
+          "HDXLCollectionSupport"
+        ]
+    ),
+    
+    .target(
+      name: "HDXLCollectionValidation",
+      dependencies: [
+        "HDXLTestingSupport",
+        "HDXLEssentialPrecursors"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLCollectionValidationTests",
+      dependencies: [
+        "HDXLCollectionValidation"
+      ]
+    ),
+
+    .target(
+      name: "HDXLObjectCollections",
+      dependencies: [
+        "HDXLCollectionSupport",
+        "HDXLEssentialPrecursors"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLObjectCollectionsTests",
+      dependencies: [
+        "HDXLObjectCollections"
+      ]
+    ),
+
+    .target(
+      name: "HDXLSerialization",
+      dependencies: [
+        "HDXLEssentialPrecursors"
+      ]
+    ),
+    .target(
+      name: "HDXLSerializationTestSupport",
+      dependencies: [
+        "HDXLSerialization",
+        "HDXLTestingSupport"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLSerializationTests",
+      dependencies: [
+        "HDXLSerialization",
+        "HDXLTestingSupport",
+        "HDXLSerializationTestSupport",
+      ]
+    ),
+
+    .target(
+      name: "HDXLTestingSupport",
+      dependencies: [
+        "HDXLEssentialPrecursors"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLTestingSupportTests",
+      dependencies: [
+        "HDXLTestingSupport"
+      ]
     )
   ],
   swiftLanguageVersions: [

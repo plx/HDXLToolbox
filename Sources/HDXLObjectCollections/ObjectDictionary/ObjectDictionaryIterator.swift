@@ -1,5 +1,9 @@
 import Foundation
 
+// ------------------------------------------------------------------------- //
+// MARK: ObjectDictionaryIndex
+// ------------------------------------------------------------------------- //
+
 @frozen
 public struct ObjectDictionaryIterator<Key, Value>: IteratorProtocol where Key: AnyObject {
   
@@ -18,13 +22,15 @@ public struct ObjectDictionaryIterator<Key, Value>: IteratorProtocol where Key: 
   
   @inlinable
   public mutating func next() -> (key: Key, value: Value)? {
-    guard let next = iterator.next() else {
-      return nil
+    switch iterator.next() {
+    case .some(let keyValuePair):
+      (
+        key: keyValuePair.key.object,
+        value: keyValuePair.value
+      )
+    case .none:
+      nil
     }
-    return (
-      key: next.key.object,
-      value: next.value
-    )
   }
   
 }

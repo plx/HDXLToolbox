@@ -28,7 +28,7 @@ extension ObjectDictionaryValues: Sequence {
   
   @inlinable
   public func makeIterator() -> Iterator {
-    return Iterator(
+    Iterator(
       iterator: storage.makeIterator()
     )
   }
@@ -61,7 +61,7 @@ extension ObjectDictionaryValues: MutableCollection {
   @inlinable
   public subscript(position: Index) -> Element {
     get {
-      return storage[position.index]
+      storage[position.index]
     }
     set {
       storage[position.index] = newValue
@@ -84,7 +84,7 @@ extension ObjectDictionaryValues: MutableCollection {
     from start: Index,
     to end: Index
   ) -> Int {
-    return storage.distance(
+    storage.distance(
       from: start.index,
       to: end.index
     )
@@ -92,7 +92,7 @@ extension ObjectDictionaryValues: MutableCollection {
   
   @inlinable
   public func index(after i: Index) -> Index {
-    return Index(
+    Index(
       index: storage.index(after: i.index)
     )
   }
@@ -102,7 +102,7 @@ extension ObjectDictionaryValues: MutableCollection {
     _ i: Index,
     offsetBy distance: Int
   ) -> Index {
-    return Index(
+    Index(
       index: storage.index(
         i.index,
         offsetBy: distance
@@ -116,7 +116,7 @@ extension ObjectDictionaryValues: MutableCollection {
     offsetBy distance: Int,
     limitedBy limit: Index
   ) -> Index? {
-    return Index(
+    Index(
       possibleIndex: storage.index(
         i.index,
         offsetBy: distance,

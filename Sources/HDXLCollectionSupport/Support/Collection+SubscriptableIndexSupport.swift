@@ -33,5 +33,10 @@ extension Collection {
     let destination = index(after: i)
     return destination == endIndex ? nil : destination
   }
+  
+  @inlinable
+  package func canSubscript(index: Index) -> Bool {
+    indices.contains(index)
+  }
 
 }

@@ -1,5 +1,9 @@
 import Foundation
 
+// ------------------------------------------------------------------------- //
+// MARK: ObjectDictionaryKeys
+// ------------------------------------------------------------------------- //
+
 @frozen
 public struct ObjectDictionaryKeys<Key, Value> where Key: AnyObject {
   
@@ -16,8 +20,42 @@ public struct ObjectDictionaryKeys<Key, Value> where Key: AnyObject {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// ------------------------------------------------------------------------- //
+
 extension ObjectDictionaryKeys: Sendable where Key: Sendable, Value: Sendable { }
 extension ObjectDictionaryKeys: Equatable where Value: Equatable { }
+
+// ------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionaryKeys: CustomStringConvertible {
+  
+  @inlinable
+  public var description: String {
+    "ObjectDictionaryKeys(storage: \(String(describing: storage)))"
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - CustomDebugStringConvertible
+// ------------------------------------------------------------------------- //
+
+extension ObjectDictionaryKeys: CustomDebugStringConvertible {
+  
+  @inlinable
+  public var debugDescription: String {
+    "ObjectDictionaryKeys<\(String(reflecting: Key.self)), \(String(reflecting: Value.self))>(storage: \(String(reflecting: storage)))"
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - Sequence
+// ------------------------------------------------------------------------- //
 
 extension ObjectDictionaryKeys: Sequence {
   public typealias Iterator = ObjectDictionaryKeysIterator<Key, Value>
@@ -34,6 +72,10 @@ extension ObjectDictionaryKeys: Sequence {
     )
   }
 }
+
+// ------------------------------------------------------------------------- //
+// MARK: - Collection
+// ------------------------------------------------------------------------- //
 
 extension ObjectDictionaryKeys: Collection {
   
@@ -61,7 +103,7 @@ extension ObjectDictionaryKeys: Collection {
   
   @inlinable
   public subscript(position: Index) -> Element {
-    return storage[position.index].object
+    storage[position.index].object
   }
   
   @inlinable
@@ -69,7 +111,7 @@ extension ObjectDictionaryKeys: Collection {
     from start: Index,
     to end: Index
   ) -> Int {
-    return storage.distance(
+    storage.distance(
       from: start.index,
       to: end.index
     )
@@ -77,7 +119,7 @@ extension ObjectDictionaryKeys: Collection {
   
   @inlinable
   public func index(after i: Index) -> Index {
-    return Index(
+    Index(
       index: storage.index(after: i.index)
     )
   }
@@ -87,7 +129,7 @@ extension ObjectDictionaryKeys: Collection {
     _ i: Index,
     offsetBy distance: Int
   ) -> Index {
-    return Index(
+    Index(
       index: storage.index(
         i.index,
         offsetBy: distance
@@ -101,7 +143,7 @@ extension ObjectDictionaryKeys: Collection {
     offsetBy distance: Int,
     limitedBy limit: Index
   ) -> Index? {
-    return Index(
+    Index(
       possibleIndex: storage.index(
         i.index,
         offsetBy: distance,
@@ -139,18 +181,4 @@ extension ObjectDictionaryKeys: Collection {
     )
   }
 
-}
-
-extension ObjectDictionaryKeys: CustomStringConvertible {
-  @inlinable
-  public var description: String {
-    "ObjectDictionaryKeys(storage: \(String(describing: storage)))"
-  }
-}
-
-extension ObjectDictionaryKeys: CustomDebugStringConvertible {
-  @inlinable
-  public var debugDescription: String {
-    "ObjectDictionaryKeys<\(String(reflecting: Key.self)), \(String(reflecting: Value.self))>(storage: \(String(reflecting: storage)))"
-  }
 }

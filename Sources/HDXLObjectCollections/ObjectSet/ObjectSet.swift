@@ -17,7 +17,7 @@ import Foundation
 /// the underlying object values for you, call by call, method by method.
 ///
 @frozen
-public struct ObjectSet<T:AnyObject>: Hashable {
+public struct ObjectSet<T:AnyObject> {
   
   public typealias Element = T
   
@@ -94,6 +94,7 @@ extension ObjectSet : CustomReflectable {
 // -------------------------------------------------------------------------- //
 
 extension ObjectSet : Codable where T:Codable {
+  // TODO: do we want to capture "single-value-codable" concept?
   
   @inlinable
   public func encode(to encoder: Encoder) throws {
@@ -152,7 +153,6 @@ extension ObjectSet : Sequence {
     )
   }
   
-
 }
 
 // -------------------------------------------------------------------------- //
@@ -176,9 +176,11 @@ extension ObjectSet : Collection {
   
   @inlinable
   public var startIndex: Index {
-    storage.startIndex
+    Index(
+      index: storage.startIndex
+    )
   }
-
+  
   @inlinable
   public var endIndex: Index {
     Index(
@@ -191,7 +193,7 @@ extension ObjectSet : Collection {
     storage[index.index].object
   }
   
-
+  
   @inlinable
   public func distance(
     from start: ObjectSetIndex<T>,
@@ -206,7 +208,9 @@ extension ObjectSet : Collection {
   @inlinable
   public func index(after i: Index) -> Index {
     Index(
-      index: storage.index(after: i.index)
+      index: storage.index(
+        after: i.index
+      )
     )
   }
   
@@ -229,24 +233,44 @@ extension ObjectSet : Collection {
     offsetBy distance: Int,
     limitedBy limit: Index
   ) -> Index? {
-    guard
-      let index = storage.index(
+    Index(
+      possibleIndex: storage.index(
         i.index,
         offsetBy: distance,
         limitedBy: limit.index
       )
-    else {
-      return nil
-    }
-    return Index(index: index)
+    )
   }
   
   @inlinable
   public func formIndex(after i: inout Index) {
     storage.formIndex(after: &i.index)
   }
-
-  // TODO: forward remaining methods
+  
+  @inlinable
+  public func formIndex(
+    _ i: inout Index,
+    offsetBy distance: Int
+  ) {
+    storage.formIndex(
+      &i.index,
+      offsetBy: distance
+    )
+  }
+  
+  @inlinable
+  public func formIndex(
+    _ i: inout Index,
+    offsetBy distance: Int,
+    limitedBy limit: Index
+  ) -> Bool {
+    storage.formIndex(
+      &i.index,
+      offsetBy: distance,
+      limitedBy: limit.index
+    )
+  }
+  
 }
 
 // -------------------------------------------------------------------------- //
@@ -728,7 +752,7 @@ extension ObjectSet {
   @inlinable
   public func isStrictSubset(
     of possibleStrictSuperset: some Sequence<T>
-  ) -> Bool where {
+  ) -> Bool {
     storage.isStrictSubset(
       of: possibleStrictSuperset.lazy.map() { Wrapper(object: $0) }
     )

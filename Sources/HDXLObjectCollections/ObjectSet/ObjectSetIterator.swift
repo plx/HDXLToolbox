@@ -30,12 +30,12 @@ public struct ObjectSetIterator<T:AnyObject> : IteratorProtocol {
   
   @inlinable
   public mutating func next() -> T? {
-    guard
-      let wrapper = self.iterator.next()
-    else {
-      return nil
+    switch iterator.next() {
+    case .some(let objectWrapper):
+      objectWrapper.object
+    case .none:
+      nil
     }
-    return wrapper.object
   }
   
 }
