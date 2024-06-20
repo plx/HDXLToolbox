@@ -2,7 +2,7 @@ import Testing
 @testable import HDXLCollectionSupport
 
 @Test(
-  "`subscriptableIndex(before:)`",
+  "`BidirectionalCollection.subscriptableIndex(before:)`",
   arguments: subscriptableIndexExamples
 )
 func testSubscriptableIndexBefore(_ example: [Int]) {

@@ -3,8 +3,8 @@ import Foundation
 // MARK: - Throwing
 
 public func asynchronousThrowingCartesianProduct<
-  A, B, C, D, E, F, G, H, I,
-  FA,FB,FC,FD,FE,FF,FG,FH,FI
+  A, B, C, D, E, F, G,
+  FA,FB,FC,FD,FE,FF,FG
 >(
   _ aa: some Sendable & AsyncSequence<A, FA>,
   _ bb: some Sendable & AsyncSequence<B, FB>,
@@ -12,11 +12,9 @@ public func asynchronousThrowingCartesianProduct<
   _ dd: some Sendable & AsyncSequence<D, FD>,
   _ ee: some Sendable & AsyncSequence<E, FE>,
   _ ff: some Sendable & AsyncSequence<F, FF>,
-  _ gg: some Sendable & AsyncSequence<G, FG>,
-  _ hh: some Sendable & AsyncSequence<H, FH>,
-  _ ii: some Sendable & AsyncSequence<I, FI>
-) -> some Sendable & AsyncSequence<(A, B, C, D, E, F, G, H, I), any Error> {
-  AsyncThrowingStream<(A, B, C, D, E, F, G, H, I), any Error> {
+  _ gg: some Sendable & AsyncSequence<G, FG>
+) -> some Sendable & AsyncSequence<(A, B, C, D, E, F, G), any Error> {
+  AsyncThrowingStream<(A, B, C, D, E, F, G), any Error> {
     continuation
     in
     Task.detached {
@@ -28,13 +26,9 @@ public func asynchronousThrowingCartesianProduct<
                 for try await e in ee {
                   for try await f in ff {
                     for try await g in gg {
-                      for try await h in hh {
-                        for try await i in ii {
-                          continuation.yield(
-                            (a,b,c,d,e,f,g,h,i)
-                          )
-                        }
-                      }
+                      continuation.yield(
+                        (a,b,c,d,e,f,g)
+                      )
                     }
                   }
                 }
@@ -53,8 +47,8 @@ public func asynchronousThrowingCartesianProduct<
 
 public func transformedThrowingAsynchronousCartesianProduct<
   T,
-  A, B, C, D, E, F, G, H, I,
-  FA,FB,FC,FD,FE,FF,FG,FH,FI
+  A, B, C, D, E, F, G,
+  FA,FB,FC,FD,FE,FF,FG
 >(
   _ aa: some Sendable & AsyncSequence<A, FA>,
   _ bb: some Sendable & AsyncSequence<B, FB>,
@@ -63,9 +57,7 @@ public func transformedThrowingAsynchronousCartesianProduct<
   _ ee: some Sendable & AsyncSequence<E, FE>,
   _ ff: some Sendable & AsyncSequence<F, FF>,
   _ gg: some Sendable & AsyncSequence<G, FG>,
-  _ hh: some Sendable & AsyncSequence<H, FH>,
-  _ ii: some Sendable & AsyncSequence<I, FI>,
-  _ transformation: @Sendable @escaping (A,B,C,D,E,F,G,H,I) async throws -> T
+  _ transformation: @Sendable @escaping (A,B,C,D,E,F,G) async throws -> T
 ) -> some Sendable & AsyncSequence<T, any Error> {
   AsyncThrowingStream<T, any Error> {
     continuation
@@ -79,13 +71,9 @@ public func transformedThrowingAsynchronousCartesianProduct<
                 for try await e in ee {
                   for try await f in ff {
                     for try await g in gg {
-                      for try await h in hh {
-                        for try await i in ii {
-                          continuation.yield(
-                            try await transformation(a,b,c,d,e,f,g,h,i)
-                          )
-                        }
-                      }
+                      continuation.yield(
+                        try await transformation(a,b,c,d,e,f,g)
+                      )
                     }
                   }
                 }
@@ -105,7 +93,7 @@ public func transformedThrowingAsynchronousCartesianProduct<
 // MARK: - Non-Throwing
 
 public func asynchronousCartesianProduct<
-  A, B, C, D, E, F, G, H, I
+  A, B, C, D, E, F, G
 >(
   _ aa: some Sendable & AsyncSequence<A, Never>,
   _ bb: some Sendable & AsyncSequence<B, Never>,
@@ -113,11 +101,9 @@ public func asynchronousCartesianProduct<
   _ dd: some Sendable & AsyncSequence<D, Never>,
   _ ee: some Sendable & AsyncSequence<E, Never>,
   _ ff: some Sendable & AsyncSequence<F, Never>,
-  _ gg: some Sendable & AsyncSequence<G, Never>,
-  _ hh: some Sendable & AsyncSequence<H, Never>,
-  _ ii: some Sendable & AsyncSequence<I, Never>
-) -> some Sendable & AsyncSequence<(A, B, C, D, E, F, G, H, I), Never> {
-  AsyncStream<(A, B, C, D, E, F, G, H, I)> {
+  _ gg: some Sendable & AsyncSequence<G, Never>
+) -> some Sendable & AsyncSequence<(A, B, C, D, E, F, G), Never> {
+  AsyncStream<(A, B, C, D, E, F, G)> {
     continuation
     in
     Task.detached {
@@ -129,13 +115,9 @@ public func asynchronousCartesianProduct<
               for await e in ee {
                 for await f in ff {
                   for await g in gg {
-                    for await h in hh {
-                      for await i in ii {
-                        continuation.yield(
-                          (a,b,c,d,e,f,g,h,i)
-                        )
-                      }
-                    }
+                    continuation.yield(
+                      (a,b,c,d,e,f,g)
+                    )
                   }
                 }
               }
@@ -149,7 +131,7 @@ public func asynchronousCartesianProduct<
 
 public func transformedAsynchronousCartesianProduct<
   T,
-  A, B, C, D, E, F, G, H, I
+  A, B, C, D, E, F, G
 >(
   _ aa: some Sendable & AsyncSequence<A, Never>,
   _ bb: some Sendable & AsyncSequence<B, Never>,
@@ -158,9 +140,7 @@ public func transformedAsynchronousCartesianProduct<
   _ ee: some Sendable & AsyncSequence<E, Never>,
   _ ff: some Sendable & AsyncSequence<F, Never>,
   _ gg: some Sendable & AsyncSequence<G, Never>,
-  _ hh: some Sendable & AsyncSequence<H, Never>,
-  _ ii: some Sendable & AsyncSequence<I, Never>,
-  _ transformation: @Sendable @escaping (A,B,C,D,E,F,G,H,I) async -> T
+  _ transformation: @Sendable @escaping (A,B,C,D,E,F,G) async -> T
 ) -> some Sendable & AsyncSequence<T, Never> {
   AsyncStream<T> {
     continuation
@@ -174,13 +154,9 @@ public func transformedAsynchronousCartesianProduct<
               for await e in ee {
                 for await f in ff {
                   for await g in gg {
-                    for await h in hh {
-                      for await i in ii {
-                        continuation.yield(
-                          await transformation(a,b,c,d,e,f,g,h,i)
-                        )
-                      }
-                    }
+                    continuation.yield(
+                      await transformation(a,b,c,d,e,f,g)
+                    )
                   }
                 }
               }

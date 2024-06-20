@@ -2,7 +2,7 @@ import Testing
 @testable import HDXLCollectionSupport
 
 @Test(
-  "`subscriptableIndex(after:)`",
+  "`Collection.subscriptableIndex(after:)`",
   arguments: subscriptableIndexExamples
 )
 func testSubscriptableIndexAfter(_ example: [Int]) throws {
@@ -29,7 +29,7 @@ func testSubscriptableIndexAfter(_ example: [Int]) throws {
 }
 
 @Test(
-  "`firstSubscriptableIndex`",
+  "`Collection.firstSubscriptableIndex`",
   arguments: subscriptableIndexExamples
 )
 func testFirstSubscriptableIndex(_ example: [Int]) {
@@ -44,7 +44,7 @@ func testFirstSubscriptableIndex(_ example: [Int]) {
 }
 
 @Test(
-  "`finalSubscriptableIndex`",
+  "`Collection.finalSubscriptableIndex`",
   arguments: subscriptableIndexExamples
 )
 func testFinalSubscriptableIndex(_ example: [Int]) {
@@ -59,7 +59,7 @@ func testFinalSubscriptableIndex(_ example: [Int]) {
 }
 
 @Test(
-  "`canSubscript(index:)",
+  "`Collection.canSubscript(index:)",
   arguments: subscriptableIndexExamples
 )
 func testCanSubscriptIndex(_ example: [Int]) {

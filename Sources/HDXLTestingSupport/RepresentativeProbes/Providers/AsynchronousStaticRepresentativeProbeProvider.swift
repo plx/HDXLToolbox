@@ -1,34 +1,36 @@
 import Foundation
 
 // -------------------------------------------------------------------------- //
-// MARK: RepresentativeProbeProviding
+// MARK: AsynchronousRepresentativeProbeProviding
 // -------------------------------------------------------------------------- //
 
-extension RepresentativeProbeProviding {
+extension AsynchronousRepresentativeProbeProviding {
   
   @inlinable
-  public static var representativeProbeProvider: some RepresentativeProbeProvider<Self> {
-    StaticRepresentativeProbeProvider(forType: Self.self)
+  public static var asynchronousRepresentativeProbeProvider: some AsynchronousRepresentativeProbeProvider<Self> {
+    AsynchronousStaticRepresentativeProbeProvider(forType: Self.self)
   }
   
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: StaticRepresentativeProbeProvider
+// MARK: AsynchronousStaticRepresentativeProbeProvider
 // -------------------------------------------------------------------------- //
 
 @frozen
-public struct StaticRepresentativeProbeProvider<Element> where Element: RepresentativeProbeProviding {
+public struct AsynchronousStaticRepresentativeProbeProvider<Element> where Element: AsynchronousRepresentativeProbeProviding {
   
   @inlinable
   package init(forType type: Element.Type) { }
 }
 
+extension AsynchronousStaticRepresentativeProbeProvider: Sendable { }
+
 // -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
 // -------------------------------------------------------------------------- //
 
-extension StaticRepresentativeProbeProvider : CustomStringConvertible {
+extension AsynchronousStaticRepresentativeProbeProvider : CustomStringConvertible {
   
   @inlinable
   public var description: String {
@@ -41,7 +43,7 @@ extension StaticRepresentativeProbeProvider : CustomStringConvertible {
 // MARK: - CustomDebugStringConvertible
 // -------------------------------------------------------------------------- //
 
-extension StaticRepresentativeProbeProvider : CustomDebugStringConvertible {
+extension AsynchronousStaticRepresentativeProbeProvider : CustomDebugStringConvertible {
   
   @inlinable
   public var debugDescription: String {
@@ -54,12 +56,12 @@ extension StaticRepresentativeProbeProvider : CustomDebugStringConvertible {
 // MARK: - RepresentativeProbeProvider
 // -------------------------------------------------------------------------- //
 
-extension StaticRepresentativeProbeProvider: RepresentativeProbeProvider {
+extension AsynchronousStaticRepresentativeProbeProvider: AsynchronousRepresentativeProbeProvider {
 
-  public typealias RepresentativeProbes = Element.RepresentativeProbes
+  public typealias AsynchronousRepresentativeProbes = Element.AsynchronousRepresentativeProbes
   
   @inlinable
-  public var representativeProbes: RepresentativeProbes {
-    Element.allRepresentativeProbes
+  public var asynchronousRepresentativeProbes: AsynchronousRepresentativeProbes {
+    Element.allAsynchronousRepresentativeProbes
   }
 }

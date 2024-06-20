@@ -96,7 +96,8 @@ let package = Package(
       name: "HDXLSerializationTestSupport",
       dependencies: [
         "HDXLSerialization",
-        "HDXLTestingSupport"
+        "HDXLTestingSupport",
+        "HDXLCollectionSupport"
       ]
     ),
     .testTarget(
