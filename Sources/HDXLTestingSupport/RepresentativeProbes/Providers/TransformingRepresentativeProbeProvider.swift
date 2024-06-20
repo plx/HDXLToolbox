@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 
 extension RepresentativeProbeProvider {
   
@@ -36,7 +37,6 @@ where BaseProvider: RepresentativeProbeProvider
   public var representativeProbes: some Collection<Element> {
     baseProvider
       .representativeProbes
-      .lazy
-      .map(transformation)
+      .localOnDemandMap(transformation)
   }
 }

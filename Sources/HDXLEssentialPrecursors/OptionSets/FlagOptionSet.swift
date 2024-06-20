@@ -32,7 +32,7 @@ extension FlagOptionSet where Self: Hashable {
 extension FlagOptionSet where Self: CustomStringConvertible {
   @inlinable
   public var description: String {
-    let interior = Self.allFlagOptionsWithLeadingDotNames.lazy.compactMap { (flag, nameWithLeadingDot) in
+    let interior = Self.allFlagOptionsWithLeadingDotNames.localOnDemandCompactMap { (flag, nameWithLeadingDot) in
       switch contains(flag) {
       case true:
         return nameWithLeadingDot
@@ -47,7 +47,7 @@ extension FlagOptionSet where Self: CustomStringConvertible {
 extension FlagOptionSet where Self: CustomDebugStringConvertible {
   @inlinable
   public var debugDescription: String {
-    let interior = Self.allFlagOptionsWithLeadingDotNames.lazy.compactMap { (flag, nameWithLeadingDot) in
+    let interior = Self.allFlagOptionsWithLeadingDotNames.localOnDemandCompactMap { (flag, nameWithLeadingDot) in
       switch contains(flag) {
       case true:
         return nameWithLeadingDot
@@ -64,7 +64,7 @@ extension FlagOptionSet {
   public static var allFlagOptionCombinations: [Self] {
     var cases: [Self] = [Self()]
     for flag in Self.allFlagOptions {
-      cases.append(contentsOf: cases.lazy.map { $0.union(flag) })
+      cases.append(contentsOf: cases.localOnDemandMap { $0.union(flag) })
     }
     return cases
   }

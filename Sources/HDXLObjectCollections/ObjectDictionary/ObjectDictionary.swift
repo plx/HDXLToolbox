@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 
 // ------------------------------------------------------------------------- //
@@ -241,6 +242,26 @@ extension ObjectDictionary {
   
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - SingleValueCodable
+// -------------------------------------------------------------------------- //
+
+// TODO: implement this via a macro
+extension ObjectDictionary : SingleValueCodable where Key: Codable, Value: Codable {
+  public typealias SingleValueCodableRepresentation = [ObjectWrapper<Key>: Value]
+  
+  @inlinable
+  public var singleValueCodableRepresentation: SingleValueCodableRepresentation {
+    storage
+  }
+  
+  @inlinable
+  public init(unsafeFromSingleValueCodableRepresentation singleValueCodableRepresentation: SingleValueCodableRepresentation) throws {
+    self.init(storage: singleValueCodableRepresentation)
+  }
+
+}
+
 // ------------------------------------------------------------------------- //
 // MARK: - Dictionary API
 // ------------------------------------------------------------------------- //
@@ -266,7 +287,7 @@ extension ObjectDictionary {
   public init(uniqueKeysWithValues keysWithValues: some Sequence<(Key, Value)>) {
     self.init(
       storage: Storage(
-        uniqueKeysWithValues: keysWithValues.lazy.map {
+        uniqueKeysWithValues: keysWithValues.onDemandMap {
           (object, value)
           in
           (ObjectWrapper(object: object), value)
@@ -282,13 +303,11 @@ extension ObjectDictionary {
   ) rethrows {
     self.init(
       storage: try Storage(
-        keysWithValues
-          .lazy
-          .map {
-            (object, value)
-            in
-            (ObjectWrapper(object: object), value)
-          },
+        keysWithValues.onDemandMap {
+          (object, value)
+          in
+          (ObjectWrapper(object: object), value)
+        },
         uniquingKeysWith: combine
       )
     )
@@ -414,17 +433,14 @@ extension ObjectDictionary {
     uniquingKeysWith combine: (Value, Value) throws -> Value
   ) rethrows {
     try storage.merge(
-      keysWithValues
-        .lazy
-        .map {
-          (key, value)
-          in
-          (
-            ObjectWrapper(object: key),
-            value
-          )
-        }
-      ,
+      keysWithValues.onDemandMap {
+        (key, value)
+        in
+        (
+          ObjectWrapper(object: key),
+          value
+        )
+      },
       uniquingKeysWith: combine
     )
   }
@@ -449,17 +465,14 @@ extension ObjectDictionary {
   ) rethrows -> ObjectDictionary<Key, Value> {
     ObjectDictionary<Key, Value>(
       storage: try storage.merging(
-        keysWithValues
-          .lazy
-          .map {
-            (key, value)
-            in
-            (
-              ObjectWrapper(object: key),
-              value
-            )
-          }
-        ,
+        keysWithValues.onDemandMap {
+          (key, value)
+          in
+          (
+            ObjectWrapper(object: key),
+            value
+          )
+        },
         uniquingKeysWith: combine
       )
     )

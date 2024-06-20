@@ -43,13 +43,25 @@ extension RangeReplaceableCollection {
   }
   
   @inlinable
-  public mutating func appendLazyApplication<S,T>(
+  public mutating func appendLazyApplication<T>(
     of function: (T) throws -> Element,
-    to sequence: S
-  ) rethrows where S: Sequence, S.Element == T {
+    to sequence: some Sequence<T>
+  ) throws {
     append(
       contentsOf: try sequence.lazy.map(function)
     )
   }
-  
+
+  @inlinable
+  public mutating func appendLazyApplication<T>(
+    of function: (T) -> Element,
+    to sequence: some Sequence<T>
+  ) {
+    withoutActuallyEscaping(function) { transform in
+      append(
+        contentsOf: sequence.localOnDemandMap(transform)
+      )
+    }
+  }
+
 }

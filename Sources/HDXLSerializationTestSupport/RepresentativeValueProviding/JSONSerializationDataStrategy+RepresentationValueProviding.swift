@@ -14,8 +14,9 @@ extension JSONSerializationNonConformingFloatStrategy: @retroactive Representati
     result.append(
       contentsOf: NonConformingFloatMapping
         .allRepresentativeProbes
-        .lazy
-        .map(Self.convertToString(_:))
+        .onDemandMap {
+          .convertToString($0)
+        }
     )
     
     return result

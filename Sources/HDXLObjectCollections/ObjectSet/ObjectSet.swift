@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
 // MARK: ObjectSet
@@ -44,6 +45,7 @@ public struct ObjectSet<T:AnyObject> {
 extension ObjectSet: Sendable where T: Sendable { }
 extension ObjectSet: Equatable { }
 extension ObjectSet: Hashable { }
+extension ObjectSet : Codable where T:Codable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
@@ -90,28 +92,23 @@ extension ObjectSet : CustomReflectable {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: - Codable
+// MARK: - SingleValueCodable
 // -------------------------------------------------------------------------- //
 
-extension ObjectSet : Codable where T:Codable {
-  // TODO: do we want to capture "single-value-codable" concept?
+// TODO: implement this via a macro
+extension ObjectSet : SingleValueCodable where T:Codable {
+  public typealias SingleValueCodableRepresentation = Set<ObjectWrapper<T>>
   
   @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.singleValueContainer()
-    try container.encode(storage)
+  public var singleValueCodableRepresentation: SingleValueCodableRepresentation {
+    storage
   }
   
   @inlinable
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-    self.init(
-      storage: try container.decode(
-        Storage.self
-      )
-    )
+  public init(unsafeFromSingleValueCodableRepresentation singleValueCodableRepresentation: SingleValueCodableRepresentation) throws {
+    self.init(storage: singleValueCodableRepresentation)
   }
-  
+
 }
 
 // -------------------------------------------------------------------------- //
@@ -126,7 +123,7 @@ extension ObjectSet : ExpressibleByArrayLiteral {
   public init(arrayLiteral elements: T...) {
     self.init(
       storage: Storage(
-        elements.map() {
+        elements.onDemandMap {
           Wrapper(object: $0)
         }
       )
@@ -390,7 +387,7 @@ extension ObjectSet : SetAlgebra {
   public init(_ sequence: some Sequence<Element>) {
     self.init(
       storage: Storage(
-        sequence.lazy.map() {
+        sequence.onDemandMap {
           Wrapper(object: $0)
         }
       )
@@ -421,7 +418,7 @@ extension ObjectSet {
   @inlinable
   public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> ObjectSet<Element> {
     ObjectSet<Element>(
-      storage: try storage.filter() {
+      storage: try storage.filter {
         try isIncluded($0.object)
       }
     )
@@ -444,7 +441,7 @@ extension ObjectSet {
 
   @inlinable
   public func map<R>(_ transform: (Element) throws -> R) rethrows -> [R] {
-    try storage.map() {
+    try storage.map {
       try transform($0.object)
     }
   }
@@ -482,7 +479,7 @@ extension ObjectSet {
   @inlinable
   public func drop(while predicate: (Element) throws -> Bool) rethrows -> Slice<ObjectSet<Element>> {
     promote(
-      slice: try storage.drop() {
+      slice: try storage.drop {
         try predicate($0.object)
       }
     )
@@ -498,7 +495,7 @@ extension ObjectSet {
   @inlinable
   public func prefix(while predicate: (Element) throws -> Bool) rethrows -> Slice<ObjectSet<Element>> {
     promote(
-      slice: try storage.prefix() {
+      slice: try storage.prefix {
         try predicate($0.object)
       }
     )
@@ -549,7 +546,7 @@ extension ObjectSet {
       omittingEmptySubsequences: omittingEmptySubsequences) {
       try isSeparator($0.object)
     }
-    return splits.map() {
+    return splits.map {
       promote(slice: $0)
     }
   }
@@ -568,21 +565,21 @@ extension ObjectSet {
 
   @inlinable
   public func shuffled(using generator: inout some RandomNumberGenerator) -> [Element] {
-    storage.shuffled(using: &generator).map() {
+    storage.shuffled(using: &generator).map {
       $0.object
     }
   }
   
   @inlinable
   public func shuffled() -> [Element] {
-    storage.shuffled().map() {
+    storage.shuffled().map {
       $0.object
     }
   }
   
   @inlinable
   public func forEach(_ body: (Element) throws -> Void) rethrows {
-    try storage.forEach() {
+    try storage.forEach {
       try body($0.object)
     }
   }
@@ -599,7 +596,7 @@ extension ObjectSet {
   @inlinable
   public func withContiguousStorageIfAvailable<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R? {
     // DANGER ZONE LOL...but should be ok:
-    try storage.withContiguousStorageIfAvailable() {
+    try storage.withContiguousStorageIfAvailable {
       (pointerToWrappers)
       in
       // zero-width
@@ -615,7 +612,7 @@ extension ObjectSet {
   public func min(
     by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Element? {
-    try storage.min() {
+    try storage.min {
       (lhs, rhs)
       in
       try areInIncreasingOrder(
@@ -630,7 +627,7 @@ extension ObjectSet {
   public func max(
     by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Element? {
-    try storage.max() {
+    try storage.max {
       (lhs, rhs)
       in
       try areInIncreasingOrder(
@@ -670,7 +667,7 @@ extension ObjectSet {
     by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> Bool {
     try storage.lexicographicallyPrecedes(
-      other.lazy.map() { Wrapper(object: $0) }) {
+      other.onDemandMap { Wrapper(object: $0) }) {
       (element, otherElement)
       in
       try areInIncreasingOrder(element.object, otherElement.object)
@@ -681,7 +678,7 @@ extension ObjectSet {
   public func contains(
     where predicate: (Element) throws -> Bool
   ) rethrows -> Bool {
-    try storage.contains() {
+    try storage.contains {
       try predicate($0.object)
     }
   }
@@ -690,7 +687,7 @@ extension ObjectSet {
   public func allSatisfy(
     _ predicate: (Element) throws -> Bool
   ) rethrows -> Bool {
-    try storage.allSatisfy() {
+    try storage.allSatisfy {
       try predicate($0.object)
     }
   }
@@ -717,14 +714,14 @@ extension ObjectSet {
   
   @inlinable
   public func reversed() -> [Element] {
-    storage.reversed().map() { $0.object }
+    storage.reversed().map { $0.object }
   }
   
   @inlinable
   public func compactMap<ElementOfResult>(
     _ transform: (Element) throws -> ElementOfResult?
   ) rethrows -> [ElementOfResult] {
-    try storage.compactMap() {
+    try storage.compactMap {
       try transform($0.object)
     }
   }
@@ -733,9 +730,9 @@ extension ObjectSet {
   public func sorted(
     by areInIncreasingOrder: (Element, Element) throws -> Bool
   ) rethrows -> [Element] {
-    try storage.sorted() {
+    try storage.sorted {
       try areInIncreasingOrder($0.object, $1.object)
-    }.map() {
+    }.map {
       $0.object
     }
   }
@@ -745,7 +742,7 @@ extension ObjectSet {
     of possibleSuperset: some Sequence<T>
   ) -> Bool {
     storage.isSubset(
-      of: possibleSuperset.lazy.map() { Wrapper(object: $0) }
+      of: possibleSuperset.onDemandMap { Wrapper(object: $0) }
     )
   }
   
@@ -754,7 +751,7 @@ extension ObjectSet {
     of possibleStrictSuperset: some Sequence<T>
   ) -> Bool {
     storage.isStrictSubset(
-      of: possibleStrictSuperset.lazy.map() { Wrapper(object: $0) }
+      of: possibleStrictSuperset.onDemandMap { Wrapper(object: $0) }
     )
   }
   
@@ -763,7 +760,7 @@ extension ObjectSet {
     of possibleSubset: some Sequence<T>
   ) -> Bool {
     storage.isSuperset(
-      of: possibleSubset.lazy.map() { Wrapper(object: $0) }
+      of: possibleSubset.onDemandMap { Wrapper(object: $0) }
     )
   }
   
@@ -772,14 +769,14 @@ extension ObjectSet {
     of possibleStrictSubset: some Sequence<T>
   ) -> Bool {
     storage.isStrictSuperset(
-      of: possibleStrictSubset.lazy.map() { Wrapper(object: $0) }
+      of: possibleStrictSubset.onDemandMap { Wrapper(object: $0) }
     )
   }
   
   @inlinable
   public func isDisjoint(with other: some Sequence<T>) -> Bool {
     storage.isDisjoint(
-      with: other.lazy.map() { Wrapper(object: $0) }
+      with: other.onDemandMap { Wrapper(object: $0) }
     )
   }
   
@@ -789,7 +786,7 @@ extension ObjectSet {
   ) -> ObjectSet<Element> {
     ObjectSet<Element>(
       storage: storage.union(
-        other.lazy.map() {
+        other.onDemandMap {
           Wrapper(object: $0)
         }
       )
@@ -802,7 +799,7 @@ extension ObjectSet {
   ) -> ObjectSet<Element> {
     ObjectSet<Element>(
       storage: storage.subtracting(
-        other.lazy.map() {
+        other.onDemandMap {
           Wrapper(object: $0)
         }
       )
@@ -815,7 +812,7 @@ extension ObjectSet {
   ) -> ObjectSet<Element> {
     ObjectSet<Element>(
       storage: storage.intersection(
-        other.lazy.map() {
+        other.onDemandMap {
           Wrapper(object: $0)
         }
       )
@@ -828,7 +825,7 @@ extension ObjectSet {
   ) -> ObjectSet<Element> {
     ObjectSet<Element>(
       storage: storage.symmetricDifference(
-        other.lazy.map() {
+        other.onDemandMap {
           Wrapper(object: $0)
         }
       )
@@ -840,7 +837,7 @@ extension ObjectSet {
     _ other: some Sequence<T>
   ) {
     storage.formUnion(
-      other.lazy.map() {
+      other.onDemandMap {
         Wrapper(object: $0)
       }
     )
@@ -851,7 +848,7 @@ extension ObjectSet {
     _ other: some Sequence<T>
   ) {
     storage.subtract(
-      other.lazy.map() {
+      other.onDemandMap {
         Wrapper(object: $0)
       }
     )
@@ -862,7 +859,7 @@ extension ObjectSet {
     _ other: some Sequence<T>
   ) {
     storage.formIntersection(
-      other.lazy.map() {
+      other.onDemandMap {
         Wrapper(object: $0)
       }
     )
@@ -873,7 +870,7 @@ extension ObjectSet {
     _ other: some Sequence<T>
   ) {
     storage.formSymmetricDifference(
-      other.lazy.map() {
+      other.onDemandMap {
         Wrapper(object: $0)
       }
     )

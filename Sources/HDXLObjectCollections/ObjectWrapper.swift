@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
 // MARK: ObjectWrapper
@@ -40,6 +41,7 @@ public struct ObjectWrapper<T:AnyObject> {
 // -------------------------------------------------------------------------- //
 
 extension ObjectWrapper: Sendable where T: Sendable { }
+extension ObjectWrapper: Codable where T: Codable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Equatable
@@ -114,20 +116,18 @@ extension ObjectWrapper : CustomDebugStringConvertible {
 // MARK: ObjectWrapper - Codable
 // -------------------------------------------------------------------------- //
 
-extension ObjectWrapper : Codable where T:Codable {
+extension ObjectWrapper : SingleValueCodable where T:Codable {
+  
+  public typealias SingleValueCodableRepresentation = T
   
   @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.singleValueContainer()
-    try container.encode(object)
+  public var singleValueCodableRepresentation: SingleValueCodableRepresentation {
+    object
   }
   
   @inlinable
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-    self.init(
-      object: try container.decode(T.self)
-    )
+  public init(unsafeFromSingleValueCodableRepresentation singleValueCodableRepresentation: SingleValueCodableRepresentation) throws {
+    self.init(object: singleValueCodableRepresentation)
   }
   
 }
