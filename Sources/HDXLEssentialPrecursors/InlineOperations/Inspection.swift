@@ -220,10 +220,10 @@ public func debugInspection<T>(of value: T) -> T {
 ///
 /// - returns: `value`
 ///
-/// - seealso: `inspection(of:unless:)`
-/// - seealso: `debugInspection(of:using:)`
-/// - seealso: `debugInspection(of:when:using:)`
-/// - seealso: `debugInspection(of:unless:using:)`
+/// - seealso: ``inspection(of:unless:)``
+/// - seealso: ``debugInspection(of:using:)``
+/// - seealso: ``debugInspection(of:when:using:)``
+/// - seealso: ``debugInspection(of:unless:using:)``
 ///
 @inlinable
 @inline(__always)
@@ -243,10 +243,10 @@ public func debugInspection<T>(
 ///
 /// - returns: `value`
 ///
-/// - seealso: `inspection(of:unless:)`
-/// - seealso: `debugInspection(of:using:)`
-/// - seealso: `debugInspection(of:when:using:)`
-/// - seealso: `debugInspection(of:unless:using:)`
+/// - seealso: ``inspection(of:unless:)``
+/// - seealso: ``debugInspection(of:using:)``
+/// - seealso: ``debugInspection(of:when:using:)``
+/// - seealso: ``debugInspection(of:unless:using:)``
 ///
 @inlinable
 @inline(__always)

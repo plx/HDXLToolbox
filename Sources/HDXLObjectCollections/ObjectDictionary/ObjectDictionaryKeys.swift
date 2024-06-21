@@ -48,7 +48,7 @@ extension ObjectDictionaryKeys: CustomDebugStringConvertible {
   
   @inlinable
   public var debugDescription: String {
-    "ObjectDictionaryKeys<\(String(reflecting: Key.self)), \(String(reflecting: Value.self))>(storage: \(String(reflecting: storage)))"
+    "\(String(reflecting: Self.self))(storage: \(String(reflecting: storage)))"
   }
   
 }
@@ -67,7 +67,7 @@ extension ObjectDictionaryKeys: Sequence {
   
   @inlinable
   public func makeIterator() -> Iterator {
-    return Iterator(
+    Iterator(
       iterator: storage.makeIterator()
     )
   }

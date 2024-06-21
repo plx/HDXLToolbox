@@ -9,6 +9,41 @@ extension XCTestCase {
   
   @inlinable
   public func validateCodableRoundTrip<T, Representation>(
+    codec: SerializationCodec<Representation>,
+    example: T,
+    function: StaticString = #function,
+    file: StaticString = #filePath,
+    line: UInt = #line,
+    column: UInt = #column
+  ) throws where T: Equatable, T: Codable {
+    let encodedRepresentation = try codec.encode(example)
+    let decodedExample = try codec.decode(
+      T.self,
+      from: encodedRepresentation
+    )
+    
+    XCTAssertEqual(
+      example,
+      decodedExample,
+      """
+      Encountered round-trip failure for \(String(reflecting: T.self)):
+      
+      - `codec`: \(String(reflecting: codec))
+      - `example`: \(String(reflecting: example))
+      - `decodedExample`: \(String(reflecting: decodedExample))
+      - `example`: \(String(reflecting: example))
+      - `function`: \(function)
+      - `file`: \(file)
+      - `line`: \(line)
+      - `column`: \(column)
+      """,
+      file: file,
+      line: line
+    )
+  }
+
+  @inlinable
+  public func validateCodableRoundTrip<T, Representation>(
     codecs: some Sequence<SerializationCodec<Representation>>,
     examples: some Collection<T>,
     function: StaticString = #function,
@@ -18,29 +53,13 @@ extension XCTestCase {
   ) throws where T: Equatable, T: Codable {
     for codec in codecs {
       for example in examples {
-        let encodedRepresentation = try codec.encode(example)
-        let decodedExample = try codec.decode(
-          T.self,
-          from: encodedRepresentation
-        )
-        
-        XCTAssertEqual(
-          example,
-          decodedExample,
-          """
-          Encountered round-trip failure for \(String(reflecting: T.self)):
-          
-          - `codec`: \(String(reflecting: codec))
-          - `example`: \(String(reflecting: example))
-          - `decodedExample`: \(String(reflecting: decodedExample))
-          - `example`: \(String(reflecting: example))
-          - `function`: \(function)
-          - `file`: \(file)
-          - `line`: \(line)
-          - `column`: \(column)
-          """,
+        try validateCodableRoundTrip(
+          codec: codec,
+          example: example,
+          function: function,
           file: file,
-          line: line
+          line: line,
+          column: column
         )
       }
     }

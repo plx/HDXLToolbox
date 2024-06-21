@@ -1,5 +1,27 @@
 import Foundation
+// TODO: inject some kind of global failure thing that lets clients
+// set a custom failure handler for mandatory values.
 
+/// Force-unwraps `value` (or terminates with a detailed error message).
+///
+/// Exists to provide a safer, more self-documenting alternative to `!`, e.g. for things like this:
+///
+/// ```swift
+/// let loadingIcon = mandatoryValue(
+///   Image(named: "LoadingIcon"),
+///   "`LoadingIcon` is a built-in resource we must be able to locate for the application to work."
+/// )
+/// ```
+///
+/// - Parameters:
+///   - value: The value to be unwrapped.
+///   - explanation: A developer-facing explanation for why the unwrapping should always succeed.
+///   - function: The function to-which to attribute this call.
+///   - file: The file to-which to attribute this call.
+///   - line: The line to-which to attribute this call.
+///   - column: The column to-which to attribute this call.
+/// - Returns: The equivalent of `value()!`.
+///
 @inlinable
 public func mandatoryValue<T>(
   _ value: @autoclosure () -> T?,

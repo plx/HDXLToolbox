@@ -5,6 +5,7 @@ import HDXLEssentialPrecursors
 // MARK: JSONSerializationConfiguration
 // -------------------------------------------------------------------------- //
 
+/// Holds complete configuration information for Apple's `JSONEncoder` and `JSONDecoder`.
 public struct JSONSerializationConfiguration {
   public var keyStrategy: JSONSerializationKeyStrategy
   public var dateStrategy: JSONSerializationDateStrategy

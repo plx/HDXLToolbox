@@ -1,5 +1,9 @@
 import Foundation
 
+// ------------------------------------------------------------------------- //
+// MARK: ObjectDictionaryValues
+// ------------------------------------------------------------------------- //
+
 @frozen
 public struct ObjectDictionaryValues<Key, Value> where Key: AnyObject {
   
@@ -16,7 +20,15 @@ public struct ObjectDictionaryValues<Key, Value> where Key: AnyObject {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// ------------------------------------------------------------------------- //
+
 extension ObjectDictionaryValues: Sendable where Key: Sendable, Value: Sendable { }
+
+// ------------------------------------------------------------------------- //
+// MARK: - Sequence
+// ------------------------------------------------------------------------- //
 
 extension ObjectDictionaryValues: Sequence {
   public typealias Iterator = ObjectDictionaryValuesIterator<Key, Value>
@@ -33,6 +45,10 @@ extension ObjectDictionaryValues: Sequence {
     )
   }
 }
+
+// ------------------------------------------------------------------------- //
+// MARK: - MutableCollection
+// ------------------------------------------------------------------------- //
 
 extension ObjectDictionaryValues: MutableCollection {
   
@@ -156,6 +172,10 @@ extension ObjectDictionaryValues: MutableCollection {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// ------------------------------------------------------------------------- //
+
 extension ObjectDictionaryValues: CustomStringConvertible {
   @inlinable
   public var description: String {
@@ -163,9 +183,13 @@ extension ObjectDictionaryValues: CustomStringConvertible {
   }
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - CustomDebugStringConvertible
+// ------------------------------------------------------------------------- //
+
 extension ObjectDictionaryValues: CustomDebugStringConvertible {
   @inlinable
   public var debugDescription: String {
-    "ObjectDictionaryValues<\(String(reflecting: Key.self)), \(String(reflecting: Value.self))>(storage: \(String(reflecting: storage)))"
+    "\(String(reflecting: Self.self))(storage: \(String(reflecting: storage)))"
   }
 }

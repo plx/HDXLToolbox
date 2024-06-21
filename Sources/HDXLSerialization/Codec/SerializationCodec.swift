@@ -6,13 +6,12 @@ import Combine
 // MARK: SerializationCodec
 // -------------------------------------------------------------------------- //
 
-/// Type-erasing wrapper around a compatible pair like `(Encoder,Decoder)`;
-/// restricts the input/output type to `Data` due to lack of need that generalization.
+/// Type-erasing wrapper around a mutually-compatible  `Encoder` and `Decoder`.
 ///
-/// Jointly addresses two issues: (a) reduces cluttering serialization-related
-/// call sites with excessive genericity vis-a-vis their encoding/decoding and,
-/// additionally, (b) uses specialized constructors (etc.) to recruit the type
-/// system's help in only-ever using mutually-compatible encoder/decoder pairs.
+/// This exists for two purposes:
+///
+/// 1. recruiting the type system to help us use consistent serialization configurations
+/// 2. improved ergonomics when declaring and implementing serialization-related code
 ///
 @frozen
 public struct SerializationCodec<Representation> {
@@ -38,6 +37,15 @@ public struct SerializationCodec<Representation> {
     self._decoder = _decoder
   }
 
+  /// Constructs a codec from the user-supplied, mutually-compatible `encoder` and `decoder`.
+  ///
+  /// - Parameters:
+  ///   - encoder: the `Encoder` side of this codec
+  ///   - decoder: the `Decoder` side of this codec
+  ///
+  /// - Precondition: `encoder` and `decoder` *must* be mutually-compatible
+  /// - Warning: we cannot statically verify the compatibility of`encoder` and `decoder`
+  ///
   @inlinable
   public init<E,D>(
     encoder: E,
@@ -62,6 +70,7 @@ public struct SerializationCodec<Representation> {
 
 extension SerializationCodec {
 
+  /// Uses `encoder` to (attempt to) encode `value`.
   @inlinable
   public func encode(
     _ value: some Encodable
@@ -69,14 +78,15 @@ extension SerializationCodec {
     try _encoder.encode(value)
   }
   
+  /// Uses `decoder` to (attempt to) decode a value of type `type` from some previously-encoded `representation`.
   @inlinable
   public func decode<T>(
     _ type: T.Type,
-    from data: Representation
+    from representation: Representation
   ) throws -> T where T: Decodable {
     try _decoder.decode(
       type,
-      from: data
+      from: representation
     )
   }
 

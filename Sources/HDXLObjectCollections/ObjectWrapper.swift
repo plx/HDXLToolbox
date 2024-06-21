@@ -14,10 +14,11 @@ import HDXLEssentialPrecursors
 ///
 /// This exists *primarily* to streamline using `class` types in the standard
 /// collections *without* having to implement semantically-dubious `Equatable`
-/// and `Hashable` conformances directly on the type definition. In other words,
-/// if your `class` is some kind of controller or delegate or coordinator, it's
-/// semantically weird to implement `Equatable` and `Hashable`, it's still useful
-/// to define sets of them (etc.), and this exists in service of that.
+/// and `Hashable` conformances directly on the type definition. 
+///
+/// This type is currently kept `public` on the theory it might be useful, but in reality
+/// it has found little use outside of the internals of the object collections in this target;
+/// as such, it's potentientally suitable for demotion to `package` or even `internal`.
 ///
 @frozen
 public struct ObjectWrapper<T:AnyObject> {

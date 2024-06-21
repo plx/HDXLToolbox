@@ -1,6 +1,22 @@
 import Foundation
 
+// -------------------------------------------------------------------------- //
+// MARK: Fully-Configured Construction
+// -------------------------------------------------------------------------- //
+
 extension JSONEncoder {
+  
+  /// Constructs a `JSONEncoder` configured as-per the supplied arguments.
+  ///
+  /// - Parameters:
+  ///   - keyEncodingStrategy: the strategy to use for converting Swift property names into json keys
+  ///   - dateEncodingStrategy: the strategy to use for encoding `Date` values to JSON
+  ///   - dataEncodingStrategy: the strategy to use for encoding `Data` values to JSON
+  ///   - nonConformingFloatEncodingStrategy:the strategy to use for encoding non-conforming floats (e.g. infinity, negative infinity, and nan)
+  ///   - outputFormatting: the formatting to apply to the output (e.g. compact, pretty-printed, etc.)
+  ///
+  /// - seealso: ``JSONSerializationConfiguration``
+  /// - seealso: ``JSONDecoder.init(serializationConfiguration:)``
   @inlinable
   public convenience init(
     keyEncodingStrategy: KeyEncodingStrategy,
@@ -18,7 +34,15 @@ extension JSONEncoder {
   }
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: JSONSerializationConfiguration Construction
+// -------------------------------------------------------------------------- //
+
 extension JSONEncoder {
+  
+  /// Constructs a `JSONEncoder` configured as-per `serializationConfiguration`.
+  ///
+  /// - seealso: ``JSONSerializationConfiguration``
   @inlinable
   public convenience init(serializationConfiguration: JSONSerializationConfiguration) {
     self.init(
@@ -29,4 +53,5 @@ extension JSONEncoder {
       outputFormatting: OutputFormatting(serializationConfiguration.formatOptions)
     )
   }
+  
 }

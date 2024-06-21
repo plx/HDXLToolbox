@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
 // MARK: ObjectSetIndex - Definition

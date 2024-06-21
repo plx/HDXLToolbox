@@ -1,10 +1,23 @@
 import Foundation
 import HDXLEssentialPrecursors
 
+// -------------------------------------------------------------------------- //
+// MARK: JSONSerializationDataStrategy
+// -------------------------------------------------------------------------- //
+
+/// Provides common terminology for "shared cases" of `JSONEncoder.DataEncodingStrategy` and `JSONDecoder.DataDecodingStrategy`.
 public enum JSONSerializationDataStrategy {
+  
+  /// Let's `Data` choose the encoding strategy.
   case data
+  
+  /// Forces use of `base64`.
   case base64
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// -------------------------------------------------------------------------- //
 
 extension JSONSerializationDataStrategy: Sendable { }
 extension JSONSerializationDataStrategy: Equatable { }
@@ -14,12 +27,20 @@ extension JSONSerializationDataStrategy: Codable { }
 extension JSONSerializationDataStrategy: CustomStringConvertible { }
 extension JSONSerializationDataStrategy: CustomDebugStringConvertible { }
 
+// -------------------------------------------------------------------------- //
+// MARK: - Identifiable
+// -------------------------------------------------------------------------- //
+
 extension JSONSerializationDataStrategy: Identifiable {
   public typealias ID = Self
   
   @inlinable
   public var id: ID { self }
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: - CaseNameAwareEnumeration
+// -------------------------------------------------------------------------- //
 
 extension JSONSerializationDataStrategy: CaseNameAwareEnumeration {
   @inlinable

@@ -16,7 +16,9 @@ let package = Package(
       name: "HDXLToolbox",
       targets: [
         "HDXLSerialization",
-        "HDXLObjectCollections"
+        "HDXLObjectCollections",
+        "HDXLSemanticEquivalence",
+        "HDXLUtilityCollections"
       ]
     ),
     
@@ -46,7 +48,37 @@ let package = Package(
         "HDXLEssentialPrecursors"
       ]
     ),
-    
+
+    .target(
+      name: "HDXLUtilityCollections",
+      dependencies: [
+        "HDXLEssentialPrecursors",
+        "HDXLCollectionSupport"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLUtilityCollectionsTests",
+      dependencies: [
+        "HDXLTestingSupport",
+        "HDXLUtilityCollections"
+      ]
+    ),
+
+    .target(
+      name: "HDXLSemanticEquivalence",
+      dependencies: [
+        "HDXLEssentialPrecursors",
+        "HDXLObjectCollections"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLSemanticEquivalenceTests",
+      dependencies: [
+        "HDXLTestingSupport",
+        "HDXLSemanticEquivalence"
+      ]
+    ),
+
     .target(
         name: "HDXLCollectionSupport",
         dependencies: []

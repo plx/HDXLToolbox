@@ -1,7 +1,28 @@
 import Foundation
 
 extension String {
-  
+
+  @inlinable
+  package init<each T>(
+    forCaption caption: String,
+    describingTuple values: (repeat each T)
+  ) {
+    var contents: String = "\(caption): "
+    var iterationIndex: Int = 0
+    for value in repeat each values {
+      switch iterationIndex > 0 {
+      case true:
+        contents += ", \(String(describing: value))"
+      case false:
+        contents += String(describing: value)
+      }
+      
+      iterationIndex += 1
+    }
+    
+    self = "(\(contents))"
+  }
+
   @inlinable
   package init<each T>(describingTuple values: (repeat each T)) {
     var contents: String = ""
@@ -80,7 +101,28 @@ extension String {
     
     self = "\(String(reflecting: type))(\(contents))"
   }
-  
+
+  @inlinable
+  package init<Parent, each T>(
+    forConstructorOf type: Parent.Type,
+    unlabeledArguments: (repeat each T)
+  ) {
+    var contents: String = ""
+    var iterationIndex: Int = 0
+    for unlabeledArgument in repeat each unlabeledArguments {
+      switch iterationIndex > 0 {
+      case true:
+        contents += ", \(String(reflecting: unlabeledArgument))"
+      case false:
+        contents += "\(String(reflecting: unlabeledArgument))"
+      }
+      
+      iterationIndex += 1
+    }
+    
+    self = "\(String(reflecting: type))(\(contents))"
+  }
+
 }
 
 extension Optional<String> {

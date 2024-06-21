@@ -2,8 +2,13 @@ import Foundation
 import Combine
 import HDXLEssentialPrecursors
 
+// -------------------------------------------------------------------------- //
+// MARK: TopLevelEncoder - Type-Erasue
+// -------------------------------------------------------------------------- //
+
 extension TopLevelEncoder {
   
+  /// Obtain a type-erased wrapper around `self`.
   @inlinable
   public func erasedToAnyTopLevelEncoder() -> AnyTopLevelEncoder<Output> {
     AnyTopLevelEncoder<Output>(wrappedEncoder: self)
@@ -11,6 +16,13 @@ extension TopLevelEncoder {
   
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: AnyTopLevelEncoder
+// -------------------------------------------------------------------------- //
+
+/// Hand-written type-erasing wrapper for `TopLevelEncoder`; to be removed when/if we can write `any TopLevelEncoder<Input>`.
+///
+/// - Note: exist b/c `TopLevelEncoder.Output` isn't declared as a prinary associated type and, thus, `any TopLevelEncoder` isn't a workable choice.
 @frozen
 public struct AnyTopLevelEncoder<Output> {
   
@@ -45,6 +57,10 @@ public struct AnyTopLevelEncoder<Output> {
 
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// -------------------------------------------------------------------------- //
+
 extension AnyTopLevelEncoder : CustomStringConvertible {
   
   @inlinable
@@ -53,6 +69,10 @@ extension AnyTopLevelEncoder : CustomStringConvertible {
   }
   
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: - CustomDebugStringConvertible
+// -------------------------------------------------------------------------- //
 
 extension AnyTopLevelEncoder : CustomDebugStringConvertible {
   
@@ -63,7 +83,13 @@ extension AnyTopLevelEncoder : CustomDebugStringConvertible {
   
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - _AnyTopLevelEncoderStorage
+// -------------------------------------------------------------------------- //
 
+/// Private abstract base/implementation class used as the declared `Storage` type for ``AnyTopLevelEncoder``.
+///
+/// - seealso: ``AnyTopLevelEncoderStorage``
 @usableFromInline
 internal class _AnyTopLevelEncoderStorage<Output> : CustomStringConvertible, CustomDebugStringConvertible {
   
@@ -86,6 +112,11 @@ internal class _AnyTopLevelEncoderStorage<Output> : CustomStringConvertible, Cus
   }
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - AnyTopLevelEncoderStorage
+// -------------------------------------------------------------------------- //
+
+/// The actual storage type used by `AnyTopLevelEncoder`.
 @usableFromInline
 internal final class AnyTopLevelEncoderStorage<WrappedEncoder, Output> : _AnyTopLevelEncoderStorage<Output>
 where

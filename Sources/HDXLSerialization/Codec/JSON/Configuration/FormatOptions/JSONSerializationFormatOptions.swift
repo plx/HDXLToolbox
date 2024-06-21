@@ -1,6 +1,11 @@
 import Foundation
 import HDXLEssentialPrecursors
 
+// -------------------------------------------------------------------------- //
+// MARK: JSONSerializationFormatOptions
+// -------------------------------------------------------------------------- //
+
+/// Flags used to control miscellaneous aspects of Apple's JSON encoder and decoder.
 @frozen
 public struct JSONSerializationFormatOptions: OptionSet {
   public typealias RawValue = UInt8
@@ -49,6 +54,10 @@ public struct JSONSerializationFormatOptions: OptionSet {
   }
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// -------------------------------------------------------------------------- //
+
 extension JSONSerializationFormatOptions: Sendable { }
 extension JSONSerializationFormatOptions: Equatable { }
 extension JSONSerializationFormatOptions: Hashable { }
@@ -57,6 +66,10 @@ extension JSONSerializationFormatOptions: Codable { }
 extension JSONSerializationFormatOptions: CustomStringConvertible { }
 extension JSONSerializationFormatOptions: CustomDebugStringConvertible { }
 
+// -------------------------------------------------------------------------- //
+// MARK: - Identifiable
+// -------------------------------------------------------------------------- //
+
 extension JSONSerializationFormatOptions: Identifiable {
   public typealias ID = Self
   
@@ -64,12 +77,44 @@ extension JSONSerializationFormatOptions: Identifiable {
   public var id: ID { self }
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - FlagOptionSet
+// -------------------------------------------------------------------------- //
+
 extension JSONSerializationFormatOptions: FlagOptionSet {
   
+  /// Used to request pretty-printed output from Apple's `JSONEncoder`.
   public static let prettyPrinted            = JSONSerializationFormatOptions(rawValue: 0b00000001)
+  
+  /// Used to request that Apple's `JSONEncoder` uses sorted keys in its output.
   public static let sortedKeys               = JSONSerializationFormatOptions(rawValue: 0b00000010)
+  
+  /// Used to request that Apple's `JSONEncoder` *not* escape slashes found in strings.
   public static let withoutEscapingSlashes   = JSONSerializationFormatOptions(rawValue: 0b00000100)
+  
+  /// Used to request that Apple's `JSONDecoder` *allow* decoding of JSON5-formatted data.
   public static let allowJSON5               = JSONSerializationFormatOptions(rawValue: 0b00001000)
+  
+  /// Used to request that Apple's `JSONDecoder` assume that the data's top-level obejct is a dictionary.
+  ///
+  /// This is somewhat non-intuitive and seems to be intended for niche usage.
+  ///
+  /// When set, the decoder will treat this:
+  ///
+  /// ```
+  /// "x": 7,
+  /// "y: 2
+  /// ```
+  ///
+  /// ...as-if it was this:
+  /// ```
+  /// {
+  ///    "x": 7,
+  ///    "y": 2
+  /// }
+  /// ```
+  ///
+  /// What's particularly-puzzling here is that the `JSONDecoder` supports this format, but not the `JSONEncoder`--Apple's JSON toools will decode it but not encode it.
   public static let assumeTopLevelDictionary = JSONSerializationFormatOptions(rawValue: 0b00010000)
   
   public static let allFlagOptionsWithLeadingDotNames: [(JSONSerializationFormatOptions, String)] = [

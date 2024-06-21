@@ -2,8 +2,13 @@ import Foundation
 import Combine
 import HDXLEssentialPrecursors
 
+// -------------------------------------------------------------------------- //
+// MARK: TopLevelDecoder - Erasure
+// -------------------------------------------------------------------------- //
+
 extension TopLevelDecoder {
   
+  /// Obtain a type-erased wrapper around `self`.
   @inlinable
   public func erasedToAnyTopLevelDecoder() -> AnyTopLevelDecoder<Input> {
     AnyTopLevelDecoder<Input>(wrappedDecoder: self)
@@ -11,6 +16,13 @@ extension TopLevelDecoder {
   
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: AnyTopLevelDecoder
+// -------------------------------------------------------------------------- //
+
+/// Hand-written type-erasing wrapper for `TopLevelDecoder`; to be removed when/if we can write `any TopLevelDecoder<Input>`.
+///
+/// - Note: exist b/c `TopLevelDecoder.Input` isn't declared as a prinary associated type and, thus, `any TopLevelDecoder` isn't a workable choice.
 @frozen
 public struct AnyTopLevelDecoder<Input> {
   
@@ -49,6 +61,10 @@ public struct AnyTopLevelDecoder<Input> {
 
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// -------------------------------------------------------------------------- //
+
 extension AnyTopLevelDecoder : CustomStringConvertible {
   
   @inlinable
@@ -57,6 +73,10 @@ extension AnyTopLevelDecoder : CustomStringConvertible {
   }
   
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: - CustomDebugStringConvertible
+// -------------------------------------------------------------------------- //
 
 extension AnyTopLevelDecoder : CustomDebugStringConvertible {
   
@@ -67,7 +87,13 @@ extension AnyTopLevelDecoder : CustomDebugStringConvertible {
   
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - _AnyTopLevelDecoderStorage
+// -------------------------------------------------------------------------- //
 
+/// Private abstract base/implementation class used as the declared `Storage` type for ``AnyTopLevelDecoder``.
+///
+/// - seealso: ``AnyTopLevelDecoderStorage``
 @usableFromInline
 internal class _AnyTopLevelDecoderStorage<Input> : CustomStringConvertible, CustomDebugStringConvertible {
   
@@ -93,11 +119,16 @@ internal class _AnyTopLevelDecoderStorage<Input> : CustomStringConvertible, Cust
   }
 }
 
+// -------------------------------------------------------------------------- //
+// MARK: - AnyTopLevelDecoderStorage
+// -------------------------------------------------------------------------- //
+
+/// The actual storage type used by `AnyTopLevelEncoder`.
 @usableFromInline
 internal final class AnyTopLevelDecoderStorage<WrappedDecoder, Input> : _AnyTopLevelDecoderStorage<Input>
 where
-WrappedDecoder : TopLevelDecoder,
-WrappedDecoder.Input == Input
+  WrappedDecoder : TopLevelDecoder,
+  WrappedDecoder.Input == Input
 {
   
   @usableFromInline
