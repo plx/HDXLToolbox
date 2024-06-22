@@ -1,34 +1,8 @@
-//
-//  Collection+SubscriptableIndices.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
-public extension Collection {
-  
-//  @inlinable
-//  var firstSubscriptableIndex: Index? {
-//    get {
-//      guard !self.isEmpty else {
-//        return nil
-//      }
-//      return self.startIndex
-//    }
-//  }
-//  
-//  @inlinable
-//  var finalSubscriptableIndex: Index? {
-//    get {
-//      guard !self.isEmpty else {
-//        return nil
-//      }
-//      return self.locateFinalSubscriptableIndex(
-//        assumingCount: self.count
-//      )
-//    }
-//  }
-  
+extension Collection {
+    
   @inlinable
   internal func locateFinalSubscriptableIndex(assumingCount count: Int) -> Index? {
     guard count > 0 else {
@@ -42,7 +16,7 @@ public extension Collection {
   
   @inlinable
   func canSubscript(index: Index) -> Bool {
-    return index < self.endIndex
+    startIndex <= index && index < endIndex
   }
   
   @inlinable

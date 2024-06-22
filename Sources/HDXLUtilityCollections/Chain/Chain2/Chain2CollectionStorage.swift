@@ -1,20 +1,18 @@
-//
-//  Chain2CollectionStorage.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
+import HDXLCollectionSupport
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2CollectionStorage - Definition
 // -------------------------------------------------------------------------- //
 
 @usableFromInline
-internal final class Chain2CollectionStorage<
+internal final class Chain2CollectionStorage<A,B>
+where
   A:Collection,
-  B:Collection>
-  where
-  A.Element == B.Element {
+  B:Collection,
+  A.Element == B.Element
+{
   
   // -------------------------------------------------------------------------- //
   // MARK: Constituent Collections
@@ -22,17 +20,17 @@ internal final class Chain2CollectionStorage<
   
   @usableFromInline
   @GenericCollectionStorage
-  var a: A {
+  internal var a: A {
     didSet {
-      self.resetCaches()
+      resetCaches()
     }
   }
   
   @usableFromInline
   @GenericCollectionStorage
-  var b: B {
+  internal var b: B {
     didSet {
-      self.resetCaches()
+      resetCaches()
     }
   }
     
@@ -57,23 +55,21 @@ internal final class Chain2CollectionStorage<
   // ------------------------------------------------------------------------ //
   
   @usableFromInline
-  var _isEmpty: Bool? = nil
+  internal var _isEmpty: Bool? = nil
   
   @inlinable
-  var isEmpty: Bool {
-    get {
-      return self._isEmpty.obtainAssuredValue(
-        fallingBackUpon: self.calculateIsEmpty()
-      )
-    }
+  internal var isEmpty: Bool {
+    _isEmpty.obtainAssuredValue(
+      fallingBackUpon: self.calculateIsEmpty()
+    )
   }
   
   @inlinable
-  func calculateIsEmpty() -> Bool {
+  internal func calculateIsEmpty() -> Bool {
     return (
-      self.a.isEmpty
+      a.isEmpty
       &&
-      self.b.isEmpty
+      b.isEmpty
     )
   }
   
@@ -82,26 +78,24 @@ internal final class Chain2CollectionStorage<
   // ------------------------------------------------------------------------ //
   
   @usableFromInline
-  var _count: Int? = nil
+  internal var _count: Int? = nil
   
   @inlinable
-  var count: Int {
-    get {
-      return self._count.obtainAssuredValue(
-        fallingBackUpon: self.calculateCount()
-      )
-    }
+  internal var count: Int {
+    _count.obtainAssuredValue(
+      fallingBackUpon: calculateCount()
+    )
   }
   
   @usableFromInline
-  func calculateCount() -> Int {
-    guard !self.isEmpty else {
+  internal func calculateCount() -> Int {
+    guard !isEmpty else {
       return 0
     }
     return (
-      self.$a.count
+      $a.count
       +
-      self.$b.count
+      $b.count
     )
   }
   
@@ -110,10 +104,10 @@ internal final class Chain2CollectionStorage<
   // ------------------------------------------------------------------------ //
   
   @usableFromInline
-  var _rangeForA: Range<Int>? = nil
+  internal var _rangeForA: Range<Int>? = nil
 
   @usableFromInline
-  var _rangeForB: Range<Int>? = nil
+  internal var _rangeForB: Range<Int>? = nil
 
   // ------------------------------------------------------------------------ //
   // MARK: Incremental Range Support - Access
@@ -121,20 +115,16 @@ internal final class Chain2CollectionStorage<
   
   @inlinable
   var rangeForA: Range<Int> {
-    get {
-      return self._rangeForA.obtainAssuredValue(
-        fallingBackUpon: self.calculateRangeForA()
-      )
-    }
+    _rangeForA.obtainAssuredValue(
+      fallingBackUpon: calculateRangeForA
+    )
   }
 
   @inlinable
-  var rangeForB: Range<Int> {
-    get {
-      return self._rangeForB.obtainAssuredValue(
-        fallingBackUpon: self.calculateRangeForB()
-      )
-    }
+  internal var rangeForB: Range<Int> {
+    _rangeForB.obtainAssuredValue(
+      fallingBackUpon: calculateRangeForB()
+    )
   }
   
   // ------------------------------------------------------------------------ //
@@ -143,19 +133,19 @@ internal final class Chain2CollectionStorage<
   
   @usableFromInline
   func calculateRangeForA() -> Range<Int> {
-    guard !self.isEmpty else {
+    guard !isEmpty else {
       return 0..<0
     }
-    return 0..<self.$a.count
+    return 0..<$a.count
   }
 
   @usableFromInline
   func calculateRangeForB() -> Range<Int> {
-    guard !self.isEmpty else {
+    guard !isEmpty else {
       return 0..<0
     }
-    let previousUpperBound = self.rangeForA.upperBound
-    let currentCount = self.$b.count
+    let previousUpperBound = rangeForA.upperBound
+    let currentCount = $b.count
     return previousUpperBound..<(previousUpperBound + currentCount)
   }
 
@@ -184,42 +174,38 @@ internal final class Chain2CollectionStorage<
   // ------------------------------------------------------------------------ //
 
   @inlinable
-  var firstPosition: Position? {
-    get {
-      return self._firstPosition.obtainAssuredValue(
-        fallingBackUpon: self.calculateFirstPosition()
-      )
-    }
+  internal var firstPosition: Position? {
+    _firstPosition.obtainAssuredValue(
+      fallingBackUpon: calculateFirstPosition()
+    )
   }
 
   @inlinable
-  var finalPosition: Position? {
-    get {
-      return self._finalPosition.obtainAssuredValue(
-        fallingBackUpon: self.calculateFinalPosition()
-      )
-    }
+  internal var finalPosition: Position? {
+    _finalPosition.obtainAssuredValue(
+      fallingBackUpon: calculateFinalPosition()
+    )
   }
 
   // ------------------------------------------------------------------------ //
   // MARK: Extremal Position Support - Calculation
   // ------------------------------------------------------------------------ //
   
-  @usableFromInline
-  func calculateFirstPosition() -> Position? {
+  @inlinable
+  internal func calculateFirstPosition() -> Position? {
     // recall: lazy evaluation, first-to-last
-    return Position.firstNonNil(
-      self.$a.firstSubscriptableIndex,
-      self.$b.firstSubscriptableIndex
+    Position.firstNonNil(
+      $a.firstSubscriptableIndex,
+      $b.firstSubscriptableIndex
     )
   }
 
-  @usableFromInline
+  @inlinable
   func calculateFinalPosition() -> Position? {
     // recall: lazy evaluation, last-to-first
-    return Position.finalNonNil(
-      self.$a.finalSubscriptableIndex,
-      self.$b.finalSubscriptableIndex
+    Position.finalNonNil(
+      $a.finalSubscriptableIndex,
+      $b.finalSubscriptableIndex
     )
   }
 

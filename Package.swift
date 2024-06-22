@@ -68,7 +68,8 @@ let package = Package(
       name: "HDXLSemanticEquivalence",
       dependencies: [
         "HDXLEssentialPrecursors",
-        "HDXLObjectCollections"
+        "HDXLObjectCollections",
+        "HDXLUtilityCollections"
       ]
     ),
     .testTarget(

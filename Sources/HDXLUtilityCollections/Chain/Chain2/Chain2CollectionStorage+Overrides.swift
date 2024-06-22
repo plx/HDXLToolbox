@@ -1,24 +1,19 @@
-//
-//  Chain2CollectionStorage+Overrides.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
+import HDXLCollectionSupport
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - `contains(_:)`
+// MARK: - `contains(_:)`
 // -------------------------------------------------------------------------- //
 
-internal extension Chain2CollectionStorage
-  where
-  A.Element: Equatable {
+extension Chain2CollectionStorage where Element: Equatable {
   
   @inlinable
-  func contains(_ element: Element) -> Bool {
+  internal func contains(_ element: Element) -> Bool {
     return (
-      self.a.contains(element)
+      a.contains(element)
       ||
-      self.b.contains(element)
+      b.contains(element)
     )
   }
   
@@ -28,23 +23,21 @@ internal extension Chain2CollectionStorage
 // MARK: Chain2CollectionStorage - `min()`, `max()`
 // -------------------------------------------------------------------------- //
 
-internal extension Chain2CollectionStorage
-  where
-  A.Element: Comparable {
+extension Chain2CollectionStorage where Element: Comparable {
   
   @inlinable
-  func min() -> Element? {
+  internal func min() -> Element? {
     return weakMinimum(
-      self.a.min(),
-      self.b.min()
+      a.min(),
+      b.min()
     )
   }
   
   @inlinable
-  func max() -> Element? {
-    return weakMaximum(
-      self.a.max(),
-      self.b.max()
+  internal func max() -> Element? {
+    weakMaximum(
+      a.max(),
+      b.max()
     )
   }
   

@@ -1,6 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLObjectCollections
+import HDXLUtilityCollections
 
 // -------------------------------------------------------------------------- //
 // MARK: SemanticEquivalenceClass
@@ -377,7 +378,7 @@ extension SemanticEquivalenceClass {
     }
 
     for (upperIndex, favoredElement) in equivalentElements[1...].enumerated() {
-      for (lowerIndex, unfavoredElement) in equivalentElements[0..<upperIndex].enumerated() {
+      for unfavoredElement in equivalentElements[0..<upperIndex] {
         guard favoredElement.shouldBeFavored(over: unfavoredElement) else {
           return false
         }
