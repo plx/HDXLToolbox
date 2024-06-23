@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLCollectionSupport
 
 @usableFromInline
 @propertyWrapper
@@ -68,7 +69,7 @@ internal struct GenericCollectionStorage<C:Collection> {
   internal var count: Int {
     mutating get {
       _count.obtainAssuredValue(
-        fallingBackUpon: _wrappedValue.count
+        fallback: _wrappedValue.count
       )
     }
   }
@@ -80,7 +81,7 @@ internal struct GenericCollectionStorage<C:Collection> {
   internal var firstSubscriptableIndex: C.Index? {
     mutating get {
       _firstSubscriptableIndex.obtainAssuredValue(
-        fallingBackUpon: _wrappedValue.firstSubscriptableIndex
+        fallback: _wrappedValue.firstSubscriptableIndex
       )
     }
   }
@@ -92,7 +93,7 @@ internal struct GenericCollectionStorage<C:Collection> {
   internal var finalSubscriptableIndex: C.Index? {
     mutating get {
       _finalSubscriptableIndex.obtainAssuredValue(
-        fallingBackUpon: _wrappedValue.finalSubscriptableIndex
+        fallback: _wrappedValue.finalSubscriptableIndex
       )
     }
   }
@@ -223,6 +224,7 @@ extension GenericCollectionStorage where C:BidirectionalCollection {
 extension GenericCollectionStorage : Codable where C: Codable { }
 extension GenericCollectionStorage : SingleValueCodable where C:Codable {
   
+  @usableFromInline
   internal typealias SingleValueCodableRepresentation = C
   
   @inlinable

@@ -65,7 +65,8 @@ extension Collection {
   @inlinable
   internal func formSubscriptableIndex(
     _ index: inout Index,
-    offsetBy distance: Int) -> IndexPositionStorageMovementAttemptResult {
+    offsetBy distance: Int
+  ) -> IndexPositionStorageMovementAttemptResult {
     precondition(self.canSubscript(index: index))
     guard distance != 0 else {
       return .success

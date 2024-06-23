@@ -23,31 +23,11 @@ extension KeyedArray {
         .values[index]
         .insert(
           value,
-          at: index
-        )
-    }
-  }
-  
-  /// Prepends each value in `values` onto an *existing* array for `key`.
-  @inlinable
-  public mutating func prepend(
-    values: some Sequence<Value>,
-    forExistingKey key: Key
-  ) {
-    guard !isEmpty else { return }
-    withValidation { (storage) in
-      guard let index = storage.index(forKey: key) else {
-        return
-      }
-      storage
-        .values[index]
-        .insert(
-          contentsOf: values,
           at: 0
         )
     }
   }
-  
+    
   /// Prepends `value` onto an *existing* array associated-with `key`.
   @inlinable
   public mutating func prepend(

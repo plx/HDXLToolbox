@@ -1,5 +1,5 @@
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
 @usableFromInline
 internal enum ProductIndexRetreatContext {

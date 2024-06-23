@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 
 extension BidirectionalCollection {
 
@@ -9,5 +10,15 @@ extension BidirectionalCollection {
     }
     return index(before: i)
   }
+
+  @inlinable
+  package func formSubscriptableIndex(before index: inout Index) -> Bool {
+    guard index > startIndex else {
+      return false
+    }
+    formIndex(before: &index)
+    return true
+  }
+  
 
 }

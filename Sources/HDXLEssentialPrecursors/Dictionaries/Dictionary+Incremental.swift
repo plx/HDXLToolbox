@@ -27,8 +27,8 @@ extension Dictionary {
     uniquingValuesWith uniquer: (Value, Value) -> Value = { $1 }
   ) rethrows {
     self.init(minimumCapacity: elements.underestimatedCount)
-    for (key, element) in elements {
-      let (key, value) = try transformation(element)
+    for element in elements {
+      let (key, value) = try transformation(element.1)
       switch index(forKey: key) {
       case .some(let index):
         values[index] = uniquer(values[index], value)
