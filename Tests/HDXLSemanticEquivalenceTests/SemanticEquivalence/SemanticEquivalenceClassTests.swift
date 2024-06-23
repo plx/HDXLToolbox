@@ -1,8 +1,6 @@
 import Foundation
 import XCTest
-//import HDXLCommonUtilities
-import HDXLTestingUtilities
-import HDXLAlgebraicUtilities
+import HDXLTestingSupport
 @testable import HDXLSemanticEquivalence
 
 class SemanticEquivalenceClassTests: XCTestCase {
@@ -161,10 +159,11 @@ class SemanticEquivalenceClassTests: XCTestCase {
     repeats,
     labels,
     captions,
-    priorities).asTuples().map {
+    priorities
+  ).asTuples().map {
       (_,label,caption,priority) -> PrioritizedStringDuo
       in
-      return PrioritizedStringDuo(
+      PrioritizedStringDuo(
         label: label,
         caption: caption,
         priority: priority

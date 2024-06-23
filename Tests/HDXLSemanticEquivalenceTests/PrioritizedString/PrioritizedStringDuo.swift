@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
-//import HDXLCommonUtilities
-import HDXLTestingUtilities
+import HDXLTestingSupport
 @testable import HDXLSemanticEquivalence
 
 /// Dummy class for testing the semantic-equivalence system: `label` is used as
@@ -13,19 +12,12 @@ import HDXLTestingUtilities
 ///
 /// `priority` remains how we determine favorability, with higher `priority`
 /// corresponding to being more-favored.
-@usableFromInline
 internal final class PrioritizedStringDuo {
   
-  @usableFromInline
   let label: String
-
-  @usableFromInline
   let caption: String
-
-  @usableFromInline
   let priority: Int
   
-  @inlinable
   init(label: String, caption: String, priority: Int) {
     self.label = label
     self.caption = caption
@@ -34,27 +26,32 @@ internal final class PrioritizedStringDuo {
   
 }
 
-internal extension PrioritizedStringDuo {
+extension PrioritizedStringDuo {
   
   @inlinable
-  func with(
+  internal func with(
     label: String,
-    ensureUniqueCopy: Bool = true) -> PrioritizedStringDuo {
+    ensureUniqueCopy: Bool = true
+  ) -> PrioritizedStringDuo {
     guard
-      ensureUniqueCopy || label != self.label else {
+      ensureUniqueCopy 
+      ||
+      label != self.label
+    else {
         return self
     }
     return PrioritizedStringDuo(
       label: label,
-      caption: self.caption,
-      priority: self.priority
+      caption: caption,
+      priority: priority
     )
   }
 
   @inlinable
   func with(
     priority: Int,
-    ensureUniqueCopy: Bool = true) -> PrioritizedStringDuo {
+    ensureUniqueCopy: Bool = true
+  ) -> PrioritizedStringDuo {
     guard
       ensureUniqueCopy || priority != self.priority else {
         return self
@@ -73,15 +70,17 @@ extension PrioritizedStringDuo : Equatable {
   @inlinable
   internal static func ==(
     lhs: PrioritizedStringDuo,
-    rhs: PrioritizedStringDuo) -> Bool {
+    rhs: PrioritizedStringDuo
+  ) -> Bool {
     guard lhs !== rhs else {
       return true
     }
     guard
       lhs.label == rhs.label,
       lhs.caption == rhs.caption,
-      lhs.priority == rhs.priority else {
-        return false
+      lhs.priority == rhs.priority
+    else {
+      return false
     }
     return true
   }
@@ -92,9 +91,9 @@ extension PrioritizedStringDuo : Hashable {
   
   @inlinable
   internal func hash(into hasher: inout Hasher) {
-    self.label.hash(into: &hasher)
-    self.caption.hash(into: &hasher)
-    self.priority.hash(into: &hasher)
+    label.hash(into: &hasher)
+    caption.hash(into: &hasher)
+    priority.hash(into: &hasher)
   }
 
 }
@@ -126,13 +125,15 @@ extension PrioritizedStringDuo : SemanticEquivalenceComparable {
   @inlinable
   internal static func <~> (
     lhs: PrioritizedStringDuo,
-    rhs: PrioritizedStringDuo) -> SemanticEquivalenceComparisonResult {
+    rhs: PrioritizedStringDuo
+  ) -> SemanticEquivalenceComparisonResult {
     guard lhs !== rhs else {
       return .identical
     }
     guard
       lhs.label == rhs.label,
-      lhs.caption == rhs.caption else {
+      lhs.caption == rhs.caption 
+    else {
         // ^ note we only use the label in the identifier,
         // and have a secondary field that factors into semantic equivalence.
       return .distinct
@@ -156,9 +157,7 @@ extension PrioritizedStringDuo : SemanticEquivalenceClassIdentifierConvertible {
   
   @inlinable
   internal var semanticEquivalenceClassIdentifier: String {
-    get {
-      return self.label
-    }
+    label
   }
   
 }

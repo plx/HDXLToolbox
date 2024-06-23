@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
-//import HDXLCommonUtilities
-import HDXLTestingUtilities
+import HDXLTestingSupport
 import HDXLAlgebraicUtilities
 @testable import HDXLSemanticEquivalence
 
@@ -223,7 +222,6 @@ class SemanticEquivalenceTableTests: XCTestCase {
         )
       }
       
-      
       let removalReferences = [
         highestFoo,
         highestBar,
@@ -315,7 +313,7 @@ class SemanticEquivalenceTableTests: XCTestCase {
     )
   }
   
-  func testSemanticEquivalenceTableAgainstCannedPrioritizedStringDuos() {
+  func testSemanticEquivalenceTableAgainstCannedPrioritizedStringDuos() throws {
     haltingOnFirstError {
       
       let table = SemanticEquivalenceTable<PrioritizedStringDuo>(
@@ -362,9 +360,9 @@ class SemanticEquivalenceTableTests: XCTestCase {
       }
       
       for (x,y) in CartesianProduct(unorganizedTestValues, unorganizedTestValues).asTuples() {
-        let xClass = try! XCTUnwrap(table.equivalenceClass(forElement: x))
+        let xClass = try XCTUnwrap(table.equivalenceClass(forElement: x))
         XCTAssertTrue(xClass.contains(element: x))
-        let yClass = try! XCTUnwrap(table.equivalenceClass(forElement: y))
+        let yClass = try XCTUnwrap(table.equivalenceClass(forElement: y))
         XCTAssertTrue(yClass.contains(element: y))
         XCTAssertEqual(
           x.hasEquivalentSemantics(to: y),

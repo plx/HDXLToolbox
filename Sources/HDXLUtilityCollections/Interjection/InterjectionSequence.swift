@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLCollectionSupport
 
 public typealias InterjectionCollection<Base> = InterjectionSequence<Base> where Base: Collection
 public typealias InterjectionBidirectionalCollection<Base> = InterjectionSequence<Base> where Base: BidirectionalCollection
