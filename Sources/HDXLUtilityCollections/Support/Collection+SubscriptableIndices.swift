@@ -43,7 +43,8 @@ extension Collection {
   @inlinable
   internal func subscriptableIndex(
     _ index: Index,
-    offsetBy distance: Int) -> IndexPositionStorageMovementAttemptDestination<Index> {
+    offsetBy distance: Int
+  ) -> IndexPositionStorageMovementAttemptDestination<Index> {
     precondition(self.canSubscript(index: index))
     let result = self.index(
       index,
