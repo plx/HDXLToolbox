@@ -7,7 +7,7 @@ package final class COWBox<Value> {
   package var value: Value
   
   @inlinable
-  init(value: Value) {
+  package init(value: Value) {
     self.value = value
   }
 }

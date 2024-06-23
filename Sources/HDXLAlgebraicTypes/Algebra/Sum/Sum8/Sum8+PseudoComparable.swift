@@ -14,7 +14,7 @@ H:Comparable
 {
   
   @inlinable
-  package func lexicographicOrderingRelationship(with other: Self) -> Bool {
+  package func lexicographicOrderingRelationship(with other: Self) -> ComparisonResult {
     switch (self, other) {
     case (.a(let l), .a(let r)):
       l <=> r

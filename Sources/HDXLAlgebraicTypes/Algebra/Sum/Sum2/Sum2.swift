@@ -199,7 +199,7 @@ extension Sum2 {
     case .b(let value):
       value
     default:
-      return nil
+      nil
     }
   }
     

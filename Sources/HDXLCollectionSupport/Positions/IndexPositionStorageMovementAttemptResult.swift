@@ -2,7 +2,7 @@ import Foundation
 import HDXLEssentialPrecursors
 
 @usableFromInline
-internal enum IndexPositionStorageMovementAttemptResult {
+package enum IndexPositionStorageMovementAttemptResult {
   
   case success
   case becameEnd

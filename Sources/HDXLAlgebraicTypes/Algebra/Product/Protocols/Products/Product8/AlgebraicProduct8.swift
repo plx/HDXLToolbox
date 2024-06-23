@@ -1,18 +1,15 @@
-//
-//  AlgebraicProduct8.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
 // MARK: AlgebraicProduct8 - Definition
 // -------------------------------------------------------------------------- //
 
-/// Protocol specifically for arity-8 products.
-public protocol AlgebraicProduct8 : AlgebraicProduct
+/// Protocol representing an arity-9 product type.
+public protocol AlgebraicProduct8<A,B,C,D,E,F,G,H> : AlgebraicProduct
   where
-  ArityPosition == Arity8Position {
+  ArityPosition == Arity8Position
+{
   
   // ------------------------------------------------------------------------ //
   // MARK: Component Types
@@ -41,17 +38,14 @@ public protocol AlgebraicProduct8 : AlgebraicProduct
 
   /// The type of the eighth component.
   associatedtype H
-
+  
   // ------------------------------------------------------------------------ //
   // MARK: Related Types
   // ------------------------------------------------------------------------ //
   
-  /// Shorthand for the same-arity sum type.
-  ///
-  /// It'd be accurate to call this an "algebraic dual", but I find this name
-  /// easier to follow (even if dual is arguably more-proper, here).
+  /// Shorthand for the corresponding, same-arity sum type.
   typealias AssociatedSum = Sum8<A,B,C,D,E,F,G,H>
-
+  
   // ------------------------------------------------------------------------ //
   // MARK: Component Properties
   // ------------------------------------------------------------------------ //
@@ -93,12 +87,13 @@ public protocol AlgebraicProduct8 : AlgebraicProduct
     _ e: E,
     _ f: F,
     _ g: G,
-    _ h: H)
+    _ h: H
+  )
   
   // ------------------------------------------------------------------------ //
   // MARK: with-Derivation - Simple
   // ------------------------------------------------------------------------ //
-
+  
   /// Obtain a value derived from `self`, but with `a` substituted-for `self.a`.
   func with(a: A) -> Self
 
@@ -123,178 +118,16 @@ public protocol AlgebraicProduct8 : AlgebraicProduct
   /// Obtain a value derived from `self`, but with `h` substituted-for `self.h`.
   func with(h: H) -> Self
 
-  // ------------------------------------------------------------------------ //
-  // MARK: with-Derivation - Preference
-  // ------------------------------------------------------------------------ //
-  
-  /// Type-level configuration as to whether or not the `with(x:)`-style calls
-  /// should use `true` or `false` when they call through to `with(x:ensureUniqueCopy:)`.
-  static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { get }
-
-  // ------------------------------------------------------------------------ //
-  // MARK: with-Derivation - Complete
-  // ------------------------------------------------------------------------ //
-  
-  /// Obtain a value derived from `self`, but with `a` substituted-for `self.a`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    a: A,
-    ensureUniqueCopy: Bool) -> Self
-  
-  /// Obtain a value derived from `self`, but with `b` substituted-for `self.b`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    b: B,
-    ensureUniqueCopy: Bool) -> Self
-  
-  /// Obtain a value derived from `self`, but with `c` substituted-for `self.c`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    c: C,
-    ensureUniqueCopy: Bool) -> Self
-
-  /// Obtain a value derived from `self`, but with `d` substituted-for `self.d`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    d: D,
-    ensureUniqueCopy: Bool) -> Self
-
-  /// Obtain a value derived from `self`, but with `e` substituted-for `self.e`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    e: E,
-    ensureUniqueCopy: Bool) -> Self
-
-  /// Obtain a value derived from `self`, but with `f` substituted-for `self.f`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    f: F,
-    ensureUniqueCopy: Bool) -> Self
-
-  /// Obtain a value derived from `self`, but with `g` substituted-for `self.g`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    g: G,
-    ensureUniqueCopy: Bool) -> Self
-
-  /// Obtain a value derived from `self`, but with `h` substituted-for `self.h`.
-  /// When `ensureUniqueCopy` is `false` `self` *may* be returned when appropriate;
-  /// when `ensureUniqueCopy` is `true` an appropriate new value will always be constructed.
-  func with(
-    h: H,
-    ensureUniqueCopy: Bool) -> Self
-
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct8 - To-Tuple
+// MARK: - AlgebraicProduct Defaults
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct8 {
-  
-  /// Shorthand for the tuple equivalent-to `Self`.
-  typealias EquivalentTuple = (A,B,C,D,E,F,G,H)
-
-  /// Returns a tuple equivalent-to `self`.
-  @inlinable
-  var equivalentTupleValue: EquivalentTuple {
-    get {
-      return (
-        self.a,
-        self.b,
-        self.c,
-        self.d,
-        self.e,
-        self.f,
-        self.g,
-        self.h
-      )
-    }
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct8 - To-Labeled-Tuple
-// -------------------------------------------------------------------------- //
-
-public extension AlgebraicProduct8 {
-  
-  /// Shorthand for the *labeled* tuple equivalent-to `Self`.
-  typealias EquivalentLabeledTuple = (
-    a: A,
-    b: B,
-    c: C,
-    d: D,
-    e: E,
-    f: F,
-    g: G,
-    h: H
-  )
-  
-  /// Returns a *labeled* tuple equivalent-to `self`.
-  @inlinable
-  var equivalentLabeledTupleValue: EquivalentLabeledTuple {
-    get {
-      return (
-        a: self.a,
-        b: self.b,
-        c: self.c,
-        d: self.d,
-        e: self.e,
-        f: self.f,
-        g: self.g,
-        h: self.h
-      )
-    }
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct8 - AlgebraicProduct Defaults
-// -------------------------------------------------------------------------- //
-
-public extension AlgebraicProduct8 {
+extension AlgebraicProduct8 {
   
   @inlinable
-  static var arity: Int {
-    get {
-      return 8
-    }
-  }
+  public static var arity: Int { 8 }
   
 }
 
-// -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct8 - Validatable
-// -------------------------------------------------------------------------- //
-
-public extension AlgebraicProduct8 {
-  
-  @inlinable
-  var isValid: Bool {
-    get {
-      guard
-        isValidOrIndifferent(self.a),
-        isValidOrIndifferent(self.b),
-        isValidOrIndifferent(self.c),
-        isValidOrIndifferent(self.d),
-        isValidOrIndifferent(self.e),
-        isValidOrIndifferent(self.f),
-        isValidOrIndifferent(self.g),
-        isValidOrIndifferent(self.h) else {
-          return false
-      }
-      return true
-    }
-  }
-  
-}

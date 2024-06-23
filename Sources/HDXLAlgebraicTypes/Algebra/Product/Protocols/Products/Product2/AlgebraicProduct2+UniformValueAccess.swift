@@ -7,7 +7,7 @@ import HDXLEssentialPrecursors
 
 extension AlgebraicProduct2
   where
-  A == B 
+  A == B
 {
 
   // ------------------------------------------------------------------------ //
@@ -37,15 +37,23 @@ extension AlgebraicProduct2
   /// The first, leftmost, etc., value within `self`.
   @inlinable
   public var firstValue: UniformValue {
-    get { a }
-    set { a = newValue }
+    get {
+      a
+    }
+    set {
+      a = newValue
+    }
   }
   
   /// The final, rightmost, etc., value within `self`.
   @inlinable
   public var lastValue: UniformValue {
-    get { b }
-    set { b = newValue }
+    get {
+      b
+    }
+    set {
+      b = newValue
+    }
   }
   
   /// Retrieves the contents of `self` as an `Array`.
@@ -63,36 +71,38 @@ extension AlgebraicProduct2
   
   @inlinable
   internal static func canSubscript(at index: Int) -> Bool {
-    (0..<Self.arity).contains(index)
+    (0..<arity).contains(index)
   }
   
   @inlinable
   package subscript(index: Int) -> UniformValue {
     get {
+      precondition(Self.canSubscript(at: index))
       switch index {
-      case 0:
-        self.a
-      case 1:
-        self.b
+        case 0:
+          return a
+        case 1:
+          return b
       default:
         preconditionFailure("Used invalid `index` \(index) to subscript \(String(reflecting: self))!")
       }
     }
     set {
+      precondition(Self.canSubscript(at: index))
       switch index {
-      case 0:
-        a = newValue
-      case 1:
-        b = newValue
-      default:
-        preconditionFailure("Used invalid `index` \(index) to subscript \(String(reflecting: self))!")
+        case 0:
+          a = newValue
+        case 1:
+          b = newValue
+        default:
+          preconditionFailure("Used invalid `index` \(index) to subscript \(String(reflecting: self))!")
       }
     }
   }
 
   @inlinable
   package func uniformValue(at index: Int) -> UniformValue {
-    return self[index]
+    self[index]
   }
 
   @inlinable
@@ -145,7 +155,9 @@ extension AlgebraicProduct2
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  public func pushedLeftward(byAppending value: UniformValue) -> Self {
+  public func pushedLeftward(
+    byAppending value: UniformValue
+  ) -> Self {
     Self(
       b,
       value
@@ -154,7 +166,7 @@ extension AlgebraicProduct2
 
   @inlinable
   public func pushedRightward(byPrepending value: UniformValue) -> Self {
-    return Self(
+    Self(
       value,
       a
     )
@@ -165,24 +177,19 @@ extension AlgebraicProduct2
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  public mutating func formLeftwardPush(byAppending value: UniformValue) {
+  public mutating func formLeftwardPush(
+    byAppending value: UniformValue
+  ) {
     a = b
     b = value
   }
   
   @inlinable
-  public mutating func formRightwardPush(byPrepending value: UniformValue) {
+  public mutating func formRightwardPush(
+    byPrepending value: UniformValue
+  ) {
     b = a
     a = value
   }
 
-}
-
-extension Array {
-
-  @inlinable
-  public init<T>(_ product: some AlgebraicProduct2<T,T>) {
-    self = product.allValues
-  }
-    
 }

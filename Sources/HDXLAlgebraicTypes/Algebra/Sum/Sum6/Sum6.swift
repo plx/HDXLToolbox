@@ -176,8 +176,7 @@ extension Sum6 {
     _ c: @autoclosure () -> C?,
     _ d: @autoclosure () -> D?,
     _ e: @autoclosure () -> E?,
-    _ f: @autoclosure () -> F?,
-    _ g: @autoclosure () -> G?
+    _ f: @autoclosure () -> F?
   ) -> Self? {
     if let a = a() {
       .a(a)
@@ -204,7 +203,7 @@ extension Sum6 {
     _ c: @autoclosure () -> C?,
     _ d: @autoclosure () -> D?,
     _ e: @autoclosure () -> E?,
-    _ f: @autoclosure () -> F?,
+    _ f: @autoclosure () -> F?
   ) -> Self? {
     if let f = f() {
       .f(f)

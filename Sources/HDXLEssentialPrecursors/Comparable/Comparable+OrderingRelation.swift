@@ -55,7 +55,7 @@ extension ComparisonResult {
     }
     return b()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -72,7 +72,7 @@ extension ComparisonResult {
     }
     return c()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -94,7 +94,7 @@ extension ComparisonResult {
     }
     return d()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -121,7 +121,7 @@ extension ComparisonResult {
     }
     return e()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -153,7 +153,7 @@ extension ComparisonResult {
     }
     return f()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -190,7 +190,7 @@ extension ComparisonResult {
     }
     return g()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -232,7 +232,7 @@ extension ComparisonResult {
     }
     return h()
   }
-
+  
   @inlinable
   public static func coalescing(
     _ a: @autoclosure () -> ComparisonResult,
@@ -279,4 +279,24 @@ extension ComparisonResult {
     }
     return i()
   }
+  
+  @inlinable
+  public static func coalescing<each T: Comparable>(
+    lhses: (repeat each T),
+    rhses: (repeat each T)
+  ) -> ComparisonResult {
+    for (lhs, rhs) in repeat (each lhses, each rhses) {
+      switch lhs <=> rhs {
+      case .orderedAscending:
+        return .orderedAscending
+      case .orderedDescending:
+        return .orderedDescending
+      case .orderedSame:
+        continue
+      }
+    }
+    
+    return .orderedAscending
+  }
+
 }

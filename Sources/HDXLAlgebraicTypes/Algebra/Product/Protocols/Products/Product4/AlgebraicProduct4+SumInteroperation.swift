@@ -1,14 +1,10 @@
-//
-//  AlgebraicProduct4+SumInteroperation.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
-public extension AlgebraicProduct4 {
+extension AlgebraicProduct4 {
   
   /// Shorthand for the type of a homogeneous-value extractor.
-  typealias HomogeneousValueExtractor<T> = Sum4<
+  public typealias HomogeneousValueExtractor<T> = Sum4<
     (A) -> T,
     (B) -> T,
     (C) -> T,
@@ -19,25 +15,22 @@ public extension AlgebraicProduct4 {
   /// applied to its corresponding component (e.g. `.b(mappingFromBToT)` will
   /// return `mappingFromBToT(self.b)`).
   @inlinable
-  func extractHomogeneizedValue<T>(
+  public func extractHomogeneizedValue<T>(
     ofType type: T.Type,
-    using extractor: HomogeneousValueExtractor<T>) -> T {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(extractor.isValid)
-    pedantic_assert(self.isValid)
-    // /////////////////////////////////////////////////////////////////////////
+    using extractor: HomogeneousValueExtractor<T>
+  ) -> T {
     switch extractor {
     case .a(let a):
-      return a(self.a)
+      a(self.a)
     case .b(let b):
-      return b(self.b)
+      b(self.b)
     case .c(let c):
-      return c(self.c)
+      c(self.c)
     case .d(let d):
-      return d(self.d)
+      d(self.d)
     }
   }
-
+  
   /// Updates `self` by replacing the indicated `component`.
   ///
   /// In other words, `self.formReplacement(ofComponent: .b(newBValue))` will
@@ -45,12 +38,9 @@ public extension AlgebraicProduct4 {
   /// components unchanged.
   ///
   @inlinable
-  mutating func formReplacement(ofComponent component: AssociatedSum) {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(component.isValid)
-    pedantic_assert(self.isValid)
-    defer { pedantic_assert(self.isValid) }
-    // /////////////////////////////////////////////////////////////////////////
+  public mutating func formReplacement(
+    ofComponent component: AssociatedSum
+  ) {
     switch component {
     case .a(let a):
       self.a = a
@@ -69,50 +59,48 @@ public extension AlgebraicProduct4 {
   /// `self` with `.b` set to `newBValue` and all other components left as-is.
   ///
   @inlinable
-  func replacing(component: AssociatedSum) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(component.isValid)
-    pedantic_assert(self.isValid)
-    // /////////////////////////////////////////////////////////////////////////
+  public func replacing(component: AssociatedSum) -> Self {
     switch component {
     case .a(let a):
-      return self.with(a: a)
+      with(a: a)
     case .b(let b):
-      return self.with(b: b)
+      with(b: b)
     case .c(let c):
-      return self.with(c: c)
+      with(c: c)
     case .d(let d):
-      return self.with(d: d)
+      with(d: d)
     }
   }
 
   /// Retrieves value at `position`, represented as the `AssociatedSum`.
   @inlinable
-  func heterogeneousValue(at position: ArityPosition) -> AssociatedSum {
+  public func heterogeneousValue(
+    at position: ArityPosition
+  ) -> AssociatedSum {
     switch position {
     case .a:
-      return .a(self.a)
+      .a(self.a)
     case .b:
-      return .b(self.b)
+      .b(self.b)
     case .c:
-      return .c(self.c)
+      .c(self.c)
     case .d:
-      return .d(self.d)
+      .d(self.d)
     }
   }
   
   /// Retrieves value at `position`, represented as the `AssociatedSum`.
   @inlinable
-  func heterogeneousValue(at index: Int) -> AssociatedSum {
+  package func heterogeneousValue(at index: Int) -> AssociatedSum {
     switch index {
     case 0:
-      return .a(self.a)
+      .a(self.a)
     case 1:
-      return .b(self.b)
+      .b(self.b)
     case 2:
-      return .c(self.c)
+      .c(self.c)
     case 3:
-      return .d(self.d)
+      .d(self.d)
     default:
       preconditionFailure("Attempted to get the heterogeneous value at invalid index \(index) (on: \(String(reflecting: self))!")
     }

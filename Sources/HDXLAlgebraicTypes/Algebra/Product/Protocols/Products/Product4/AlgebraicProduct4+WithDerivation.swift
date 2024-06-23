@@ -1,243 +1,90 @@
-//
-//  AlgebraicProduct4+WithDerivation.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct4 - `with` Derivation - Simple
+// MARK: with-Derivation: Defaults
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct4 {
+extension AlgebraicProduct4 {
   
   @inlinable
-  func with(a: A) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(a))
-    // /////////////////////////////////////////////////////////////////////////
-    return self.with(
-      a: a,
-      ensureUniqueCopy: Self.withDerivationShouldEnsureUniqueCopyByDefault
-    )
+  public func with(a: A) -> Self {
+    mutation(of: self) { $0.a = a }
   }
-
-  @inlinable
-  func with(b: B) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(b))
-    // /////////////////////////////////////////////////////////////////////////
-    return self.with(
-      b: b,
-      ensureUniqueCopy: Self.withDerivationShouldEnsureUniqueCopyByDefault
-    )
-  }
-
-  @inlinable
-  func with(c: C) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(c))
-    // /////////////////////////////////////////////////////////////////////////
-    return self.with(
-      c: c,
-      ensureUniqueCopy: Self.withDerivationShouldEnsureUniqueCopyByDefault
-    )
-  }
-
-  @inlinable
-  func with(d: D) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(d))
-    // /////////////////////////////////////////////////////////////////////////
-    return self.with(
-      d: d,
-      ensureUniqueCopy: Self.withDerivationShouldEnsureUniqueCopyByDefault
-    )
-  }
-
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct4 - `with` Derivation - Complete - Baseline
-// -------------------------------------------------------------------------- //
-
-public extension AlgebraicProduct4 {
   
   @inlinable
-  func with(
-    a: A,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(a))
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      a,
-      self.b,
-      self.c,
-      self.d
-    )
+  public func with(b: B) -> Self {
+    mutation(of: self) { $0.b = b }
   }
-
+  
   @inlinable
-  func with(
-    b: B,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(b))
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      self.a,
-      b,
-      self.c,
-      self.d
-    )
+  public func with(c: C) -> Self {
+    mutation(of: self) { $0.c = c }
   }
-
+  
   @inlinable
-  func with(
-    c: C,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(c))
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      self.a,
-      self.b,
-      c,
-      self.d
-    )
+  public func with(d: D) -> Self {
+    mutation(of: self) { $0.d = d }
   }
+  
+}
 
+// -------------------------------------------------------------------------- //
+// MARK: - Equatable-A
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct4 where A: Equatable {
+ 
   @inlinable
-  func with(
-    d: D,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(d))
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      self.a,
-      self.b,
-      self.c,
-      d
-    )
+  public func with(a: A) -> Self {
+    guard a != self.a else { return self }
+
+    return mutation(of: self) { $0.a = a }
   }
 
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct4 - `with` Derivation - Equatable-A
+// MARK: - Equatable-B
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct4 where A:Equatable {
-
+extension AlgebraicProduct4 where B: Equatable {
+  
   @inlinable
-  func with(
-    a: A,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(a))
-    // /////////////////////////////////////////////////////////////////////////
-    guard ensureUniqueCopy || a != self.a else {
-      return self
-    }
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(ensureUniqueCopy || a != self.a)
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      a,
-      self.b,
-      self.c,
-      self.d
-    )
+  public func with(b: B) -> Self {
+    guard b != self.b else { return self }
+    
+    return mutation(of: self) { $0.b = b }
   }
-
+  
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct4 - `with` Derivation - Equatable-B
+// MARK: - Equatable-C
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct4 where B:Equatable {
-
+extension AlgebraicProduct4 where C: Equatable {
+  
   @inlinable
-  func with(
-    b: B,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(b))
-    // /////////////////////////////////////////////////////////////////////////
-    guard ensureUniqueCopy || b != self.b else {
-      return self
-    }
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(ensureUniqueCopy || b != self.b)
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      self.a,
-      b,
-      self.c,
-      self.d
-    )
+  public func with(c: C) -> Self {
+    guard c != self.c else { return self }
+    
+    return mutation(of: self) { $0.c = c }
   }
-
+  
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct4 - `with` Derivation - Equatable-C
+// MARK: - Equatable-D
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct4 where C:Equatable {
-
+extension AlgebraicProduct4 where D: Equatable {
+  
   @inlinable
-  func with(
-    c: C,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(c))
-    // /////////////////////////////////////////////////////////////////////////
-    guard ensureUniqueCopy || c != self.c else {
-      return self
-    }
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(ensureUniqueCopy || c != self.c)
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      self.a,
-      self.b,
-      c,
-      self.d
-    )
+  public func with(d: D) -> Self {
+    guard d != self.d else { return self }
+    
+    return mutation(of: self) { $0.d = d }
   }
-
+  
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct4 - `with` Derivation - Equatable-D
-// -------------------------------------------------------------------------- //
-
-public extension AlgebraicProduct4 where D:Equatable {
-
-  @inlinable
-  func with(
-    d: D,
-    ensureUniqueCopy: Bool) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(d))
-    // /////////////////////////////////////////////////////////////////////////
-    guard ensureUniqueCopy || d != self.d else {
-      return self
-    }
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(ensureUniqueCopy || d != self.d)
-    // /////////////////////////////////////////////////////////////////////////
-    return Self(
-      self.a,
-      self.b,
-      self.c,
-      d
-    )
-  }
-
-}
-

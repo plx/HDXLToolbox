@@ -115,7 +115,7 @@ C: Identifiable
 
 extension InlineProduct3 : AlgebraicProduct3 {
   
-  public typealias ArityPosition = Arity4Position
+  public typealias ArityPosition = Arity3Position
 
   @inlinable
   public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { true }

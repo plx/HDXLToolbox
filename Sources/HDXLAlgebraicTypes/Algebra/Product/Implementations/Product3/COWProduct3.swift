@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
@@ -11,10 +12,21 @@ import HDXLEssentialPrecursors
 public struct COWProduct3<A,B,C> {
   
   @usableFromInline
-  internal typealias Storage = COWBox<InlineProduct3<A,B,C>>
+  internal typealias Value = InlineProduct3<A,B,C>
+  
+  @usableFromInline
+  internal typealias Storage = COWBox<Value>
   
   @usableFromInline
   internal var storage: Storage
+  
+  /// Forwarding convenience-constructor for underlying value.
+  @inlinable
+  internal init(value: Value) {
+    self.init(
+      storage: Storage(value: value)
+    )
+  }
 
   /// "Designated initializer" for `COWProduct3` (pseudo-private).
   @inlinable
@@ -39,7 +51,7 @@ public struct COWProduct3<A,B,C> {
     _ c: C
   ) {
     self.init(
-      storage: Storage(
+      value: Value(
         a,
         b,
         c
@@ -160,33 +172,33 @@ extension COWProduct3 {
   @inlinable
   public var a: A {
     get {
-      storage.a
+      storage.value.a
     }
     set {
       ensureUniqueStorage()
-      storage.a = newValue
+      storage.value.a = newValue
     }
   }
   
   @inlinable
   public var b: B {
     get {
-      storage.b
+      storage.value.b
     }
     set {
       ensureUniqueStorage()
-      storage.b = newValue
+      storage.value.b = newValue
     }
   }
   
   @inlinable
   public var c: C {
     get {
-      storage.c
+      storage.value.c
     }
     set {
       ensureUniqueStorage()
-      storage.c = newValue
+      storage.value.c = newValue
     }
   }
       

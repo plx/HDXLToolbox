@@ -36,7 +36,7 @@ extension PositionedValue: CustomDebugStringConvertible {
   @inlinable
   public var debugDescription: String {
     String(
-      forConstructorOf: self,
+      forConstructorOf: Self.self,
       arguments: (
         ("position", position),
         ("value", value)

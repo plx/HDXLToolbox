@@ -7,8 +7,8 @@ A == B,
 A == C
 {
   
-  typealias UniformValue = A
-  typealias IdentifiedUniformValue = PositionedValue<Position, UniformValue>
+  public typealias UniformValue = A
+  public typealias IdentifiedUniformValue = PositionedValue<Position, UniformValue>
   
   /// For sums of a uniform type, we can reliably extract a non-nil value of that type.
   @inlinable
@@ -28,12 +28,21 @@ A == C
   public var identifiedUniformValue: IdentifiedUniformValue {
     switch self {
     case .a(let v):
-      IdentifiedUniformValue(.a,v)
+      IdentifiedUniformValue(
+        position: .a,
+        value: v
+      )
     case .b(let v):
-      IdentifiedUniformValue(.b,v)
+      IdentifiedUniformValue(
+        position: .b,
+        value: v
+      )
     case .c(let v):
-      IdentifiedUniformValue(.c,v)
+      IdentifiedUniformValue(
+        position: .c,
+        value: v
+      )
     }
   }
-  
+
 }

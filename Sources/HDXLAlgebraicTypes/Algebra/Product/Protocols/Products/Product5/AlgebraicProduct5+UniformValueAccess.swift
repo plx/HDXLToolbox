@@ -1,27 +1,24 @@
-//
-//  AlgebraicProduct5+UniformValueAccess.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
 // MARK: AlgebraicProduct5 - Uniform Value Access
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct5
+extension AlgebraicProduct5
   where
   A == B,
   A == C,
   A == D,
-  A == E {
+  A == E
+{
 
   // ------------------------------------------------------------------------ //
   // MARK: Typealias
   // ------------------------------------------------------------------------ //
   
   /// Synonym for `A`, but makes it clear when we mean "the type of the uniform value".
-  typealias UniformValue = A
+  public typealias UniformValue = A
 
   // ------------------------------------------------------------------------ //
   // MARK: Homogeneous Construction
@@ -29,7 +26,7 @@ public extension AlgebraicProduct5
   
   /// Constructs a product by "splatting" `value` into all positions.
   @inlinable
-  init(bySplatting value: UniformValue) {
+  public init(bySplatting value: UniformValue) {
     self.init(
       value,
       value,
@@ -45,38 +42,36 @@ public extension AlgebraicProduct5
 
   /// The first, leftmost, etc., value within `self`.
   @inlinable
-  var firstValue: UniformValue {
+  public var firstValue: UniformValue {
     get {
-      return self.a
+      a
     }
     set {
-      self.a = newValue
+      a = newValue
     }
   }
   
   /// The final, rightmost, etc., value within `self`.
   @inlinable
-  var lastValue: UniformValue {
+  public var lastValue: UniformValue {
     get {
-      return self.e
+      e
     }
     set {
-      self.e = newValue
+      e = newValue
     }
   }
   
   /// Retrieves the contents of `self` as an `Array`.
   @inlinable
-  var allValues: [UniformValue] {
-    get {
-      return [
-        self.a,
-        self.b,
-        self.c,
-        self.d,
-        self.e
-      ]
-    }
+  public var allValues: [UniformValue] {
+    [
+      a,
+      b,
+      c,
+      d,
+      e
+    ]
   }
 
   // ------------------------------------------------------------------------ //
@@ -85,46 +80,41 @@ public extension AlgebraicProduct5
   
   @inlinable
   internal static func canSubscript(at index: Int) -> Bool {
-    return (0..<self.arity).contains(index)
+    (0..<arity).contains(index)
   }
   
   @inlinable
-  subscript(index: Int) -> UniformValue {
+  package subscript(index: Int) -> UniformValue {
     get {
       precondition(Self.canSubscript(at: index))
       switch index {
         case 0:
-          return self.a
+          return a
         case 1:
-          return self.b
+          return b
         case 2:
-          return self.c
+          return c
         case 3:
-          return self.d
+          return d
         case 4:
-          return self.e
+          return e
       default:
         preconditionFailure("Used invalid `index` \(index) to subscript \(String(reflecting: self))!")
       }
     }
     set {
       precondition(Self.canSubscript(at: index))
-      // ///////////////////////////////////////////////////////////////////////
-      pedantic_assert(isValidOrIndifferent(newValue))
-      pedantic_assert(self.isValid)
-      defer { pedantic_assert(self.isValid) }
-      // ///////////////////////////////////////////////////////////////////////
       switch index {
         case 0:
-          self.a = newValue
+          a = newValue
         case 1:
-          self.b = newValue
+          b = newValue
         case 2:
-          self.c = newValue
+          c = newValue
         case 3:
-          self.d = newValue
+          d = newValue
         case 4:
-          self.e = newValue
+          e = newValue
         default:
           preconditionFailure("Used invalid `index` \(index) to subscript \(String(reflecting: self))!")
       }
@@ -132,21 +122,15 @@ public extension AlgebraicProduct5
   }
 
   @inlinable
-  func uniformValue(at index: Int) -> UniformValue {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(Self.canSubscript(at: index)) // we have a `precondition` already within the subscript
-    // /////////////////////////////////////////////////////////////////////////
-    return self[index]
+  package func uniformValue(at index: Int) -> UniformValue {
+    self[index]
   }
 
   @inlinable
-  mutating func setUniformValue(
+  package mutating func setUniformValue(
     _ value: UniformValue,
-    at index: Int) {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(Self.canSubscript(at: index)) // we have a `precondition` already within the subscript
-    pedantic_assert(isValidOrIndifferent(value))
-    // /////////////////////////////////////////////////////////////////////////
+    at index: Int
+  ) {
     self[index] = value
   }
 
@@ -155,54 +139,47 @@ public extension AlgebraicProduct5
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  subscript(position: ArityPosition) -> UniformValue {
+  public subscript(position: ArityPosition) -> UniformValue {
     get {
       switch position {
       case .a:
-        return self.a
+        a
       case .b:
-        return self.b
+        b
       case .c:
-        return self.c
+        c
       case .d:
-        return self.d
+        d
       case .e:
-        return self.e
+        e
       }
     }
     set {
-      // ///////////////////////////////////////////////////////////////////////
-      pedantic_assert(isValidOrIndifferent(newValue))
-      pedantic_assert(self.isValid)
-      defer { pedantic_assert(self.isValid) }
-      // ///////////////////////////////////////////////////////////////////////
       switch position {
       case .a:
-        self.a = newValue
+        a = newValue
       case .b:
-        self.b = newValue
+        b = newValue
       case .c:
-        self.c = newValue
+        c = newValue
       case .d:
-        self.d = newValue
+        d = newValue
       case .e:
-        self.e = newValue
+        e = newValue
       }
     }
   }
 
   @inlinable
-  func uniformValue(at position: ArityPosition) -> UniformValue {
-    return self[position]
+  public func uniformValue(at position: ArityPosition) -> UniformValue {
+    self[position]
   }
 
   @inlinable
-  mutating func setUniformValue(
+  public mutating func setUniformValue(
     _ value: UniformValue,
-    at position: ArityPosition) {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(value))
-    // /////////////////////////////////////////////////////////////////////////
+    at position: ArityPosition
+  ) {
     self[position] = value
   }
 
@@ -211,24 +188,26 @@ public extension AlgebraicProduct5
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  func pushedLeftward(byAppending value: UniformValue) -> Self {
-    return Self(
-      self.b,
-      self.c,
-      self.d,
-      self.e,
+  public func pushedLeftward(
+    byAppending value: UniformValue
+  ) -> Self {
+    Self(
+      b,
+      c,
+      d,
+      e,
       value
     )
   }
 
   @inlinable
-  func pushedRightward(byPrepending value: UniformValue) -> Self {
-    return Self(
+  public func pushedRightward(byPrepending value: UniformValue) -> Self {
+    Self(
       value,
-      self.a,
-      self.b,
-      self.c,
-      self.d
+      a,
+      b,
+      c,
+      d
     )
   }
 
@@ -237,38 +216,25 @@ public extension AlgebraicProduct5
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  mutating func formLeftwardPush(byAppending value: UniformValue) {
-    self.a = self.b
-    self.b = self.c
-    self.c = self.d
-    self.d = self.e
-    self.e = value
+  public mutating func formLeftwardPush(
+    byAppending value: UniformValue
+  ) {
+    a = b
+    b = c
+    c = d
+    d = e
+    e = value
   }
   
   @inlinable
-  mutating func formRightwardPush(byPrepending value: UniformValue) {
-    self.e = self.d
-    self.d = self.c
-    self.c = self.b
-    self.b = self.a
-    self.a = value
+  public mutating func formRightwardPush(
+    byPrepending value: UniformValue
+  ) {
+    e = d
+    d = c
+    c = b
+    b = a
+    a = value
   }
 
-}
-
-public extension Array {
-
-  @inlinable
-  init<T>(_ product: T)
-    where
-    T:AlgebraicProduct5,
-    T.A == Element,
-    T.B == Element,
-    T.C == Element,
-    T.D == Element,
-    T.E == Element {
-      self = product.allValues
-  }
-  
-  
 }

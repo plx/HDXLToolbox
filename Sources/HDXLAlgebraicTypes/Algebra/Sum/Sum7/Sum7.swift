@@ -220,7 +220,7 @@ extension Sum7 {
     _ d: @autoclosure () -> D?,
     _ e: @autoclosure () -> E?,
     _ f: @autoclosure () -> F?,
-    _ g: @autoclosure () -> G?,
+    _ g: @autoclosure () -> G?
   ) -> Self? {
     if let g = g() {
       .g(g)

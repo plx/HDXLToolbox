@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import HDXLEssentialPrecursors
 
 // -------------------------------------------------------------------------- //
@@ -11,10 +12,21 @@ import HDXLEssentialPrecursors
 public struct COWProduct8<A,B,C,D,E,F,G,H> {
   
   @usableFromInline
-  internal typealias Storage = COWBox<InlineProduct8<A,B,C,D,E,F,G,H>>
+  internal typealias Value = InlineProduct8<A,B,C,D,E,F,G,H>
+  
+  @usableFromInline
+  internal typealias Storage = COWBox<Value>
   
   @usableFromInline
   internal var storage: Storage
+  
+  /// Forwarding convenience-constructor for underlying value.
+  @inlinable
+  internal init(value: Value) {
+    self.init(
+      storage: Storage(value: value)
+    )
+  }
 
   /// "Designated initializer" for `COWProduct8` (pseudo-private).
   @inlinable
@@ -44,7 +56,7 @@ public struct COWProduct8<A,B,C,D,E,F,G,H> {
     _ h: H
   ) {
     self.init(
-      storage: Storage(
+      value: Value(
         a,
         b,
         c,
@@ -220,88 +232,88 @@ extension COWProduct8 {
   @inlinable
   public var a: A {
     get {
-      storage.a
+      storage.value.a
     }
     set {
       ensureUniqueStorage()
-      storage.a = newValue
+      storage.value.a = newValue
     }
   }
   
   @inlinable
   public var b: B {
     get {
-      storage.b
+      storage.value.b
     }
     set {
       ensureUniqueStorage()
-      storage.b = newValue
+      storage.value.b = newValue
     }
   }
 
   @inlinable
   public var c: C {
     get {
-      storage.c
+      storage.value.c
     }
     set {
       ensureUniqueStorage()
-      storage.c = newValue
+      storage.value.c = newValue
     }
   }
 
   @inlinable
   public var d: D {
     get {
-      storage.d
+      storage.value.d
     }
     set {
       ensureUniqueStorage()
-      storage.d = newValue
+      storage.value.d = newValue
     }
   }
   
   @inlinable
   public var e: E {
     get {
-      storage.e
+      storage.value.e
     }
     set {
       ensureUniqueStorage()
-      storage.e = newValue
+      storage.value.e = newValue
     }
   }
   
   @inlinable
   public var f: F {
     get {
-      storage.f
+      storage.value.f
     }
     set {
       ensureUniqueStorage()
-      storage.f = newValue
+      storage.value.f = newValue
     }
   }
 
   @inlinable
   public var g: G {
     get {
-      storage.g
+      storage.value.g
     }
     set {
       ensureUniqueStorage()
-      storage.g = newValue
+      storage.value.g = newValue
     }
   }
   
   @inlinable
   public var h: H {
     get {
-      storage.h
+      storage.value.h
     }
     set {
       ensureUniqueStorage()
-      storage.h = newValue
+      storage.value.h = newValue
     }
   }
   

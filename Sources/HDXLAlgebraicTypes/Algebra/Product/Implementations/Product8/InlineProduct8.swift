@@ -40,7 +40,6 @@ public struct InlineProduct8<A,B,C,D,E,F,G,H> {
     self.f = f
     self.g = g
     self.h = h
-    self.i = i
   }
   
 }

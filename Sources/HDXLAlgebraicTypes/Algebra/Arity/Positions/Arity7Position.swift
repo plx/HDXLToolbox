@@ -14,7 +14,6 @@ public enum Arity7Position : UInt8 {
   case e = 0b00010000
   case f = 0b00100000
   case g = 0b01000000
-  case h = 0b10000000
   
 }
 

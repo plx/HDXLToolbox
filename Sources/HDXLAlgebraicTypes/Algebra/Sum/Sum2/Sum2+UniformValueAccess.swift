@@ -22,10 +22,16 @@ extension Sum2 where A == B {
   public var identifiedUniformValue: IdentifiedUniformValue {
     switch self {
     case .a(let v):
-      IdentifiedUniformValue(.a,v)
+      IdentifiedUniformValue(
+        position: .a,
+        value: v
+      )
     case .b(let v):
-      IdentifiedUniformValue(.b,v)
+      IdentifiedUniformValue(
+        position: .b,
+        value: v
+      )
     }
   }
-  
+
 }

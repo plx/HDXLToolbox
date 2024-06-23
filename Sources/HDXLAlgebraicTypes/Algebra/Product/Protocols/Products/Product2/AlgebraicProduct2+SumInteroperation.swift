@@ -20,12 +20,11 @@ extension AlgebraicProduct2 {
     switch extractor {
     case .a(let a):
       a(self.a)
-    case .b(let bExtractor):
+    case .b(let b):
       b(self.b)
     }
   }
-
-
+  
   /// Updates `self` by replacing the indicated `component`.
   ///
   /// In other words, `self.formReplacement(ofComponent: .b(newBValue))` will
@@ -61,7 +60,9 @@ extension AlgebraicProduct2 {
 
   /// Retrieves value at `position`, represented as the `AssociatedSum`.
   @inlinable
-  public func heterogeneousValue(at position: ArityPosition) -> AssociatedSum {
+  public func heterogeneousValue(
+    at position: ArityPosition
+  ) -> AssociatedSum {
     switch position {
     case .a:
       .a(self.a)
@@ -75,9 +76,9 @@ extension AlgebraicProduct2 {
   package func heterogeneousValue(at index: Int) -> AssociatedSum {
     switch index {
     case 0:
-      return .a(a)
+      .a(self.a)
     case 1:
-      return .b(b)
+      .b(self.b)
     default:
       preconditionFailure("Attempted to get the heterogeneous value at invalid index \(index) (on: \(String(reflecting: self))!")
     }

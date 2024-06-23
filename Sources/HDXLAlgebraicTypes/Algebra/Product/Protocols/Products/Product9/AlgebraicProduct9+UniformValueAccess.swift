@@ -22,7 +22,7 @@ extension AlgebraicProduct9
   // ------------------------------------------------------------------------ //
   
   /// Synonym for `A`, but makes it clear when we mean "the type of the uniform value".
-  typealias UniformValue = A
+  public typealias UniformValue = A
 
   // ------------------------------------------------------------------------ //
   // MARK: Homogeneous Construction
@@ -101,23 +101,23 @@ extension AlgebraicProduct9
       precondition(Self.canSubscript(at: index))
       switch index {
         case 0:
-          a
+          return a
         case 1:
-          b
+          return b
         case 2:
-          c
+          return c
         case 3:
-          d
+          return d
         case 4:
-          e
+          return e
         case 5:
-          f
+          return f
         case 6:
-          g
+          return g
         case 7:
-          h
+          return h
         case 8:
-          i
+          return i
       default:
         preconditionFailure("Used invalid `index` \(index) to subscript \(String(reflecting: self))!")
       }
@@ -297,13 +297,4 @@ extension AlgebraicProduct9
     a = value
   }
 
-}
-
-extension Array {
-
-  @inlinable
-  public init(_ product: some AlgebraicProduct9<Element>) {
-    self = product.allValues
-  }
-  
 }
