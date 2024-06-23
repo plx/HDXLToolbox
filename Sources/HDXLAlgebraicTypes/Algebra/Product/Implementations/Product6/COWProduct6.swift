@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: COWProduct6
@@ -9,6 +10,13 @@ import HDXLEssentialPrecursors
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct COWProduct6<A,B,C,D,E,F> {
   
   @usableFromInline
@@ -71,88 +79,8 @@ public struct COWProduct6<A,B,C,D,E,F> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension COWProduct6: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable
-{ }
-
-extension COWProduct6: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable
-{ }
-
-extension COWProduct6: Comparable 
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable,
-E: Comparable,
-F: Comparable
-{ }
-
-extension COWProduct6: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable
-{ }
-
-extension COWProduct6: Encodable 
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable
-{ }
-
-extension COWProduct6: Decodable 
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable
-{ }
-
 extension COWProduct6: CustomStringConvertible { }
 extension COWProduct6: CustomDebugStringConvertible { }
-
-extension COWProduct6: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic,
-E: AdditiveArithmetic,
-F: AdditiveArithmetic
-{ }
-
-extension COWProduct6: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic,
-E: VectorArithmetic,
-F: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

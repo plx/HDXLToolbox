@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Sum7
@@ -7,6 +8,11 @@ import HDXLEssentialPrecursors
 
 /// Provides an arity-7 implementation of an "anonymous sum".
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public enum Sum7<A,B,C,D,E,F,G> {
   
   case a(A)
@@ -18,66 +24,6 @@ public enum Sum7<A,B,C,D,E,F,G> {
   case g(G)
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Sum7: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable
-{ }
-
-extension Sum7: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable
-{ }
-
-extension Sum7: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable
-{ }
-
-extension Sum7: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable
-{ }
-
-extension Sum7: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable
-{ }
-
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

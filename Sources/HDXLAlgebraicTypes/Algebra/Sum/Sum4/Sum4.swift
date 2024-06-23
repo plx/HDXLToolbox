@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Sum4
@@ -7,6 +8,11 @@ import HDXLEssentialPrecursors
 
 /// Provides an arity-4 implementation of an "anonymous sum".
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public enum Sum4<A,B,C,D> {
   
   case a(A)
@@ -15,51 +21,6 @@ public enum Sum4<A,B,C,D> {
   case d(D)
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Sum4: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable
-{ }
-
-extension Sum4: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable
-{ }
-
-extension Sum4: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable
-{ }
-
-extension Sum4: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable
-{ }
-
-extension Sum4: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable
-{ }
-
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

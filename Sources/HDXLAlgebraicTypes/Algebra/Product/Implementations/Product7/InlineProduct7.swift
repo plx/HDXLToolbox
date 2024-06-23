@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: InlineProduct7
@@ -10,6 +11,13 @@ import HDXLEssentialPrecursors
 /// Generally the preferred implementation for arity-2, unless one-or-both types
 /// are huge structs; in that case, measurement may be required.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct InlineProduct7<A,B,C,D,E,F,G> {
   
   public var a: A
@@ -45,96 +53,8 @@ public struct InlineProduct7<A,B,C,D,E,F,G> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension InlineProduct7: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable
-{ }
-
-extension InlineProduct7: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable
-{ }
-
-extension InlineProduct7: Comparable
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable,
-E: Comparable,
-F: Comparable,
-G: Comparable
-{ }
-
-extension InlineProduct7: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable
-{ }
-
-extension InlineProduct7: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable
-{ }
-
-extension InlineProduct7: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable
-{ }
-
 extension InlineProduct7: CustomStringConvertible { }
 extension InlineProduct7: CustomDebugStringConvertible { }
-
-extension InlineProduct7: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic,
-E: AdditiveArithmetic,
-F: AdditiveArithmetic,
-G: AdditiveArithmetic
-{ }
-
-extension InlineProduct7: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic,
-E: VectorArithmetic,
-F: VectorArithmetic,
-G: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: COWProduct4
@@ -9,6 +10,13 @@ import HDXLEssentialPrecursors
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct COWProduct4<A,B,C,D> {
   
   @usableFromInline
@@ -67,72 +75,8 @@ public struct COWProduct4<A,B,C,D> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension COWProduct4: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable
-{ }
-
-extension COWProduct4: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable
-{ }
-
-extension COWProduct4: Comparable 
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable
-{ }
-
-extension COWProduct4: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable
-{ }
-
-extension COWProduct4: Encodable 
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable
-{ }
-
-extension COWProduct4: Decodable 
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable
-{ }
-
 extension COWProduct4: CustomStringConvertible { }
 extension COWProduct4: CustomDebugStringConvertible { }
-
-extension COWProduct4: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic
-{ }
-
-extension COWProduct4: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

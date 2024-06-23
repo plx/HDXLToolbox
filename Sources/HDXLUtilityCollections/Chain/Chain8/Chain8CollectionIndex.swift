@@ -2,12 +2,19 @@ import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain8CollectionIndex
 // -------------------------------------------------------------------------- //
 
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyAutoIdentifiable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public struct Chain8CollectionIndex<A,B,C,D,E,F,G,H>
 where
 A: Comparable,
@@ -46,82 +53,6 @@ H: Comparable
     Self(storage: .endIndex)
   }
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Chain8CollectionIndex: Sendable
-where
-A: Sendable, 
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable,
-H: Sendable
-{ }
-
-extension Chain8CollectionIndex: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable,
-H: Equatable
-{ }
-
-extension Chain8CollectionIndex: Hashable 
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable
-{ }
-
-extension Chain8CollectionIndex: Identifiable, AutoIdentifiable 
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable
-{ }
-
-extension Chain8CollectionIndex: Encodable 
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable,
-H: Encodable
-{ }
-
-extension Chain8CollectionIndex: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable,
-H: Decodable
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Comparable

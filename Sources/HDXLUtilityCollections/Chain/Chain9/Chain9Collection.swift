@@ -1,6 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain9Collection
@@ -8,6 +9,11 @@ import HDXLCollectionSupport
 
 /// A collection providing the contents of its constituent collections, one after the other.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyCodable
+@ConditionallyRandomAccessCollection
 public struct Chain9Collection<A,B,C,D,E,F,G,H,I>
 where
 A: Collection,
@@ -231,63 +237,6 @@ extension Chain9Collection {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: - Equatable
-// -------------------------------------------------------------------------- //
-
-extension Chain9Collection : Sendable 
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable,
-H: Sendable,
-I: Sendable
-{ }
-
-extension Chain9Collection : Equatable 
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable,
-H: Equatable,
-I: Equatable
-{ }
-
-extension Chain9Collection : Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable,
-I: Hashable
-{ }
-
-extension Chain9Collection : Codable 
-where
-A: Codable,
-B: Codable,
-C: Codable,
-D: Codable,
-E: Codable,
-F: Codable,
-G: Codable,
-H: Codable,
-I: Codable
-{ }
-
-
-// -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
 // -------------------------------------------------------------------------- //
 
@@ -498,20 +447,3 @@ I: BidirectionalCollection
   }
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - RandomAccessCollection
-// -------------------------------------------------------------------------- //
-
-extension Chain9Collection : RandomAccessCollection
-where
-A: RandomAccessCollection,
-B: RandomAccessCollection,
-C: RandomAccessCollection,
-D: RandomAccessCollection,
-E: RandomAccessCollection,
-F: RandomAccessCollection,
-G: RandomAccessCollection,
-H: RandomAccessCollection,
-I: RandomAccessCollection
-{ }

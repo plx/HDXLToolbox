@@ -2,6 +2,85 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
+import CompilerPluginSupport
+
+// MARK: Macro-Related Dependencies
+
+let macroPluginDependencies: [Target.Dependency] = [
+  .product(
+    name: "SwiftSyntax",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftParser",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftSyntaxBuilder",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftSyntaxMacros",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftCompilerPlugin",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftDiagnostics",
+    package: "swift-syntax"
+  )
+]
+
+let macroLibraryDependencies: [Target.Dependency] = [
+  .product(
+    name: "SwiftSyntax",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftParser",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftSyntaxBuilder",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftSyntaxMacros",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftDiagnostics",
+    package: "swift-syntax"
+  )
+]
+
+let macroSupportDependencies: [Target.Dependency] = [
+  .product(
+    name: "SwiftSyntax",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftParser",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftSyntaxBuilder",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftSyntaxMacros",
+    package: "swift-syntax"
+  ),
+  .product(
+    name: "SwiftDiagnostics",
+    package: "swift-syntax"
+  )
+]
+
+
+
 
 let package = Package(
   name: "hdxl-toolbox",
@@ -22,19 +101,33 @@ let package = Package(
         "HDXLUtilityCollections"
       ]
     ),
-    
+  
     .library(
       name: "HDXLTestingSupport",
       targets: [
         "HDXLTestingSupport"
       ]
-    )
+    ),
+  
+    .library(
+      name: "HDXLEssentialMacros",
+      targets: ["HDXLEssentialMacros"]
+    ),
+    .executable(
+      name: "HDXLEssentialMacrosClient",
+      targets: ["HDXLEssentialMacrosClient"]
+    ),
   ],
   dependencies: [
     // for documentation-rendering support
     .package(
       url: "https://github.com/apple/swift-docc-plugin",
       from: "1.3.0"
+    ),
+    .package(
+      url: "https://github.com/apple/swift-syntax.git",
+      from: "510.0.0"
+      //      from: "510.0.0"
     ),
   ],
   targets: [
@@ -49,11 +142,12 @@ let package = Package(
         "HDXLEssentialPrecursors"
       ]
     ),
-
+    
     .target(
       name: "HDXLAlgebraicTypes",
       dependencies: [
-        "HDXLEssentialPrecursors"
+        "HDXLEssentialPrecursors",
+        "HDXLEssentialMacros"
       ]
     ),
     .target(
@@ -72,7 +166,7 @@ let package = Package(
         "HDXLAlgebraicTypesTestSupport"
       ]
     ),
-
+    
     .target(
       name: "HDXLKeyedCollections",
       dependencies: [
@@ -87,11 +181,12 @@ let package = Package(
         "HDXLKeyedCollections"
       ]
     ),
-
+    
     .target(
       name: "HDXLUtilityCollections",
       dependencies: [
         "HDXLEssentialPrecursors",
+        "HDXLEssentialMacros",
         "HDXLCollectionSupport"
       ]
     ),
@@ -102,7 +197,7 @@ let package = Package(
         "HDXLUtilityCollections"
       ]
     ),
-
+    
     .target(
       name: "HDXLSemanticEquivalence",
       dependencies: [
@@ -118,54 +213,54 @@ let package = Package(
         "HDXLSemanticEquivalence"
       ]
     ),
-
-    .target(
-        name: "HDXLCollectionSupport",
-        dependencies: [
-          "HDXLAlgebraicTypes"
-        ]
-    ),
-    .testTarget(
-        name: "HDXLCollectionSupportTests",
-        dependencies: [
-          "HDXLCollectionSupport"
-        ]
-    ),
     
     .target(
-      name: "HDXLCollectionValidation",
+      name: "HDXLCollectionSupport",
       dependencies: [
-        "HDXLTestingSupport",
-        "HDXLEssentialPrecursors"
+        "HDXLAlgebraicTypes"
       ]
     ),
+    .testTarget(
+      name: "HDXLCollectionSupportTests",
+      dependencies: [
+        "HDXLCollectionSupport"
+      ]
+    ),
+    
+      .target(
+        name: "HDXLCollectionValidation",
+        dependencies: [
+          "HDXLTestingSupport",
+          "HDXLEssentialPrecursors"
+        ]
+      ),
     .testTarget(
       name: "HDXLCollectionValidationTests",
       dependencies: [
         "HDXLCollectionValidation"
       ]
     ),
-
-    .target(
-      name: "HDXLObjectCollections",
-      dependencies: [
-        "HDXLCollectionSupport",
-        "HDXLEssentialPrecursors"
-      ]
-    ),
+    
+      .target(
+        name: "HDXLObjectCollections",
+        dependencies: [
+          "HDXLCollectionSupport",
+          "HDXLEssentialPrecursors"
+        ]
+      ),
     .testTarget(
       name: "HDXLObjectCollectionsTests",
       dependencies: [
         "HDXLObjectCollections"
       ]
     ),
-
-    .target(
-      name: "HDXLSerialization",
-      dependencies: [
-        "HDXLEssentialPrecursors"
-      ]
-    ),
+    
+      .target(
+        name: "HDXLSerialization",
+        dependencies: [
+          "HDXLEssentialPrecursors"
+        ]
+      ),
     .target(
       name: "HDXLSerializationTestSupport",
       dependencies: [
@@ -182,22 +277,117 @@ let package = Package(
         "HDXLSerializationTestSupport",
       ]
     ),
-
-    .target(
-      name: "HDXLTestingSupport",
-      dependencies: [
-        "HDXLEssentialPrecursors",
-        "HDXLKeyedCollections"
-      ]
-    ),
+    
+      .target(
+        name: "HDXLTestingSupport",
+        dependencies: [
+          "HDXLEssentialPrecursors",
+          "HDXLKeyedCollections"
+        ]
+      ),
     .testTarget(
       name: "HDXLTestingSupportTests",
       dependencies: [
         "HDXLTestingSupport"
       ]
-    )
+    ),
+    
+    .target(
+      name: "HDXLMacroSupport",
+      dependencies: [
+        "HDXLEssentialPrecursors",
+        .product(
+          name: "SwiftSyntax",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftParser",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxBuilder",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxMacros",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftDiagnostics",
+          package: "swift-syntax"
+        )
+      ]
+    ),
+    .target(
+      name: "HDXLEssentialMacros",
+      dependencies: [
+        "HDXLEssentialPrecursors",
+        "HDXLMacroSupport",
+        "HDXLEssentialMacrosPlugin",
+        .product(
+          name: "SwiftSyntax",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftParser",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxBuilder",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxMacros",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftDiagnostics",
+          package: "swift-syntax"
+        )
+      ]
+    ),
+    .macro(
+      name: "HDXLEssentialMacrosPlugin",
+      dependencies: [
+        "HDXLEssentialPrecursors",
+        "HDXLMacroSupport",
+        .product(
+          name: "SwiftSyntax",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftParser",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxBuilder",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxMacros",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftCompilerPlugin",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftDiagnostics",
+          package: "swift-syntax"
+        )
+      ]
+    ),
+    .executableTarget(
+      name: "HDXLEssentialMacrosClient",
+      dependencies: [
+        "HDXLEssentialMacros",
+        "HDXLEssentialPrecursors",
+        "HDXLMacroSupport"
+      ]
+    ),
   ],
   swiftLanguageVersions: [
     .v6
   ]
 )
+

@@ -2,12 +2,19 @@ import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2CollectionIndex
 // -------------------------------------------------------------------------- //
 
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyAutoIdentifiable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public struct Chain2CollectionIndex<A,B>
 where
 A:Comparable,
@@ -40,17 +47,6 @@ B:Comparable
     Self(storage: .endIndex)
   }
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Chain2CollectionIndex: Sendable where A: Sendable, B: Sendable { }
-extension Chain2CollectionIndex: Equatable { }
-extension Chain2CollectionIndex: Hashable where A: Hashable, B: Hashable { }
-extension Chain2CollectionIndex: Identifiable, AutoIdentifiable where A: Hashable, B: Hashable { }
-extension Chain2CollectionIndex: Encodable where A: Encodable, B: Encodable { }
-extension Chain2CollectionIndex: Decodable where A: Decodable, B: Decodable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Comparable

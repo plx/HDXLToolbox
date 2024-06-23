@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: COWProduct9
@@ -9,6 +10,13 @@ import HDXLEssentialPrecursors
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct COWProduct9<A,B,C,D,E,F,G,H,I> {
   
   @usableFromInline
@@ -77,112 +85,8 @@ public struct COWProduct9<A,B,C,D,E,F,G,H,I> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension COWProduct9: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable,
-H: Sendable,
-I: Sendable
-{ }
-
-extension COWProduct9: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable,
-H: Equatable,
-I: Equatable
-{ }
-
-extension COWProduct9: Comparable 
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable,
-E: Comparable,
-F: Comparable,
-G: Comparable,
-H: Comparable,
-I: Comparable
-{ }
-
-extension COWProduct9: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable,
-I: Hashable
-{ }
-
-extension COWProduct9: Encodable 
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable,
-H: Encodable,
-I: Encodable
-{ }
-
-extension COWProduct9: Decodable 
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable,
-H: Decodable,
-I: Decodable
-{ }
-
 extension COWProduct9: CustomStringConvertible { }
 extension COWProduct9: CustomDebugStringConvertible { }
-
-extension COWProduct9: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic,
-E: AdditiveArithmetic,
-F: AdditiveArithmetic,
-G: AdditiveArithmetic,
-H: AdditiveArithmetic,
-I: AdditiveArithmetic
-{ }
-
-extension COWProduct9: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic,
-E: VectorArithmetic,
-F: VectorArithmetic,
-G: VectorArithmetic,
-H: VectorArithmetic,
-I: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

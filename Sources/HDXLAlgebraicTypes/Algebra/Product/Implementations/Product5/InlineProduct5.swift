@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: InlineProduct5
@@ -10,6 +11,13 @@ import HDXLEssentialPrecursors
 /// Generally the preferred implementation for arity-2, unless one-or-both types
 /// are huge structs; in that case, measurement may be required.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct InlineProduct5<A,B,C,D,E> {
   
   public var a: A
@@ -39,80 +47,8 @@ public struct InlineProduct5<A,B,C,D,E> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension InlineProduct5: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable
-{ }
-
-extension InlineProduct5: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable
-{ }
-
-extension InlineProduct5: Comparable
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable,
-E: Comparable
-{ }
-
-extension InlineProduct5: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable
-{ }
-
-extension InlineProduct5: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable
-{ }
-
-extension InlineProduct5: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable
-{ }
-
 extension InlineProduct5: CustomStringConvertible { }
 extension InlineProduct5: CustomDebugStringConvertible { }
-
-extension InlineProduct5: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic,
-E: AdditiveArithmetic
-{ }
-
-extension InlineProduct5: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic,
-E: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

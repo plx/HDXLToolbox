@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: COWProduct7
@@ -9,6 +10,13 @@ import HDXLEssentialPrecursors
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct COWProduct7<A,B,C,D,E,F,G> {
   
   @usableFromInline
@@ -73,96 +81,8 @@ public struct COWProduct7<A,B,C,D,E,F,G> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension COWProduct7: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable
-{ }
-
-extension COWProduct7: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable
-{ }
-
-extension COWProduct7: Comparable 
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable,
-E: Comparable,
-F: Comparable,
-G: Comparable
-{ }
-
-extension COWProduct7: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable
-{ }
-
-extension COWProduct7: Encodable 
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable
-{ }
-
-extension COWProduct7: Decodable 
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable
-{ }
-
 extension COWProduct7: CustomStringConvertible { }
 extension COWProduct7: CustomDebugStringConvertible { }
-
-extension COWProduct7: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic,
-E: AdditiveArithmetic,
-F: AdditiveArithmetic,
-G: AdditiveArithmetic
-{ }
-
-extension COWProduct7: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic,
-E: VectorArithmetic,
-F: VectorArithmetic,
-G: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

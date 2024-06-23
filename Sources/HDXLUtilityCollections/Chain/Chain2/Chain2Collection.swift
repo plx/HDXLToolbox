@@ -1,6 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2Collection - Definition
@@ -8,6 +9,11 @@ import HDXLCollectionSupport
 
 /// A collection providing the contents of its constituent collections, one after the other.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyCodable
+@ConditionallyRandomAccessCollection
 public struct Chain2Collection<A,B>
 where
   A: Collection,
@@ -82,15 +88,6 @@ extension Chain2Collection {
   }
     
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Equatable
-// -------------------------------------------------------------------------- //
-
-extension Chain2Collection : Sendable where A: Sendable, B: Sendable { }
-extension Chain2Collection : Equatable where A: Equatable, B: Equatable { }
-extension Chain2Collection : Hashable where A: Hashable, B: Hashable { }
-extension Chain2Collection : Codable where A: Codable, B: Codable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
@@ -286,13 +283,3 @@ extension Chain2Collection : BidirectionalCollection
   }
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - RandomAccessCollection
-// -------------------------------------------------------------------------- //
-
-extension Chain2Collection : RandomAccessCollection
-  where
-  A:RandomAccessCollection,
-  B:RandomAccessCollection 
-{ }

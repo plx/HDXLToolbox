@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Sum9
@@ -7,6 +8,11 @@ import HDXLEssentialPrecursors
 
 /// Provides an arity-9 implementation of an "anonymous sum".
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public enum Sum9<A,B,C,D,E,F,G,H,I> {
   
   case a(A)
@@ -20,76 +26,6 @@ public enum Sum9<A,B,C,D,E,F,G,H,I> {
   case i(I)
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Sum9: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable,
-H: Sendable,
-I: Sendable
-{ }
-
-extension Sum9: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable,
-H: Equatable,
-I: Equatable
-{ }
-
-extension Sum9: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable,
-I: Hashable
-{ }
-
-extension Sum9: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable,
-H: Encodable,
-I: Encodable
-{ }
-
-extension Sum9: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable,
-H: Decodable,
-I: Decodable
-{ }
-
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

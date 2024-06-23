@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: InlineProduct6
@@ -10,6 +11,13 @@ import HDXLEssentialPrecursors
 /// Generally the preferred implementation for arity-2, unless one-or-both types
 /// are huge structs; in that case, measurement may be required.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct InlineProduct6<A,B,C,D,E,F> {
   
   public var a: A
@@ -42,88 +50,8 @@ public struct InlineProduct6<A,B,C,D,E,F> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension InlineProduct6: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable
-{ }
-
-extension InlineProduct6: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable
-{ }
-
-extension InlineProduct6: Comparable
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable,
-E: Comparable,
-F: Comparable
-{ }
-
-extension InlineProduct6: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable
-{ }
-
-extension InlineProduct6: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable
-{ }
-
-extension InlineProduct6: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable
-{ }
-
 extension InlineProduct6: CustomStringConvertible { }
 extension InlineProduct6: CustomDebugStringConvertible { }
-
-extension InlineProduct6: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic,
-E: AdditiveArithmetic,
-F: AdditiveArithmetic
-{ }
-
-extension InlineProduct6: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic,
-E: VectorArithmetic,
-F: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

@@ -2,12 +2,19 @@ import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain9CollectionIndex
 // -------------------------------------------------------------------------- //
 
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyAutoIdentifiable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public struct Chain9CollectionIndex<A,B,C,D,E,F,G,H,I>
 where
 A: Comparable,
@@ -47,88 +54,6 @@ I: Comparable
     Self(storage: .endIndex)
   }
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Chain9CollectionIndex: Sendable
-where
-A: Sendable, 
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable,
-H: Sendable,
-I: Sendable
-{ }
-
-extension Chain9CollectionIndex: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable,
-H: Equatable,
-I: Equatable
-{ }
-
-extension Chain9CollectionIndex: Hashable 
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable,
-I: Hashable
-{ }
-
-extension Chain9CollectionIndex: Identifiable, AutoIdentifiable 
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable,
-I: Hashable
-{ }
-
-extension Chain9CollectionIndex: Encodable 
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable,
-E: Encodable,
-F: Encodable,
-G: Encodable,
-H: Encodable,
-I: Encodable
-{ }
-
-extension Chain9CollectionIndex: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable,
-E: Decodable,
-F: Decodable,
-G: Decodable,
-H: Decodable,
-I: Decodable
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Comparable

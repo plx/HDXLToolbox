@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: InlineProduct2 - Definition
@@ -10,6 +11,13 @@ import HDXLEssentialPrecursors
 /// Generally the preferred implementation for arity-2, unless one-or-both types
 /// are huge structs; in that case, measurement may be required.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct InlineProduct2<A,B> {
   
   public var a: A
@@ -26,17 +34,12 @@ public struct InlineProduct2<A,B> {
   
 }
 
-extension InlineProduct2: Sendable where A: Sendable, B: Sendable { }
-extension InlineProduct2: Equatable where A: Equatable, B: Equatable { }
-extension InlineProduct2: Comparable where A: Comparable, B: Comparable { }
-extension InlineProduct2: Hashable where A: Hashable, B: Hashable { }
-extension InlineProduct2: Encodable where A: Encodable, B: Encodable { }
-extension InlineProduct2: Decodable where A: Decodable, B: Decodable { }
+// -------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// -------------------------------------------------------------------------- //
+
 extension InlineProduct2: CustomStringConvertible { }
 extension InlineProduct2: CustomDebugStringConvertible { }
-
-extension InlineProduct2: AdditiveArithmetic where A: AdditiveArithmetic, B: AdditiveArithmetic { }
-extension InlineProduct2: VectorArithmetic where A: VectorArithmetic, B: VectorArithmetic { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

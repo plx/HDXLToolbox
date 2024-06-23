@@ -1,6 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain8Collection
@@ -8,6 +9,11 @@ import HDXLCollectionSupport
 
 /// A collection providing the contents of its constituent collections, one after the other.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyCodable
+@ConditionallyRandomAccessCollection
 public struct Chain8Collection<A,B,C,D,E,F,G,H>
 where
 A: Collection,
@@ -208,59 +214,6 @@ extension Chain8Collection {
   }
 
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Equatable
-// -------------------------------------------------------------------------- //
-
-extension Chain8Collection : Sendable 
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable,
-E: Sendable,
-F: Sendable,
-G: Sendable,
-H: Sendable
-{ }
-
-extension Chain8Collection : Equatable 
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable,
-E: Equatable,
-F: Equatable,
-G: Equatable,
-H: Equatable
-{ }
-
-extension Chain8Collection : Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable,
-E: Hashable,
-F: Hashable,
-G: Hashable,
-H: Hashable
-{ }
-
-extension Chain8Collection : Codable 
-where
-A: Codable,
-B: Codable,
-C: Codable,
-D: Codable,
-E: Codable,
-F: Codable,
-G: Codable,
-H: Codable
-{ }
-
 
 // -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
@@ -472,18 +425,3 @@ H: BidirectionalCollection
   
 }
 
-// -------------------------------------------------------------------------- //
-// MARK: - RandomAccessCollection
-// -------------------------------------------------------------------------- //
-
-extension Chain8Collection : RandomAccessCollection
-where
-A: RandomAccessCollection,
-B: RandomAccessCollection,
-C: RandomAccessCollection,
-D: RandomAccessCollection,
-E: RandomAccessCollection,
-F: RandomAccessCollection,
-G: RandomAccessCollection,
-H: RandomAccessCollection
-{ }

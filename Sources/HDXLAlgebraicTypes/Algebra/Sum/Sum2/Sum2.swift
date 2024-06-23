@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Sum2
@@ -7,22 +8,17 @@ import HDXLEssentialPrecursors
 
 /// Provides an arity-2 implementation of a 2-way "anonymous sum".
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public enum Sum2<A,B> {
   
   case a(A)
   case b(B)
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// -------------------------------------------------------------------------- //
-
-extension Sum2: Sendable where A: Sendable, B: Sendable { }
-extension Sum2: Equatable where A: Equatable, B: Equatable { }
-extension Sum2: Hashable where A: Hashable, B: Hashable { }
-extension Sum2: Encodable where A: Encodable, B: Encodable { }
-extension Sum2: Decodable where A: Decodable, B: Decodable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable

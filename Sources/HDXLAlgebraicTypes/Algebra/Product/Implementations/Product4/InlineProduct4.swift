@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: InlineProduct4
@@ -10,6 +11,13 @@ import HDXLEssentialPrecursors
 /// Generally the preferred implementation for arity-2, unless one-or-both types
 /// are huge structs; in that case, measurement may be required.
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAdditiveArithmetic
+@ConditionallyVectorArithmetic
 public struct InlineProduct4<A,B,C,D> {
   
   public var a: A
@@ -36,72 +44,8 @@ public struct InlineProduct4<A,B,C,D> {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension InlineProduct4: Sendable
-where
-A: Sendable,
-B: Sendable,
-C: Sendable,
-D: Sendable
-{ }
-
-extension InlineProduct4: Equatable
-where
-A: Equatable,
-B: Equatable,
-C: Equatable,
-D: Equatable
-{ }
-
-extension InlineProduct4: Comparable
-where
-A: Comparable,
-B: Comparable,
-C: Comparable,
-D: Comparable
-{ }
-
-extension InlineProduct4: Hashable
-where
-A: Hashable,
-B: Hashable,
-C: Hashable,
-D: Hashable
-{ }
-
-extension InlineProduct4: Encodable
-where
-A: Encodable,
-B: Encodable,
-C: Encodable,
-D: Encodable
-{ }
-
-extension InlineProduct4: Decodable
-where
-A: Decodable,
-B: Decodable,
-C: Decodable,
-D: Decodable
-{ }
-
 extension InlineProduct4: CustomStringConvertible { }
 extension InlineProduct4: CustomDebugStringConvertible { }
-
-extension InlineProduct4: AdditiveArithmetic
-where
-A: AdditiveArithmetic,
-B: AdditiveArithmetic,
-C: AdditiveArithmetic,
-D: AdditiveArithmetic
-{ }
-
-extension InlineProduct4: VectorArithmetic
-where
-A: VectorArithmetic,
-B: VectorArithmetic,
-C: VectorArithmetic,
-D: VectorArithmetic
-{ }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable
