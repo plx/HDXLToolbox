@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLAlgebraicTypes
 
 // -------------------------------------------------------------------------- //
 // MARK: Arity-2

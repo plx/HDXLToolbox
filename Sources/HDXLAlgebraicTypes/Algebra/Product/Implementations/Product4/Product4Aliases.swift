@@ -1,9 +1,5 @@
-//
-//  Product4Aliases.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
 /// Typealias for a homogenous product (inline implementation).
 public typealias UniformInlineProduct4<T> = InlineProduct4<T,T,T,T>
@@ -23,7 +19,8 @@ public func Product<A,B,C,D>(
   _ a: A,
   _ b: B,
   _ c: C,
-  _ d: D) -> Product4<A,B,C,D> {
+  _ d: D
+) -> Product4<A,B,C,D> {
   return Product4<A,B,C,D>(
     a,
     b,

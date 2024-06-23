@@ -1,113 +1,146 @@
-//
-//  AlgebraicProduct9+Initialization.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
-public extension AlgebraicProduct9 {
+extension AlgebraicProduct9 {
   
-  /// Failable initializer returning `nil` if any arguments evaluate-to `nil`.
-  ///
-  /// Evaluation can be assumed to be lazy but evaluation order should be treated
-  /// as a private implementation detail.
+//  public typealias TupleRepresentation<T> = (
+//    T.A,
+//    T.B,
+//    T.C,
+//    T.D,
+//    T.E,
+//    T.F,
+//    T.G,
+//    T.H,
+//    T.I
+//  ) where T: AlgebraicProduct9
+  
+  public typealias CompatibleProduct<T> = some AlgebraicProduct<
+    T.A,
+    T.B,
+    T.C,
+    T.D,
+    T.E,
+    T.F,
+    T.G,
+    T.H,
+    T.I
+  > where T: AlgebraicProduct9
+  
+  public typealias Extractor<T> = some AlgebraicProduct<
+    (T) -> A,
+    (T) -> B,
+    (T) -> C,
+    (T) -> D,
+    (T) -> E,
+    (T) -> F,
+    (T) -> G,
+    (T) -> H,
+    (T) -> I
+  >
+  
+  public typealias WeakExtractor<T> = some AlgebraicProduct<
+    (T) -> A?,
+    (T) -> B?,
+    (T) -> C?,
+    (T) -> D?,
+    (T) -> E?,
+    (T) -> F?,
+    (T) -> G?,
+    (T) -> H?,
+    (T) -> I?
+  >
+
+  /// Initializes `self` iff all arguments evaluate to non-`nil` values.
   @inlinable
-  init?(
-    _ a: @autoclosure () -> A?,
-    _ b: @autoclosure () -> B?,
-    _ c: @autoclosure () -> C?,
-    _ d: @autoclosure () -> D?,
-    _ e: @autoclosure () -> E?,
-    _ f: @autoclosure () -> F?,
-    _ g: @autoclosure () -> G?,
-    _ h: @autoclosure () -> H?,
-    _ i: @autoclosure () -> I?) {
-    guard
-      let aa = a(),
-      let bb = b(),
-      let cc = c(),
-      let dd = d(),
-      let ee = e(),
-      let ff = f(),
-      let gg = g(),
-      let hh = h(),
-      let ii = i() else {
-        return nil
-    }
+  public init?(
+    possibleA a: @autoclosure () -> A?,
+    possibleB b: @autoclosure () -> B?,
+    possibleC c: @autoclosure () -> C?,
+    possibleD d: @autoclosure () -> D?,
+    possibleE e: @autoclosure () -> E?,
+    possibleF f: @autoclosure () -> F?,
+    possibleG g: @autoclosure () -> G?,
+    possibleH h: @autoclosure () -> H?,
+    possibleI i: @autoclosure () -> I?
+  ) {
     self.init(
-      aa,
-      bb,
-      cc,
-      dd,
-      ee,
-      ff,
-      gg,
-      hh,
-      ii
+      possibleTupleRepresentation: tupleUnwrap(
+        a(),
+        b(),
+        c(),
+        d(),
+        e(),
+        f(),
+        g(),
+        h(),
+        i()
+      )
     )
+//    guard
+//      let aa = a(),
+//      let bb = b(),
+//      let cc = c(),
+//      let dd = d(),
+//      let ee = e(),
+//      let ff = f(),
+//      let gg = g(),
+//      let hh = h(),
+//      let ii = i()
+//    else {
+//      return nil
+//    }
+//    self.init(
+//      aa,
+//      bb,
+//      cc,
+//      dd,
+//      ee,
+//      ff,
+//      gg,
+//      hh,
+//      ii
+//    )
   }
   
-  /// Initializer converting between same-arity representations.
+  /// Conversion constructor, allowing initialization from any compatible product.
   @inlinable
-  init<Other>(_ other: Other)
-    where
-    Other: AlgebraicProduct9,
-    Other.A == Self.A,
-    Other.B == Self.B,
-    Other.C == Self.C,
-    Other.D == Self.D,
-    Other.E == Self.E,
-    Other.F == Self.F,
-    Other.G == Self.G,
-    Other.H == Self.H,
-    Other.I == Self.I {
-      // ///////////////////////////////////////////////////////////////////////
-      pedantic_assert(isValidOrIndifferent(other))
-      // ///////////////////////////////////////////////////////////////////////
-      self.init(
-        other.a,
-        other.b,
-        other.c,
-        other.d,
-        other.e,
-        other.f,
-        other.g,
-        other.h,
-        other.i
-      )
+  //public init(converting other: some AlgebraicProduct9<A,B,C,D,E,F,G,H,I>) {
+  public init(converting other: CompatibleProduct<Self>) {
+    self.init(tupleRepresentation: other.tupleRepresentation)
+//      other.a,
+//      other.b,
+//      other.c,
+//      other.d,
+//      other.e,
+//      other.f,
+//      other.g,
+//      other.h,
+//      other.i
+//    )
+//    self.init(
+//      other.a,
+//      other.b,
+//      other.c,
+//      other.d,
+//      other.e,
+//      other.f,
+//      other.g,
+//      other.h,
+//      other.i
+//    )
   }
   
-  /// Failable initializer converting between same-arity representations, but
-  /// returning `nil` on a `nil` argument.
+  /// Conversion constructor, allowing initialization from any non-`nil` compatible product.
   @inlinable
-  init?<Other>(_ other: Other?)
-    where
-    Other: AlgebraicProduct9,
-    Other.A == Self.A,
-    Other.B == Self.B,
-    Other.C == Self.C,
-    Other.D == Self.D,
-    Other.E == Self.E,
-    Other.F == Self.F,
-    Other.G == Self.G,
-    Other.H == Self.H,
-    Other.I == Self.I {
-      guard let o = other else {
-        return nil
-      }
-      self.init(
-        o.a,
-        o.b,
-        o.c,
-        o.d,
-        o.e,
-        o.f,
-        o.g,
-        o.h,
-        o.i
-      )
+  //  public init?(possiblyConverting possibleOther: some AlgebraicProduct9<A,B>?) {
+  public init?(possiblyConverting possibleOther: some CompatibleProduct<Self>?) {
+    guard let other = possibleOther else {
+      return nil
+    }
+    self.init(converting: other)
   }
-  
+
   /// "Splaying" initializer that constructs a product by applying n distinct
   /// "extractors" to the same source value. Intended for use in cases where some
   /// non-product value needs to be "projected" into a product representation.
@@ -120,36 +153,24 @@ public extension AlgebraicProduct9 {
   /// - note: Alternative name suggestions would be welcomed.
   ///
   @inlinable
-  init<T,Extractor>(
+  public init<T>(
     bySplaying source: T,
-    using extractor: Extractor)
-    where
-    Extractor:AlgebraicProduct9,
-    Extractor.A == (T) -> A,
-    Extractor.B == (T) -> B,
-    Extractor.C == (T) -> C,
-    Extractor.D == (T) -> D,
-    Extractor.E == (T) -> E,
-    Extractor.F == (T) -> F,
-    Extractor.G == (T) -> G,
-    Extractor.H == (T) -> H,
-    Extractor.I == (T) -> I {
-      // ///////////////////////////////////////////////////////////////////////
-      pedantic_assert(isValidOrIndifferent(source))
-      pedantic_assert(isValidOrIndifferent(extractor))
-      defer { pedantic_assert(isValidOrIndifferent(self)) }
-      // ///////////////////////////////////////////////////////////////////////
-      self.init(
-        extractor.a(source),
-        extractor.b(source),
-        extractor.c(source),
-        extractor.d(source),
-        extractor.e(source),
-        extractor.f(source),
-        extractor.g(source),
-        extractor.h(source),
-        extractor.i(source)
+    using extractor: Extractor<T>
+  ) {
+    self.init(
+      tupleRepresentation: extractor.evaluate(
+        on: source
       )
+//      extractor.a(source),
+//      extractor.b(source),
+//      extractor.c(source),
+//      extractor.d(source),
+//      extractor.e(source),
+//      extractor.f(source),
+//      extractor.g(source),
+//      extractor.h(source),
+//      extractor.i(source)
+    )
   }
 
   /// Failable "Splaying" initializer that constructs a product by applying n distinct
@@ -168,49 +189,27 @@ public extension AlgebraicProduct9 {
   /// - note: Alternative name suggestions would be welcomed.
   ///
   @inlinable
-  init?<T,Extractor>(
-    byWeaklySplaying source: T,
-    using extractor: Extractor)
-    where
-    Extractor:AlgebraicProduct9,
-    Extractor.A == (T) -> A?,
-    Extractor.B == (T) -> B?,
-    Extractor.C == (T) -> C?,
-    Extractor.D == (T) -> D?,
-    Extractor.E == (T) -> E?,
-    Extractor.F == (T) -> F?,
-    Extractor.G == (T) -> G?,
-    Extractor.H == (T) -> H?,
-    Extractor.I == (T) -> I? {
-      // ///////////////////////////////////////////////////////////////////////
-      pedantic_assert(isValidOrIndifferent(source))
-      pedantic_assert(isValidOrIndifferent(extractor))
-      guard
-        let a = extractor.a(source),
-        let b = extractor.b(source),
-        let c = extractor.c(source),
-        let d = extractor.d(source),
-        let e = extractor.e(source),
-        let f = extractor.f(source),
-        let g = extractor.g(source),
-        let h = extractor.h(source),
-        let i = extractor.i(source) else {
-          return nil
-      }
-      self.init(
-        a,
-        b,
-        c,
-        d,
-        e,
-        f,
-        g,
-        h,
-        i
+  public init?<T>(
+    byFailablySplaying source: T,
+    using extractor: WeakExtractor<T>
+  ) {
+    self.init(
+      possibleTupleRepresentation: extractor.weaklyEvaluate(
+        on: source
       )
-      // ///////////////////////////////////////////////////////////////////////
-      pedantic_assert(isValidOrIndifferent(self))
-      // ///////////////////////////////////////////////////////////////////////
+    )
+//    self.init(
+//      possibleA: extractor.a(source),
+//      possibleB: extractor.b(source),
+//      possibleC: extractor.c(source),
+//      possibleD: extractor.d(source),
+//      possibleE: extractor.e(source),
+//      possibleF: extractor.f(source),
+//      possibleG: extractor.g(source),
+//      possibleH: extractor.h(source),
+//      possibleI: extractor.i(source)
+//    )
   }
+  
 
 }

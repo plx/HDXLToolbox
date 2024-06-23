@@ -120,7 +120,9 @@ let package = Package(
 
     .target(
         name: "HDXLCollectionSupport",
-        dependencies: []
+        dependencies: [
+          "HDXLAlgebraicTypes"
+        ]
     ),
     .testTarget(
         name: "HDXLCollectionSupportTests",

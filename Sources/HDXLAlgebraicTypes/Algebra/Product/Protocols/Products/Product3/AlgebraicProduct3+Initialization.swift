@@ -1,24 +1,22 @@
-//
-//  AlgebraicProduct3+Initialization.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
-public extension AlgebraicProduct3 {
+extension AlgebraicProduct3 {
   
   /// Initializes `self` iff all arguments evaluate to non-`nil` values;
   /// early-exits and returns `nil` after encountering first `nil`.
   @inlinable
-  init?(
+  public init?(
     _ a: @autoclosure () -> A?,
     _ b: @autoclosure () -> B?,
-    _ c: @autoclosure () -> C?) {
+    _ c: @autoclosure () -> C?
+  ) {
     guard
       let aa = a(),
       let bb = b(),
-      let cc = c() else {
-        return nil
+      let cc = c() 
+    else {
+      return nil
     }
     self.init(
       aa,
@@ -29,7 +27,7 @@ public extension AlgebraicProduct3 {
   
   /// Conversion constructor, allowing initialization from any compatible product.
   @inlinable
-  init<Other>(_ other: Other)
+  public init(_ other: Other)
     where
     Other: AlgebraicProduct3,
     Other.A == Self.A,

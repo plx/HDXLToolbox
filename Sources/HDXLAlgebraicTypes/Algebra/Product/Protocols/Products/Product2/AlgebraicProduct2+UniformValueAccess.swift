@@ -184,6 +184,5 @@ extension Array {
   public init<T>(_ product: some AlgebraicProduct2<T,T>) {
     self = product.allValues
   }
-  
-  
+    
 }

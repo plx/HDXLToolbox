@@ -3,15 +3,23 @@ import HDXLEssentialPrecursors
 
 extension AlgebraicProduct2 {
   
-  public typealias Extractor<T> = some AlgebraicProduct<(T) -> A, (T) -> B>
-  public typealias WeakExtractor<T> = some AlgebraicProduct<(T) -> A?, (T) -> B?>
+  public typealias Extractor<T> = some AlgebraicProduct<
+    (T) -> A,
+    (T) -> B
+  >
+  
+  public typealias WeakExtractor<T> = some AlgebraicProduct<
+    (T) -> A?, 
+    (T) -> B?
+  >
 
   /// Initializes `self` iff all arguments evaluate to non-`nil` values;
   /// early-exits and returns `nil` after encountering first `nil`.
   @inlinable
   public init?(
     possibleA a: @autoclosure () -> A?,
-    possibleB b: @autoclosure () -> B?) {
+    possibleB b: @autoclosure () -> B?
+  ) {
     guard
       let aa = a(),
       let bb = b() 
@@ -84,19 +92,10 @@ extension AlgebraicProduct2 {
     byFailablySplaying source: T,
     using extractor: WeakExtractor<T>
   ) {
-    guard
-      let a = extractor.a(source),
-      let b = extractor.b(source) 
-    else {
-      return nil
-    }
     self.init(
-      a,
-      b
+      possibleA: extractor.a(source),
+      possibleB: extractor.b(source)
     )
-    // ///////////////////////////////////////////////////////////////////////
-    pedantic_assert(isValidOrIndifferent(self))
-    // ///////////////////////////////////////////////////////////////////////
   }
 
 }

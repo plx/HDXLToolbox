@@ -1,14 +1,10 @@
-//
-//  AlgebraicProduct9+SumInteroperation.swift
-//
-
 import Foundation
-import HDXLCommonUtilities
+import HDXLEssentialPrecursors
 
-public extension AlgebraicProduct9 {
+extension AlgebraicProduct9 {
   
   /// Shorthand for the type of a homogeneous-value extractor.
-  typealias HomogeneousValueExtractor<T> = Sum9<
+  public typealias HomogeneousValueExtractor<T> = Sum9<
     (A) -> T,
     (B) -> T,
     (C) -> T,
@@ -24,32 +20,29 @@ public extension AlgebraicProduct9 {
   /// applied to its corresponding component (e.g. `.b(mappingFromBToT)` will
   /// return `mappingFromBToT(self.b)`).
   @inlinable
-  func extractHomogeneizedValue<T>(
+  public func extractHomogeneizedValue<T>(
     ofType type: T.Type,
-    using extractor: HomogeneousValueExtractor<T>) -> T {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(extractor.isValid)
-    pedantic_assert(self.isValid)
-    // /////////////////////////////////////////////////////////////////////////
+    using extractor: HomogeneousValueExtractor<T>
+  ) -> T {
     switch extractor {
     case .a(let a):
-      return a(self.a)
+      a(self.a)
     case .b(let b):
-      return b(self.b)
+      b(self.b)
     case .c(let c):
-      return c(self.c)
+      c(self.c)
     case .d(let d):
-      return d(self.d)
+      d(self.d)
     case .e(let e):
-      return e(self.e)
+      e(self.e)
     case .f(let f):
-      return f(self.f)
+      f(self.f)
     case .g(let g):
-      return g(self.g)
+      g(self.g)
     case .h(let h):
-      return h(self.h)
+      h(self.h)
     case .i(let i):
-      return i(self.i)
+      i(self.i)
     }
   }
   
@@ -60,12 +53,9 @@ public extension AlgebraicProduct9 {
   /// components unchanged.
   ///
   @inlinable
-  mutating func formReplacement(ofComponent component: AssociatedSum) {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(component.isValid)
-    pedantic_assert(self.isValid)
-    defer { pedantic_assert(self.isValid) }
-    // /////////////////////////////////////////////////////////////////////////
+  public mutating func formReplacement(
+    ofComponent component: AssociatedSum
+  ) {
     switch component {
     case .a(let a):
       self.a = a
@@ -94,80 +84,78 @@ public extension AlgebraicProduct9 {
   /// `self` with `.b` set to `newBValue` and all other components left as-is.
   ///
   @inlinable
-  func replacing(component: AssociatedSum) -> Self {
-    // /////////////////////////////////////////////////////////////////////////
-    pedantic_assert(component.isValid)
-    pedantic_assert(self.isValid)
-    // /////////////////////////////////////////////////////////////////////////
+  public func replacing(component: AssociatedSum) -> Self {
     switch component {
     case .a(let a):
-      return self.with(a: a)
+      with(a: a)
     case .b(let b):
-      return self.with(b: b)
+      with(b: b)
     case .c(let c):
-      return self.with(c: c)
+      with(c: c)
     case .d(let d):
-      return self.with(d: d)
+      with(d: d)
     case .e(let e):
-      return self.with(e: e)
+      with(e: e)
     case .f(let f):
-      return self.with(f: f)
+      with(f: f)
     case .g(let g):
-      return self.with(g: g)
+      with(g: g)
     case .h(let h):
-      return self.with(h: h)
+      with(h: h)
     case .i(let i):
-      return self.with(i: i)
+      with(i: i)
     }
   }
 
   /// Retrieves value at `position`, represented as the `AssociatedSum`.
   @inlinable
-  func heterogeneousValue(at position: ArityPosition) -> AssociatedSum {
+  public func heterogeneousValue(
+    at position: ArityPosition
+  ) -> AssociatedSum {
     switch position {
     case .a:
-      return .a(self.a)
+      .a(self.a)
     case .b:
-      return .b(self.b)
+      .b(self.b)
     case .c:
-      return .c(self.c)
+      .c(self.c)
     case .d:
-      return .d(self.d)
+      .d(self.d)
     case .e:
-      return .e(self.e)
+      .e(self.e)
     case .f:
-      return .f(self.f)
+      .f(self.f)
     case .g:
-      return .g(self.g)
+      .g(self.g)
     case .h:
-      return .h(self.h)
+      .h(self.h)
     case .i:
-      return .i(self.i)
+      .i(self.i)
     }
   }
   
   /// Retrieves value at `position`, represented as the `AssociatedSum`.
   @inlinable
-  func heterogeneousValue(at index: Int) -> AssociatedSum {
+  package func heterogeneousValue(at index: Int) -> AssociatedSum {
     switch index {
     case 0:
-      return .a(self.a)
+      .a(self.a)
     case 1:
-      return .b(self.b)
+      .b(self.b)
     case 2:
-      return .c(self.c)
+      .c(self.c)
     case 3:
-      return .d(self.d)
+      .d(self.d)
     case 4:
-      return .e(self.e)
+      .e(self.e)
     case 5:
-      return .f(self.f)
+      .f(self.f)
     case 6:
-      return .g(self.g)
+      .g(self.g)
     case 7:
-      return .h(self.h)
+      .h(self.h)
     case 8:
-      return .i(self.i)
+      .i(self.i)
     default:
       preconditionFailure("Attempted to get the heterogeneous value at invalid index \(index) (on: \(String(reflecting: self))!")
     }

@@ -100,7 +100,8 @@ public protocol AlgebraicProduct9 : AlgebraicProduct
     _ f: F,
     _ g: G,
     _ h: H,
-    _ i: I)
+    _ i: I
+  )
   
   // ------------------------------------------------------------------------ //
   // MARK: with-Derivation - Simple
@@ -211,111 +212,355 @@ public protocol AlgebraicProduct9 : AlgebraicProduct
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct9 - To-Tuple
+// MARK: - To-Tuple
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct9 {
+extension AlgebraicProduct9 {
 
   /// Shorthand for the tuple equivalent-to `Self`.
-  typealias EquivalentTuple = (A,B,C,D,E,F,G,H,I)
+  typealias TupleRepresentation = (A,B,C,D,E,F,G,H,I)
 
   /// Returns a tuple equivalent-to `self`.
   @inlinable
-  var equivalentTupleValue: EquivalentTuple {
-    get {
-      return (
-        self.a,
-        self.b,
-        self.c,
-        self.d,
-        self.e,
-        self.f,
-        self.g,
-        self.h,
-        self.i
+  public var tupleRepresentation: TupleRepresentation {
+    (
+      a,
+      b,
+      c,
+      d,
+      e,
+      f,
+      g,
+      h,
+      i
+    )
+  }
+  
+  @inlinable
+  public init(tupleRepresentation: TupleRepresentation) {
+    self.init(
+      tupleRepresentation: (
+        tupleRepresentation.0,
+        tupleRepresentation.1,
+        tupleRepresentation.2,
+        tupleRepresentation.3,
+        tupleRepresentation.4,
+        tupleRepresentation.5,
+        tupleRepresentation.6,
+        tupleRepresentation.7,
+        tupleRepresentation.8
       )
+    )
+  }
+
+  @inlinable
+  public init?(possibleTupleRepresentation: TupleRepresentation?) {
+    guard let tupleRepresentation = possibleTupleRepresentation else {
+      return nil
     }
+    self.init(
+      tupleRepresentation: tupleRepresentation
+    )
+  }
+
+}
+
+// -------------------------------------------------------------------------- //
+// MARK: - AlgebraicProduct Defaults
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct9 {
+  
+  @inlinable
+  public static var arity: Int { 9 }
+  
+}
+
+// -------------------------------------------------------------------------- //
+// MARK: - Lexicographic Ordering
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct9
+where
+A: Comparable,
+B: Comparable,
+C: Comparable,
+D: Comparable,
+E: Comparable,
+F: Comparable,
+G: Comparable,
+H: Comparable,
+I: Comparable
+{
+  
+  @inlinable
+  public func lexicographicOrderingRelationship(with other: Self) -> ComparisonResult {
+    ComparisonResult.coalescing(
+      a <=> other.a,
+      b <=> other.b,
+      c <=> other.c,
+      d <=> other.d,
+      e <=> other.e,
+      f <=> other.f,
+      g <=> other.g,
+      h <=> other.h,
+      i <=> other.i
+    )
+  }
+}
+
+// -------------------------------------------------------------------------- //
+// MARK: - Comparable
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct9
+where
+Self: Comparable, 
+A: Comparable,
+B: Comparable,
+C: Comparable,
+D: Comparable,
+E: Comparable,
+F: Comparable,
+G: Comparable,
+H: Comparable,
+I: Comparable
+{
+  
+  @inlinable
+  public static func < (
+    lhs: Self,
+    rhs: Self
+  ) -> Bool {
+    lhs.lexicographicOrderingRelationship(with: rhs).impliesLessThan
+  }
+}
+
+// -------------------------------------------------------------------------- //
+// MARK: - Identifiable
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct9 where
+Self: Identifiable,
+A: Identifiable,
+B: Identifiable,
+C: Identifiable,
+D: Identifiable,
+E: Identifiable,
+F: Identifiable,
+G: Identifiable,
+H: Identifiable,
+I: Identifiable,
+ID: AlgebraicProduct9<
+  A.ID,
+  B.ID,
+  C.ID,
+  D.ID,
+  E.ID,
+  F.ID,
+  G.ID,
+  H.ID,
+  I.ID
+> {
+  @inlinable
+  public var id: ID {
+    ID(
+      a.id,
+      b.id,
+      c.id,
+      d.id,
+      e.id,
+      f.id,
+      g.id,
+      h.id,
+      i.id
+    )
+  }
+}
+
+// -------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct9 where Self: CustomStringConvertible {
+  
+  @inlinable
+  public var description: String {
+    String(describingTuple: (a, b, c, d, e, f, g, h, i))
   }
   
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct9 - To-Labeled-Tuple
+// MARK: - CustomDebugStringConvertible
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct9 {
+extension AlgebraicProduct9 where Self: CustomDebugStringConvertible {
   
-  /// Shorthand for the *labeled* tuple equivalent-to `Self`.
-  typealias EquivalentLabeledTuple = (
-    a: A,
-    b: B,
-    c: C,
-    d: D,
-    e: E,
-    f: F,
-    g: G,
-    h: H,
-    i: I
-  )
-  
-  /// Returns a *labeled* tuple equivalent-to `self`.
   @inlinable
-  var equivalentLabeledTupleValue: EquivalentLabeledTuple {
-    get {
-      return (
-        a: self.a,
-        b: self.b,
-        c: self.c,
-        d: self.d,
-        e: self.e,
-        f: self.f,
-        g: self.g,
-        h: self.h,
-        i: self.i
-      )
-    }
+  public var debugDescription: String {
+    String(
+      forConstructorOf: Self.self,
+      unlabeledArguments: (a, b, c, d, e, f, g, h, i)
+    )
   }
   
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct9 - AlgebraicProduct Defaults
+// MARK: - AdditiveArithmetic
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct9 {
+extension AlgebraicProduct9
+where
+Self: AdditiveArithmetic,
+A: AdditiveArithmetic,
+B: AdditiveArithmetic,
+C: AdditiveArithmetic,
+D: AdditiveArithmetic,
+E: AdditiveArithmetic,
+F: AdditiveArithmetic,
+G: AdditiveArithmetic,
+H: AdditiveArithmetic,
+I: AdditiveArithmetic
+{
   
   @inlinable
-  static var arity: Int {
-    get {
-      return 9
-    }
+  public static var zero: Self {
+    Self(
+      .zero,
+      .zero,
+      .zero,
+      .zero,
+      .zero,
+      .zero,
+      .zero,
+      .zero,
+      .zero
+    )
+  }
+  
+  @inlinable
+  public static func + (
+    lhs: Self,
+    rhs: Self
+  ) -> Self {
+    Self(
+      lhs.a + rhs.a,
+      lhs.b + rhs.b,
+      lhs.c + rhs.c,
+      lhs.d + rhs.d,
+      lhs.e + rhs.e,
+      lhs.f + rhs.f,
+      lhs.g + rhs.g,
+      lhs.h + rhs.h,
+      lhs.i + rhs.i
+    )
+  }
+  
+  @inlinable
+  public static func += (
+    lhs: inout Self,
+    rhs: Self
+  ) {
+    lhs.a += rhs.a
+    lhs.b += rhs.b
+    lhs.c += rhs.c
+    lhs.d += rhs.d
+    lhs.e += rhs.e
+    lhs.f += rhs.f
+    lhs.g += rhs.g
+    lhs.h += rhs.h
+    lhs.i += rhs.i
+  }
+  
+  @inlinable
+  public static func - (
+    lhs: Self,
+    rhs: Self
+  ) -> Self {
+    Self(
+      lhs.a - rhs.a,
+      lhs.b - rhs.b,
+      lhs.c - rhs.c,
+      lhs.d - rhs.d,
+      lhs.e - rhs.e,
+      lhs.f - rhs.f,
+      lhs.g - rhs.g,
+      lhs.h - rhs.h,
+      lhs.i - rhs.i
+    )
+  }
+  
+  @inlinable
+  public static func -= (
+    lhs: inout Self,
+    rhs: Self
+  ) {
+    lhs.a -= rhs.a
+    lhs.b -= rhs.b
+    lhs.c -= rhs.c
+    lhs.d -= rhs.d
+    lhs.e -= rhs.e
+    lhs.f -= rhs.f
+    lhs.g -= rhs.g
+    lhs.h -= rhs.h
+    lhs.i -= rhs.i
   }
   
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct9 - Validatable
+// MARK: - VectorArithmetic
 // -------------------------------------------------------------------------- //
 
-public extension AlgebraicProduct9 {
+extension AlgebraicProduct9
+where
+Self: VectorArithmetic,
+A: VectorArithmetic,
+B: VectorArithmetic,
+C: VectorArithmetic,
+D: VectorArithmetic,
+E: VectorArithmetic,
+F: VectorArithmetic,
+G: VectorArithmetic,
+H: VectorArithmetic,
+I: VectorArithmetic
+{
   
   @inlinable
-  var isValid: Bool {
-    get {
-      guard
-        isValidOrIndifferent(self.a),
-        isValidOrIndifferent(self.b),
-        isValidOrIndifferent(self.c),
-        isValidOrIndifferent(self.d),
-        isValidOrIndifferent(self.e),
-        isValidOrIndifferent(self.f),
-        isValidOrIndifferent(self.g),
-        isValidOrIndifferent(self.h),
-        isValidOrIndifferent(self.i) else {
-          return false
-      }
-      return true
-    }
+  public mutating func scale(by rhs: Double) {
+    a.scale(by: rhs)
+    b.scale(by: rhs)
+    c.scale(by: rhs)
+    d.scale(by: rhs)
+    e.scale(by: rhs)
+    f.scale(by: rhs)
+    g.scale(by: rhs)
+    h.scale(by: rhs)
+    i.scale(by: rhs)
   }
   
+  /// Returns the dot-product of this vector arithmetic instance with itself.
+  @inlinable
+  public var magnitudeSquared: Double {
+    a.magnitudeSquared 
+    +
+    b.magnitudeSquared
+    +
+    c.magnitudeSquared
+    +
+    d.magnitudeSquared
+    +
+    e.magnitudeSquared
+    +
+    f.magnitudeSquared
+    +
+    g.magnitudeSquared
+    +
+    h.magnitudeSquared
+    +
+    i.magnitudeSquared
+  }
+
 }

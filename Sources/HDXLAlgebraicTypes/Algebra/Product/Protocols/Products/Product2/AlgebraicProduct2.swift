@@ -90,37 +90,17 @@ public protocol AlgebraicProduct2<A,B> : AlgebraicProduct
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct2 - To-Tuple
+// MARK: - To-Tuple
 // -------------------------------------------------------------------------- //
 
 extension AlgebraicProduct2 {
   
   /// Shorthand for the tuple equivalent-to `Self`.
-  public typealias EquivalentTuple = (A,B)
+  public typealias TupleRepresentation = (A,B)
   
   /// Returns a tuple equivalent-to `self`.
   @inlinable
-  public var equivalentTupleValue: EquivalentTuple {
-    (a, b)
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: AlgebraicProduct2 - To-Labeled-Tuple
-// -------------------------------------------------------------------------- //
-
-extension AlgebraicProduct2 {
-  
-  /// Shorthand for the *labeled* tuple equivalent-to `Self`.
-  public typealias EquivalentLabeledTuple = (
-    a: A,
-    b: B
-  )
-  
-  /// Returns a *labeled* tuple equivalent-to `self`.
-  @inlinable
-  public var equivalentLabeledTupleValue: EquivalentLabeledTuple {
+  public var tupleRepresentation: TupleRepresentation {
     (a, b)
   }
   
