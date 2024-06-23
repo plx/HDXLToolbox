@@ -60,7 +60,8 @@ let package = Package(
       name: "HDXLAlgebraicTypesTestSupport",
       dependencies: [
         "HDXLTestingSupport",
-        "HDXLAlgebraicTypes"
+        "HDXLAlgebraicTypes",
+        "HDXLUtilityCollections"
       ]
     ),
     .testTarget(

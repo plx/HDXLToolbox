@@ -18,11 +18,8 @@ E: Comparable
   @inlinable
   public func lexicographicOrderingRelationship(with other: Self) -> ComparisonResult {
     ComparisonResult.coalescing(
-      a <=> other.a,
-      b <=> other.b,
-      c <=> other.c,
-      d <=> other.d,
-      e <=> other.e
+      lhses: tupleRepresentation,
+      rhses: other.tupleRepresentation
     )
   }
 }
@@ -72,13 +69,7 @@ ID: AlgebraicProduct5<
 {
   @inlinable
   public var id: ID {
-    ID(
-      a.id,
-      b.id,
-      c.id,
-      d.id,
-      e.id
-    )
+    ID(tupleRepresentation: identifierTuple(for: tupleRepresentation))
   }
 }
 

@@ -21,14 +21,8 @@ H: Comparable
   @inlinable
   public func lexicographicOrderingRelationship(with other: Self) -> ComparisonResult {
     ComparisonResult.coalescing(
-      a <=> other.a,
-      b <=> other.b,
-      c <=> other.c,
-      d <=> other.d,
-      e <=> other.e,
-      f <=> other.f,
-      g <=> other.g,
-      h <=> other.h
+      lhses: tupleRepresentation,
+      rhses: other.tupleRepresentation
     )
   }
 }
@@ -86,16 +80,7 @@ ID: AlgebraicProduct8<
 > {
   @inlinable
   public var id: ID {
-    ID(
-      a.id,
-      b.id,
-      c.id,
-      d.id,
-      e.id,
-      f.id,
-      g.id,
-      h.id
-    )
+    ID(tupleRepresentation: identifierTuple(for: tupleRepresentation))
   }
 }
 
@@ -107,7 +92,7 @@ extension AlgebraicProduct8 where Self: CustomStringConvertible {
   
   @inlinable
   public var description: String {
-    String(describingTuple: (a, b, c, d, e, f, g, h))
+    String(describingTuple: tupleRepresentation)
   }
   
 }
@@ -122,7 +107,7 @@ extension AlgebraicProduct8 where Self: CustomDebugStringConvertible {
   public var debugDescription: String {
     String(
       forConstructorOf: Self.self,
-      unlabeledArguments: (a, b, c, d, e, f, g, h)
+      unlabeledArguments: tupleRepresentation
     )
   }
   

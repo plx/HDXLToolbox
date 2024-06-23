@@ -17,3 +17,18 @@ extension Sum2 where A:Comparable, B:Comparable {
 
 }
 
+extension Sum2: Comparable
+where
+A:Comparable,
+B:Comparable {
+  
+  @inlinable
+  public static func < (
+    lhs: Self,
+    rhs: Self
+  ) -> Bool {
+    lhs.lexicographicOrderingRelationship(with: rhs).impliesLessThan
+  }
+  
+}
+

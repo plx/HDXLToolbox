@@ -1,6 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLAlgebraicTypes
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2CollectionStorage - Definition
@@ -9,9 +10,9 @@ import HDXLCollectionSupport
 @usableFromInline
 internal final class Chain2CollectionStorage<A,B>
 where
-  A:Collection,
-  B:Collection,
-  A.Element == B.Element
+A:Collection,
+B:Collection,
+A.Element == B.Element
 {
   
   // -------------------------------------------------------------------------- //
@@ -33,7 +34,7 @@ where
       resetCaches()
     }
   }
-    
+  
   // ------------------------------------------------------------------------ //
   // MARK: Cache-Management
   // ------------------------------------------------------------------------ //
@@ -60,17 +61,15 @@ where
   @inlinable
   internal var isEmpty: Bool {
     _isEmpty.obtainAssuredValue(
-      fallingBackUpon: self.calculateIsEmpty()
+      fallback: self.calculateIsEmpty()
     )
   }
   
   @inlinable
   internal func calculateIsEmpty() -> Bool {
-    return (
-      a.isEmpty
-      &&
-      b.isEmpty
-    )
+    a.isEmpty
+    &&
+    b.isEmpty
   }
   
   // ------------------------------------------------------------------------ //
@@ -83,20 +82,20 @@ where
   @inlinable
   internal var count: Int {
     _count.obtainAssuredValue(
-      fallingBackUpon: calculateCount()
+      fallback: calculateCount()
     )
   }
   
   @usableFromInline
   internal func calculateCount() -> Int {
-    guard !isEmpty else {
-      return 0
-    }
-    return (
+    switch isEmpty {
+    case true:
+      0
+    case false:
       $a.count
       +
       $b.count
-    )
+    }
   }
   
   // ------------------------------------------------------------------------ //
@@ -105,25 +104,25 @@ where
   
   @usableFromInline
   internal var _rangeForA: Range<Int>? = nil
-
+  
   @usableFromInline
   internal var _rangeForB: Range<Int>? = nil
-
+  
   // ------------------------------------------------------------------------ //
   // MARK: Incremental Range Support - Access
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  var rangeForA: Range<Int> {
+  internal var rangeForA: Range<Int> {
     _rangeForA.obtainAssuredValue(
-      fallingBackUpon: calculateRangeForA
+      fallback: calculateRangeForA()
     )
   }
-
+  
   @inlinable
   internal var rangeForB: Range<Int> {
     _rangeForB.obtainAssuredValue(
-      fallingBackUpon: calculateRangeForB()
+      fallback: calculateRangeForB()
     )
   }
   
@@ -132,15 +131,15 @@ where
   // ------------------------------------------------------------------------ //
   
   @usableFromInline
-  func calculateRangeForA() -> Range<Int> {
+  internal func calculateRangeForA() -> Range<Int> {
     guard !isEmpty else {
       return 0..<0
     }
     return 0..<$a.count
   }
-
+  
   @usableFromInline
-  func calculateRangeForB() -> Range<Int> {
+  internal func calculateRangeForB() -> Range<Int> {
     guard !isEmpty else {
       return 0..<0
     }
@@ -148,13 +147,13 @@ where
     let currentCount = $b.count
     return previousUpperBound..<(previousUpperBound + currentCount)
   }
-
+  
   // ------------------------------------------------------------------------ //
   // MARK: Index Support
   // ------------------------------------------------------------------------ //
   
   @usableFromInline
-  internal typealias Index = Chain2CollectionIndex<A,B>
+  internal typealias Index = Chain2CollectionIndex<A.Index,B.Index>
   
   @usableFromInline
   internal typealias Position = Index.Position
@@ -164,34 +163,34 @@ where
   // ------------------------------------------------------------------------ //
   
   @usableFromInline
-  var _firstPosition: Position?? = nil
-
+  internal var _firstPosition: Position?? = nil
+  
   @usableFromInline
-  var _finalPosition: Position?? = nil
-
+  internal var _finalPosition: Position?? = nil
+  
   // ------------------------------------------------------------------------ //
   // MARK: Extremal Position Support - Access
   // ------------------------------------------------------------------------ //
-
+  
   @inlinable
   internal var firstPosition: Position? {
     _firstPosition.obtainAssuredValue(
-      fallingBackUpon: calculateFirstPosition()
+      fallback: calculateFirstPosition()
     )
   }
-
+  
   @inlinable
   internal var finalPosition: Position? {
     _finalPosition.obtainAssuredValue(
-      fallingBackUpon: calculateFinalPosition()
+      fallback: calculateFinalPosition()
     )
   }
-
+  
   // ------------------------------------------------------------------------ //
   // MARK: Extremal Position Support - Calculation
   // ------------------------------------------------------------------------ //
   
-  @inlinable
+  @usableFromInline
   internal func calculateFirstPosition() -> Position? {
     // recall: lazy evaluation, first-to-last
     Position.firstNonNil(
@@ -199,35 +198,31 @@ where
       $b.firstSubscriptableIndex
     )
   }
-
-  @inlinable
-  func calculateFinalPosition() -> Position? {
+  
+  @usableFromInline
+  internal func calculateFinalPosition() -> Position? {
     // recall: lazy evaluation, last-to-first
     Position.finalNonNil(
       $a.finalSubscriptableIndex,
       $b.finalSubscriptableIndex
     )
   }
-
+  
   // ------------------------------------------------------------------------ //
   // MARK: Extremal Indices
   // ------------------------------------------------------------------------ //
-
+  
   @inlinable
-  var startIndex: Index {
-    get {
-      guard let firstPosition = self.firstPosition else {
-        return self.endIndex
-      }
-      return Index(position: firstPosition)
+  internal var startIndex: Index {
+    guard let firstPosition = self.firstPosition else {
+      return endIndex
     }
+    return Index(position: firstPosition)
   }
   
   @inlinable
-  var endIndex: Index {
-    get {
-      return Index.endIndex
-    }
+  internal var endIndex: Index {
+    Index.endIndex
   }
   
   // ------------------------------------------------------------------------ //
@@ -235,9 +230,10 @@ where
   // ------------------------------------------------------------------------ //
   
   @inlinable
-  required init(
+  internal required init(
     _ a: A,
-    _ b: B) {
+    _ b: B
+  ) {
     self.a = a
     self.b = b
   }
@@ -250,25 +246,25 @@ where
   internal typealias Element = A.Element
   
   @inlinable
-  subscript(position: Position) -> Element {
-    get {
-      switch position {
-      case .a(let a):
-        return self.a[a]
-      case .b(let b):
-        return self.b[b]
-      }
+  internal subscript(position: Position) -> Element {
+    switch position {
+    case .a(let a):
+      precondition(a < self.a.endIndex)
+      return self.a[a]
+    case .b(let b):
+      precondition(b < self.b.endIndex)
+      return self.b[b]
     }
   }
   
   @usableFromInline
-  func position(after position: Position) -> Position? {
+  internal func position(after position: Position) -> Position? {
     // NOTE: this blindly does all 9 advancements then figures out at the end
     // if it "went over the edge" or not. This is more-efficient than it looks
     // b.c the `nextSubscriptableIndex` usually just returns the supplied index,
     // and it's *hopefully* not worth bloating this with a ton of early-exits
     // (e.g. checking for "hold position" after each advancement and bailing).
-    guard !self.isEmpty else {
+    guard !isEmpty else {
       return nil
     }
     switch position {
@@ -286,13 +282,14 @@ where
   }
   
   @inlinable
-  func position(
+  internal func position(
     _ position: Position,
-    offsetBy distance: Int) -> Position? {
+    offsetBy distance: Int
+  ) -> Position? {
     let linearPosition = self.linearPosition(forPosition: position)
     let destination = linearPosition + distance
     guard (0...self.count).contains(destination) else {
-      preconditionFailure("Invalid navigation, went from \(position) (linear: \(linearPosition)) => \(destination) (offset: \(distance)), but valid range is 0...\(self.count)!")
+      preconditionFailure("Invalid navigation, went from \(position) (linear: \(linearPosition)) => \(destination) (offset: \(distance)), but valid range is 0...\(count)!")
     }
     guard destination < self.count else {
       return nil
@@ -303,105 +300,50 @@ where
   }
   
   @inlinable
-  func distance(
+  internal func distance(
     from start: Position,
-    to end: Position) -> Int {
-    return (
-      self.linearPosition(forPosition: end)
-      -
-      self.linearPosition(forPosition: start)
-    )
+    to end: Position
+  ) -> Int {
+    linearPosition(forPosition: end)
+    -
+    linearPosition(forPosition: start)
   }
   
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - Reflection Support
+// MARK: - Position Advancement Support
 // -------------------------------------------------------------------------- //
 
-internal extension Chain2CollectionStorage {
-  
-  @inlinable
-  static var shortTypeName: String {
-    get {
-      return "Chain2CollectionStorage"
-    }
-  }
-  
-  @inlinable
-  static var completeTypeName: String {
-    get {
-      return "\(self.shortTypeName)<\(self.typeParameterNames)>"
-    }
-  }
-  
-  @inlinable
-  static var typeParameterNames: String {
-    get {
-      return [
-        String(reflecting: A.self),
-        String(reflecting: B.self)
-        ].joined(separator: ", ")
-    }
-  }
-
-  @inlinable
-  var parameterDescriptions: String {
-    get {
-      return [
-        String(reflecting: self.a),
-        String(reflecting: self.b)
-        ].joined(separator: ", ")
-      
-    }
-  }
-
-  @inlinable
-  var parameterDebugDescriptions: String {
-    get {
-      return [
-        "a: \(String(reflecting: self.a))",
-        "b: \(String(reflecting: self.b))"
-        ].joined(separator: ", ")
-
-    }
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - Position Advancement Support
-// -------------------------------------------------------------------------- //
-
-internal extension Chain2CollectionStorage {
+extension Chain2CollectionStorage {
   
   @usableFromInline
-  func firstPositionAfterA() -> Position? {
-    return Position.firstNonNil(
+  internal func firstPositionAfterA() -> Position? {
+    Position.firstNonNil(
       nil,
-      self.$b.firstSubscriptableIndex
+      $b.firstSubscriptableIndex
     )
   }
   
   @usableFromInline
-  func firstPositionAfterB() -> Position? {
-    return nil
+  internal func firstPositionAfterB() -> Position? {
+    nil
   }
   
   @inlinable
-  func firstPosition(after position: Arity2Position) -> Position? {
+  internal func firstPosition(after position: Arity2Position) -> Position? {
     switch position {
     case .a:
-      return self.firstPositionAfterA()
+      firstPositionAfterA()
     case .b:
-      return self.firstPositionAfterB()
+      firstPositionAfterB()
     }
   }
   
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - Position Linearization Support
+// MARK: - Position Linearization Support
 // -------------------------------------------------------------------------- //
 
 internal extension Chain2CollectionStorage {
@@ -423,7 +365,11 @@ internal extension Chain2CollectionStorage {
         )
       )
     } else {
-      preconditionFailure("Attempted to obtain position for out-of-bounds `linearPosition` \(linearPosition) in \(self.debugDescription)!")
+      preconditionFailure(
+        """
+        Attempted to obtain position for out-of-bounds `linearPosition` \(linearPosition) in \(String(reflecting: self))!
+        """
+      )
     }
   }
   
@@ -454,33 +400,34 @@ internal extension Chain2CollectionStorage {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - Position Retreat
+// MARK: - Position Retreat
 // -------------------------------------------------------------------------- //
 
-internal extension Chain2CollectionStorage
-  where
-  A:BidirectionalCollection,
-  B:BidirectionalCollection {
+extension Chain2CollectionStorage
+where
+A:BidirectionalCollection,
+B:BidirectionalCollection
+{
   
   @usableFromInline
-  func position(before position: Position) -> Position? {
+  internal func position(before position: Position) -> Position? {
     // NOTE: this blindly does all 9 retreats then figures out at the end
     // if it "went over the edge" or not. This is more-efficient than it looks
     // b.c the `previousSubscriptableIndex` usually just returns the supplied index,
     // and it's *hopefully* not worth bloating this with a ton of early-exits
     // (e.g. checking for "hold position" after each advancement and bailing).
-    guard !self.isEmpty else {
+    guard !isEmpty else {
       return nil
     }
     switch position {
     case .b(let b):
-      guard let previousBIndex = self.$b.subscriptableIndex(before: b) else {
-        return self.finalPositionBeforeB()
+      guard let previousBIndex = $b.subscriptableIndex(before: b) else {
+        return finalPositionBeforeB()
       }
       return .b(previousBIndex)
     case .a(let a):
-      guard let previousAIndex = self.$a.subscriptableIndex(before: a) else {
-        return self.finalPositionBeforeA()
+      guard let previousAIndex = $a.subscriptableIndex(before: a) else {
+        return finalPositionBeforeA()
       }
       return .a(previousAIndex)
     }
@@ -492,28 +439,28 @@ internal extension Chain2CollectionStorage
 // MARK: Chain2CollectionStorage - Position Retreat Support
 // -------------------------------------------------------------------------- //
 
-internal extension Chain2CollectionStorage {
+extension Chain2CollectionStorage {
   
   @usableFromInline
-  func finalPositionBeforeA() -> Position? {
-    return nil
+  internal func finalPositionBeforeA() -> Position? {
+    nil
   }
   
   @usableFromInline
-  func finalPositionBeforeB() -> Position? {
-    return Position.finalNonNil(
-      self.$a.finalSubscriptableIndex,
+  internal func finalPositionBeforeB() -> Position? {
+    Position.finalNonNil(
+      $a.finalSubscriptableIndex,
       nil
     )
   }
-    
+  
   @inlinable
-  func finalPosition(before position: Arity2Position) -> Position? {
+  internal func finalPosition(before position: Arity2Position) -> Position? {
     switch position {
     case .a:
-      return self.finalPositionBeforeA()
+      finalPositionBeforeA()
     case .b:
-      return self.finalPositionBeforeB()
+      finalPositionBeforeB()
     }
   }
   
@@ -542,53 +489,61 @@ internal extension Chain2CollectionStorage {
       b
     )
   }
-    
+  
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - Validatable
+// MARK: - Value-Exposure
 // -------------------------------------------------------------------------- //
 
-extension Chain2CollectionStorage : Validatable {
+extension Chain2CollectionStorage {
+  
+  @usableFromInline
+  internal typealias AlgebraicProductRepresentation = InlineProduct2<A,B>
   
   @inlinable
-  internal var isValid: Bool {
-    get {
-      guard
-        isValidOrIndifferent(self.a),
-        isValidOrIndifferent(self.b) else {
-          return false
-      }
-      return true
-    }
+  internal var algebraicProductRepresentation: AlgebraicProductRepresentation {
+    AlgebraicProductRepresentation(a,b)
   }
   
+  @inlinable
+  internal convenience init(algebraicProductRepresentation: InlineProduct2<A, B>) {
+    self.init(
+      algebraicProductRepresentation.a,
+      algebraicProductRepresentation.b
+    )
+  }
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: Chain2CollectionStorage - Sendable
+// -------------------------------------------------------------------------- //
+
+extension Chain2CollectionStorage: @unchecked Sendable
+where
+A: Sendable,
+B: Sendable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2CollectionStorage - Equatable
 // -------------------------------------------------------------------------- //
 
 extension Chain2CollectionStorage : Equatable
-  where
-  A:Equatable,
-  B:Equatable {
+where
+A:Equatable,
+B:Equatable
+{
   
   @inlinable
   internal static func ==(
     lhs: Chain2CollectionStorage<A,B>,
-    rhs: Chain2CollectionStorage<A,B>) -> Bool {
-    guard lhs !== rhs else {
-      return true
-    }
-    guard
-      lhs.a == rhs.a,
-      lhs.b == rhs.b else {
-        return false
-    }
-    return true
+    rhs: Chain2CollectionStorage<A,B>
+  ) -> Bool {
+    lhs === rhs
+    ||
+    lhs.algebraicProductRepresentation == rhs.algebraicProductRepresentation
   }
-
+  
 }
 
 // -------------------------------------------------------------------------- //
@@ -596,113 +551,39 @@ extension Chain2CollectionStorage : Equatable
 // -------------------------------------------------------------------------- //
 
 extension Chain2CollectionStorage : Hashable
-  where
-  A:Hashable,
-  B:Hashable {
+where
+A:Hashable,
+B:Hashable {
   
   @inlinable
   internal func hash(into hasher: inout Hasher) {
-    self.a.hash(into: &hasher)
-    self.b.hash(into: &hasher)
+    algebraicProductRepresentation.hash(into: &hasher)
   }
   
 }
 
-// -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - CustomStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension Chain2CollectionStorage : CustomStringConvertible {
-  
-  @inlinable
-  internal var description: String {
-    get {
-      return "( \(self.parameterDescriptions) )"
-    }
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: Chain2CollectionStorage - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension Chain2CollectionStorage : CustomDebugStringConvertible {
-  
-  @inlinable
-  internal var debugDescription: String {
-    get {
-      return "\(type(of: self).completeTypeName)(\(self.parameterDebugDescriptions)"
-    }
-  }
-  
-}
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2CollectionStorage - Codable
 // -------------------------------------------------------------------------- //
 
 extension Chain2CollectionStorage : Codable
-  where
-  A:Codable,
-  B:Codable {
-  
-  @usableFromInline
-  internal enum CodingKeys : String, CodingKey {
-    
-    case a = "a"
-    case b = "b"
-    
-    @inlinable
-    internal var intValue: Int? {
-      get {
-        switch self {
-        case .a:
-          return 0
-        case .b:
-          return 1
-        }
-      }
-    }
-    
-    @inlinable
-    internal init?(intValue: Int) {
-      switch intValue {
-      case 0:
-        self = .a
-      case 1:
-        self = .b
-      default:
-        return nil
-      }
-    }
-    
-  }
+where
+A:Codable,
+B:Codable {
   
   @inlinable
   internal func encode(to encoder: Encoder) throws {
-    var values = encoder.container(keyedBy: CodingKeys.self)
-    try values.encode(
-      self.a,
-      forKey: .a
-    )
-    try values.encode(
-      self.b,
-      forKey: .b
-    )
+    var container = encoder.singleValueContainer()
+    try container.encode(algebraicProductRepresentation)
   }
   
   @inlinable
   internal convenience init(from decoder: Decoder) throws {
-    let values = try decoder.container(keyedBy: CodingKeys.self)
+    let container = try decoder.singleValueContainer()
     self.init(
-      try values.decode(
-        A.self,
-        forKey: .a
-      ),
-      try values.decode(
-        B.self,
-        forKey: .b
+      algebraicProductRepresentation: try container.decode(
+        AlgebraicProductRepresentation.self
       )
     )
   }

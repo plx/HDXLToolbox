@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLCollectionSupport
 
 public typealias AffixCollection<Base> = AffixSequence<Base> where Base: Collection
 public typealias AffixBidirectionalCollection<Base> = AffixSequence<Base> where Base: BidirectionalCollection

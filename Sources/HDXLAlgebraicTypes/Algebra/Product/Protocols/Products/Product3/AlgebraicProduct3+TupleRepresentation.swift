@@ -45,3 +45,26 @@ extension AlgebraicProduct3 {
   }
   
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: - Component-Type Tuple
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct3 {
+  
+  public typealias ComponentTypeTuple = (
+    A.Type,
+    B.Type,
+    C.Type
+  )
+  
+  @inlinable
+  public static var componentTypeTuple: ComponentTypeTuple {
+    (
+      A.self,
+      B.self,
+      C.self
+    )
+  }
+  
+}

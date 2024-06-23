@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 //import /*HDXLCommonUtilities*/
-import HDXLTestingUtilities
+import HDXLTestingSupport
 @testable import HDXLSemanticEquivalence
 
 /// Dummy class for testing the semantic-equivalence system: `label` determines

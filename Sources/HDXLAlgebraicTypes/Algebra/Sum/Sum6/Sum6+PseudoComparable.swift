@@ -33,4 +33,21 @@ F:Comparable
 
 }
 
-
+extension Sum6: Comparable
+where
+A:Comparable,
+B:Comparable,
+C:Comparable,
+D:Comparable,
+E:Comparable,
+F:Comparable
+{
+  @inlinable
+  public static func < (
+    lhs: Self,
+    rhs: Self
+  ) -> Bool {
+    lhs.lexicographicOrderingRelationship(with: rhs).impliesLessThan
+  }
+  
+}

@@ -25,16 +25,6 @@ I: Comparable
       lhses: tupleRepresentation,
       rhses: other.tupleRepresentation
     )
-//      a <=> other.a,
-//      b <=> other.b,
-//      c <=> other.c,
-//      d <=> other.d,
-//      e <=> other.e,
-//      f <=> other.f,
-//      g <=> other.g,
-//      h <=> other.h,
-//      i <=> other.i
-//    )
   }
 }
 
@@ -95,17 +85,6 @@ ID: AlgebraicProduct9<
   @inlinable
   public var id: ID {
     ID(tupleRepresentation: identifierTuple(for: tupleRepresentation))
-//    ID(
-//      a.id,
-//      b.id,
-//      c.id,
-//      d.id,
-//      e.id,
-//      f.id,
-//      g.id,
-//      h.id,
-//      i.id
-//    )
   }
 }
 
@@ -158,17 +137,18 @@ I: AdditiveArithmetic
   
   @inlinable
   public static var zero: Self {
-    Self(
-      .zero,
-      .zero,
-      .zero,
-      .zero,
-      .zero,
-      .zero,
-      .zero,
-      .zero,
-      .zero
-    )
+    Self(tupleRepresentation: zeroTuple(for: componentTypeTuple))
+//    Self(
+//      .zero,
+//      .zero,
+//      .zero,
+//      .zero,
+//      .zero,
+//      .zero,
+//      .zero,
+//      .zero,
+//      .zero
+//    )
   }
   
   @inlinable
@@ -176,6 +156,12 @@ I: AdditiveArithmetic
     lhs: Self,
     rhs: Self
   ) -> Self {
+//    Self(
+//      tupleRepresentation: outOfPlaceAdditionTuple(
+//        lhs: lhs.tupleRepresentation,
+//        rhs: rhs.tupleRepresentation
+//      )
+//    )
     Self(
       lhs.a + rhs.a,
       lhs.b + rhs.b,
@@ -194,6 +180,10 @@ I: AdditiveArithmetic
     lhs: inout Self,
     rhs: Self
   ) {
+//    lhs.tupleRepresentation = outOfPlaceAdditionTuple(
+//      lhs: lhs.tupleRepresentation,
+//      rhs: rhs.tupleRepresentation
+//    )
     lhs.a += rhs.a
     lhs.b += rhs.b
     lhs.c += rhs.c
@@ -210,6 +200,12 @@ I: AdditiveArithmetic
     lhs: Self,
     rhs: Self
   ) -> Self {
+//    Self(
+//      tupleRepresentation: outOfPlaceSubtractionTuple(
+//        lhs: lhs.tupleRepresentation,
+//        rhs: rhs.tupleRepresentation
+//      )
+//    )
     Self(
       lhs.a - rhs.a,
       lhs.b - rhs.b,

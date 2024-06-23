@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 import HDXLTestingSupport
-import HDXLAlgebraicUtilities
+import HDXLAlgebraicTypes
 @testable import HDXLSemanticEquivalence
 
 class SemanticEquivalenceTableTests: XCTestCase {

@@ -6,20 +6,6 @@ import HDXLEssentialPrecursors
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection where Element: Equatable {
-  
-  @inlinable
-  public func elementsEqual(_ other: Chain2Collection<A,B>) -> Bool {
-    guard count == count else {
-      return false
-    }
-    for (this,that) in zip(self,other) {
-      guard this == that else {
-        return false
-      }
-    }
-    return true
-  }
-  
 
   @inlinable
   public func contains(_ element: Element) -> Bool {

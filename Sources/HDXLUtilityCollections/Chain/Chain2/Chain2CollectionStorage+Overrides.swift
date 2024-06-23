@@ -10,11 +10,9 @@ extension Chain2CollectionStorage where Element: Equatable {
   
   @inlinable
   internal func contains(_ element: Element) -> Bool {
-    return (
-      a.contains(element)
-      ||
-      b.contains(element)
-    )
+    a.contains(element)
+    ||
+    b.contains(element)
   }
   
 }
@@ -27,7 +25,7 @@ extension Chain2CollectionStorage where Element: Comparable {
   
   @inlinable
   internal func min() -> Element? {
-    return weakMinimum(
+    possibleMinimum(
       a.min(),
       b.min()
     )
@@ -35,7 +33,7 @@ extension Chain2CollectionStorage where Element: Comparable {
   
   @inlinable
   internal func max() -> Element? {
-    weakMaximum(
+    possibleMaximum(
       a.max(),
       b.max()
     )

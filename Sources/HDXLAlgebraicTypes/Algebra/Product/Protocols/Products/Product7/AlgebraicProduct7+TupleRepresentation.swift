@@ -46,3 +46,34 @@ extension AlgebraicProduct7 {
   }
   
 }
+
+// -------------------------------------------------------------------------- //
+// MARK: - Component-Type Tuple
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct7 {
+  
+  public typealias ComponentTypeTuple = (
+    A.Type,
+    B.Type,
+    C.Type,
+    D.Type,
+    E.Type,
+    F.Type,
+    G.Type
+  )
+  
+  @inlinable
+  public static var componentTypeTuple: ComponentTypeTuple {
+    (
+      A.self,
+      B.self,
+      C.self,
+      D.self,
+      E.self,
+      F.self,
+      G.self
+    )
+  }
+  
+}

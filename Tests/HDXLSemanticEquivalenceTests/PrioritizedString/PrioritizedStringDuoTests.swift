@@ -1,8 +1,8 @@
 import Foundation
 import XCTest
 //import HDXLCommonUtilities
-import HDXLTestingUtilities
-import HDXLAlgebraicUtilities
+import HDXLTestingSupport
+import HDXLAlgebraicTypes
 @testable import HDXLSemanticEquivalence
 
 class PrioritizedStringDuoTests: XCTestCase {

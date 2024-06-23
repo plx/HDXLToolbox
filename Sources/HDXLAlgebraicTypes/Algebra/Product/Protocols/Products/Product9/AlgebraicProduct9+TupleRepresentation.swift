@@ -7,7 +7,7 @@ extension AlgebraicProduct9 {
   
   /// Shorthand for the tuple equivalent-to `Self`.
   public typealias TupleRepresentation = (A,B,C,D,E,F,G,H,I)
-  
+
   /// Returns a tuple equivalent-to `self`.
   @inlinable
   public var tupleRepresentation: TupleRepresentation {
@@ -62,4 +62,39 @@ extension AlgebraicProduct9 {
     )
   }
   
+}
+
+// -------------------------------------------------------------------------- //
+// MARK: - Component-Type Tuple
+// -------------------------------------------------------------------------- //
+
+extension AlgebraicProduct9 {
+  
+  public typealias ComponentTypeTuple = (
+    A.Type,
+    B.Type,
+    C.Type,
+    D.Type,
+    E.Type,
+    F.Type,
+    G.Type,
+    H.Type,
+    I.Type
+  )
+  
+  @inlinable
+  public static var componentTypeTuple: ComponentTypeTuple {
+    (
+      A.self,
+      B.self,
+      C.self,
+      D.self,
+      E.self,
+      F.self,
+      G.self,
+      H.self,
+      I.self
+    )
+  }
+
 }

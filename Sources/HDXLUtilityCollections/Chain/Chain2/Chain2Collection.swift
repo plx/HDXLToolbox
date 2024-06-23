@@ -8,7 +8,7 @@ import HDXLCollectionSupport
 
 /// A collection providing the contents of its constituent collections, one after the other.
 @frozen
-public struct Chain2Collection<A,B>: Collection
+public struct Chain2Collection<A,B>
 where
   A: Collection,
   B: Collection,
@@ -16,17 +16,13 @@ where
 {
   
   @usableFromInline
-  internal typealias Storage = Chain2CollectionStorage<Element,A,B>
+  internal typealias Storage = Chain2CollectionStorage<A,B>
   
   @usableFromInline
   internal var storage: Storage
   
   @inlinable
   internal init(storage: Storage) {
-    // /////////////////////////////////////////////////////////////////////////
-    pedanticAssert(storage.isValid)
-    defer { pedanticAssert(self.isValid) }
-    // /////////////////////////////////////////////////////////////////////////
     self.storage = storage
   }
   
@@ -46,25 +42,21 @@ where
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - Property Exposure
+// MARK: - Property Exposure
 // -------------------------------------------------------------------------- //
 
-public extension Chain2Collection {
+extension Chain2Collection {
   
   @inlinable
-  var a: A {
+  public var a: A {
     get {
       storage.a
     }
     set {
-      // ///////////////////////////////////////////////////////////////////////
-      pedanticAssert(isValid)
-      defer { pedanticAssert(isValid) }
-      defer { pedanticAssert(isKnownUniquelyReferenced(&storage)) }
-      // ///////////////////////////////////////////////////////////////////////
-      if isKnownUniquelyReferenced(&storage) {
+      switch isKnownUniquelyReferenced(&storage) {
+      case true:
         storage.a = newValue
-      } else {
+      case false:
         storage = storage.with(
           a: newValue
         )
@@ -73,19 +65,15 @@ public extension Chain2Collection {
   }
   
   @inlinable
-  var b: B {
+  public var b: B {
     get {
       storage.b
     }
     set {
-      // ///////////////////////////////////////////////////////////////////////
-      pedanticAssert(isValid)
-      defer { pedanticAssert(isValid) }
-      defer { pedanticAssert(isKnownUniquelyReferenced(&storage)) }
-      // ///////////////////////////////////////////////////////////////////////
-      if isKnownUniquelyReferenced(&storage) {
+      switch isKnownUniquelyReferenced(&storage) {
+      case true:
         storage.b = newValue
-      } else {
+      case false:
         storage = storage.with(
           b: newValue
         )
@@ -96,46 +84,16 @@ public extension Chain2Collection {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - Reflection Support
-// -------------------------------------------------------------------------- //
-
-internal extension Chain2Collection {
-  
-  @inlinable
-  static var shortTypeName: String {
-    "Chain2Collection"
-  }
-  
-  @inlinable
-  static var completeTypeName: String {
-    String(reflecting: Self.self)
-  }
-    
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - Validatable
-// -------------------------------------------------------------------------- //
-
-extension Chain2Collection {
-  
-  @inlinable
-  public var isValid: Bool {
-    storage.isValid
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - Equatable
+// MARK: - Equatable
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection : Sendable where A: Sendable, B: Sendable { }
 extension Chain2Collection : Equatable where A: Equatable, B: Equatable { }
 extension Chain2Collection : Hashable where A: Hashable, B: Hashable { }
+extension Chain2Collection : Codable where A: Codable, B: Codable { }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - CustomStringConvertible
+// MARK: - CustomStringConvertible
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection : CustomStringConvertible {
@@ -152,7 +110,7 @@ extension Chain2Collection : CustomStringConvertible {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - CustomDebugStringConvertible
+// MARK: - CustomDebugStringConvertible
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection : CustomDebugStringConvertible {
@@ -168,20 +126,13 @@ extension Chain2Collection : CustomDebugStringConvertible {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - Codable
-// -------------------------------------------------------------------------- //
-
-extension Chain2Collection : Encodable where A: Encoder, B: Encodable { }
-extension Chain2Collection : Decodable where A: Decodable, B: Decodable { }
-
-// -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - Collection
+// MARK: - Collection
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection : Collection {
   
   public typealias Element = A.Element
-  public typealias Index = Chain2CollectionIndex<A,B>
+  public typealias Index = Chain2CollectionIndex<A.Index, B.Index>
   
   @inlinable
   public var isEmpty: Bool {
@@ -208,8 +159,8 @@ extension Chain2Collection : Collection {
     get {
       switch index.storage {
       case .position(let position):
-        return self.storage[position]
-      case .end:
+        return storage[position]
+      case .endIndex:
         preconditionFailure("Tried to subscript the end index on \(String(reflecting: self))!")
       }
     }
@@ -220,7 +171,7 @@ extension Chain2Collection : Collection {
     switch index.storage {
     case .position(let position):
       storage.linearPosition(forPosition: position)
-    case .end:
+    case .endIndex:
       count
     }
   }
@@ -260,7 +211,7 @@ extension Chain2Collection : Collection {
         return endIndex
       }
       return Index(position: nextPosition)
-    case .end:
+    case .endIndex:
       preconditionFailure("Tried to advance the end index on \(String(reflecting: self))!")
     }
   }
@@ -308,7 +259,7 @@ extension Chain2Collection : Collection {
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - BidirectionalCollection
+// MARK: - BidirectionalCollection
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection : BidirectionalCollection
@@ -326,7 +277,7 @@ extension Chain2Collection : BidirectionalCollection
         preconditionFailure("Tried to go back from the start index in \(String(reflecting: self))!")
       }
       return Index(position: previousPosition)
-    case .end:
+    case .endIndex:
       guard let finalPosition = storage.finalPosition else {
         preconditionFailure("Tried to go back from the start index in \(String(reflecting: self))!")
       }
@@ -337,14 +288,11 @@ extension Chain2Collection : BidirectionalCollection
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: Chain2Collection - RandomAccessCollection
+// MARK: - RandomAccessCollection
 // -------------------------------------------------------------------------- //
 
 extension Chain2Collection : RandomAccessCollection
   where
   A:RandomAccessCollection,
   B:RandomAccessCollection 
-{
-  
-}
-
+{ }
