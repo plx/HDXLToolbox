@@ -6,24 +6,24 @@ import HDXLEssentialPrecursors
 // -------------------------------------------------------------------------- //
 
 @inlinable
-package func coalesceMovementAttemptDestinations<A,B>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct2>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>
+) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
-      .success(
-        (
+      return .success(
+        Position(
           aPosition,
           bPosition
         )
@@ -37,31 +37,31 @@ package func coalesceMovementAttemptDestinations<A,B>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct3>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>
+) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
-        .success(
-          (
+        return .success(
+          Position(
             aPosition,
             bPosition,
             cPosition
@@ -77,38 +77,38 @@ internal func coalesceMovementAttemptDestinations<A,B,C>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C,D>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>,
-  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<D>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C,D)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct4>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>,
+  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.D>
+) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
         switch d() {
         case .misnavigation:
-          .misnavigation
+          return .misnavigation
         case .becameEnd:
-          .becameEnd
+          return .becameEnd
         case .success(let dPosition):
-          .success(
-            (
+          return .success(
+            Position(
               aPosition,
               bPosition,
               cPosition,
@@ -126,45 +126,44 @@ internal func coalesceMovementAttemptDestinations<A,B,C,D>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C,D,E>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>,
-  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<D>,
-  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<E>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C,D,E)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct5>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>,
+  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.D>,
+  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.E>) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
         switch d() {
         case .misnavigation:
-          .misnavigation
+          return .misnavigation
         case .becameEnd:
-          .becameEnd
+          return .becameEnd
         case .success(let dPosition):
           switch e() {
           case .misnavigation:
-            .misnavigation
+            return .misnavigation
           case .becameEnd:
-            .becameEnd
+            return .becameEnd
           case .success(let ePosition):
-            .success(
-              (
+            return .success(
+              Position(
                 aPosition,
                 bPosition,
                 cPosition,
@@ -184,52 +183,51 @@ internal func coalesceMovementAttemptDestinations<A,B,C,D,E>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>,
-  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<D>,
-  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<E>,
-  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<F>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C,D,E,F)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct6>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>,
+  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.D>,
+  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.E>,
+  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.F>) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
         switch d() {
         case .misnavigation:
-          .misnavigation
+          return .misnavigation
         case .becameEnd:
-          .becameEnd
+          return .becameEnd
         case .success(let dPosition):
           switch e() {
           case .misnavigation:
-            .misnavigation
+            return .misnavigation
           case .becameEnd:
-            .becameEnd
+            return .becameEnd
           case .success(let ePosition):
             switch f() {
             case .misnavigation:
-              .misnavigation
+              return .misnavigation
             case .becameEnd:
-              .becameEnd
+              return .becameEnd
             case .success(let fPosition):
-              .success(
-                (
+              return .success(
+                Position(
                   aPosition,
                   bPosition,
                   cPosition,
@@ -251,59 +249,58 @@ internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F,G>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>,
-  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<D>,
-  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<E>,
-  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<F>,
-  _ g: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<G>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C,D,E,F,G)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct7>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>,
+  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.D>,
+  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.E>,
+  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.F>,
+  _ g: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.G>) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
         switch d() {
         case .misnavigation:
-          .misnavigation
+          return .misnavigation
         case .becameEnd:
-          .becameEnd
+          return .becameEnd
         case .success(let dPosition):
           switch e() {
           case .misnavigation:
-            .misnavigation
+            return .misnavigation
           case .becameEnd:
-            .becameEnd
+            return .becameEnd
           case .success(let ePosition):
             switch f() {
             case .misnavigation:
-              .misnavigation
+              return .misnavigation
             case .becameEnd:
-              .becameEnd
+              return .becameEnd
             case .success(let fPosition):
               switch g() {
               case .misnavigation:
-                .misnavigation
+                return .misnavigation
               case .becameEnd:
-                .becameEnd
+                return .becameEnd
               case .success(let gPosition):
-                .success(
-                  (
+                return .success(
+                  Position(
                     aPosition,
                     bPosition,
                     cPosition,
@@ -327,66 +324,65 @@ internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F,G>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F,G,H>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>,
-  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<D>,
-  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<E>,
-  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<F>,
-  _ g: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<G>,
-  _ h: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<H>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C,D,E,F,G,H)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct8>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>,
+  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.D>,
+  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.E>,
+  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.F>,
+  _ g: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.G>,
+  _ h: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.H>) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
         switch d() {
         case .misnavigation:
-          .misnavigation
+          return .misnavigation
         case .becameEnd:
-          .becameEnd
+          return .becameEnd
         case .success(let dPosition):
           switch e() {
           case .misnavigation:
-            .misnavigation
+            return .misnavigation
           case .becameEnd:
-            .becameEnd
+            return .becameEnd
           case .success(let ePosition):
             switch f() {
             case .misnavigation:
-              .misnavigation
+              return .misnavigation
             case .becameEnd:
-              .becameEnd
+              return .becameEnd
             case .success(let fPosition):
               switch g() {
               case .misnavigation:
-                .misnavigation
+                return .misnavigation
               case .becameEnd:
-                .becameEnd
+                return .becameEnd
               case .success(let gPosition):
                 switch h() {
                 case .misnavigation:
-                  .misnavigation
+                  return .misnavigation
                 case .becameEnd:
-                  .becameEnd
+                  return .becameEnd
                 case .success(let hPosition):
-                  .success(
-                    (
+                  return .success(
+                    Position(
                       aPosition,
                       bPosition,
                       cPosition,
@@ -412,73 +408,72 @@ internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F,G,H>(
 // -------------------------------------------------------------------------- //
 
 @inlinable
-internal func coalesceMovementAttemptDestinations<A,B,C,D,E,F,G,H,I>(
-  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<A>,
-  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<B>,
-  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<C>,
-  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<D>,
-  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<E>,
-  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<F>,
-  _ g: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<G>,
-  _ h: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<H>,
-  _ i: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<I>
-) -> IndexPositionStorageMovementAttemptDestination<(A,B,C,D,E,F,G,H,I)> {
+internal func coalesceMovementAttemptDestinations<Position:AlgebraicProduct9>(
+  _ a: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.A>,
+  _ b: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.B>,
+  _ c: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.C>,
+  _ d: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.D>,
+  _ e: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.E>,
+  _ f: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.F>,
+  _ g: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.G>,
+  _ h: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.H>,
+  _ i: @autoclosure () -> IndexPositionStorageMovementAttemptDestination<Position.I>) -> IndexPositionStorageMovementAttemptDestination<Position> {
   switch a() {
   case .misnavigation:
-    .misnavigation
+    return .misnavigation
   case .becameEnd:
-    .becameEnd
+    return .becameEnd
   case .success(let aPosition):
     switch b() {
     case .misnavigation:
-      .misnavigation
+      return .misnavigation
     case .becameEnd:
-      .becameEnd
+      return .becameEnd
     case .success(let bPosition):
       switch c() {
       case .misnavigation:
-        .misnavigation
+        return .misnavigation
       case .becameEnd:
-        .becameEnd
+        return .becameEnd
       case .success(let cPosition):
         switch d() {
         case .misnavigation:
-          .misnavigation
+          return .misnavigation
         case .becameEnd:
-          .becameEnd
+          return .becameEnd
         case .success(let dPosition):
           switch e() {
           case .misnavigation:
-            .misnavigation
+            return .misnavigation
           case .becameEnd:
-            .becameEnd
+            return .becameEnd
           case .success(let ePosition):
             switch f() {
             case .misnavigation:
-              .misnavigation
+              return .misnavigation
             case .becameEnd:
-              .becameEnd
+              return .becameEnd
             case .success(let fPosition):
               switch g() {
               case .misnavigation:
-                .misnavigation
+                return .misnavigation
               case .becameEnd:
-                .becameEnd
+                return .becameEnd
               case .success(let gPosition):
                 switch h() {
                 case .misnavigation:
-                  .misnavigation
+                  return .misnavigation
                 case .becameEnd:
-                  .becameEnd
+                  return .becameEnd
                 case .success(let hPosition):
                   switch i() {
                   case .misnavigation:
-                    .misnavigation
+                    return .misnavigation
                   case .becameEnd:
-                    .becameEnd
+                    return .becameEnd
                   case .success(let iPosition):
-                    .success(
-                      (
+                    return .success(
+                      Position(
                         aPosition,
                         bPosition,
                         cPosition,

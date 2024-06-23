@@ -51,6 +51,28 @@ let package = Package(
     ),
 
     .target(
+      name: "HDXLAlgebraicTypes",
+      dependencies: [
+        "HDXLEssentialPrecursors"
+      ]
+    ),
+    .target(
+      name: "HDXLAlgebraicTypesTestSupport",
+      dependencies: [
+        "HDXLTestingSupport",
+        "HDXLAlgebraicTypes"
+      ]
+    ),
+    .testTarget(
+      name: "HDXLAlgebraicTypesTests",
+      dependencies: [
+        "HDXLTestingSupport",
+        "HDXLAlgebraicTypes",
+        "HDXLAlgebraicTypesTestSupport"
+      ]
+    ),
+
+    .target(
       name: "HDXLKeyedCollections",
       dependencies: [
         "HDXLEssentialPrecursors",

@@ -7,8 +7,9 @@ public typealias InterjectionBidirectionalCollection<Base> = InterjectionSequenc
 public typealias InterjectionRandomAccessCollection<Base> = InterjectionSequence<Base> where Base: RandomAccessCollection
 
 extension Sequence {
+  
   @inlinable
-  public func withInterjection(_ interjection: Element) -> InterjectionSequence<Self> {
+  public func interjected(by interjection: Element) -> some Sequence<Element> {
     return InterjectionSequence<Self>(
       interjection: interjection,
       base: self
@@ -48,20 +49,25 @@ public struct InterjectionSequence<Base>: Sequence where Base: Sequence {
 extension InterjectionSequence: Sendable where Base: Sendable, Base.Element: Sendable {}
 extension InterjectionSequence: Equatable where Base: Equatable, Base.Element: Equatable {}
 extension InterjectionSequence: Hashable where Base: Hashable, Base.Element: Hashable {}
-extension InterjectionSequence: Codable where Base: Codable, Base.Element: Codable {}
+extension InterjectionSequence: Encodable where Base: Encodable, Base.Element: Encodable {}
+extension InterjectionSequence: Decodable where Base: Decodable, Base.Element: Decodable {}
 
 extension InterjectionSequence: CustomStringConvertible {
+  
   @inlinable
   public var description: String {
     "interjection-of \(String(describing: interjection)) within \(String(describing: base))"
   }
+  
 }
 
 extension InterjectionSequence: CustomDebugStringConvertible {
+  
   @inlinable
   public var debugDescription: String {
     "\(String(reflecting: type(of: self)))(interjection: \(String(reflecting: interjection)), base: \(String(reflecting: base)))"
   }
+  
 }
 
 extension InterjectionSequence: Collection where Base: Collection {

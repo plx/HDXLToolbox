@@ -40,7 +40,7 @@ public protocol AsynchronousRepresentativeProbeProviding : Sendable {
 extension AsynchronousRepresentativeProbeProviding where Self: RepresentativeProbeProviding  {
   
   @inlinable
-  public static var allAsynchronousRepresentativeProbes: some AsyncSequence<Self, Never> {
+  public static var allAsynchronousRepresentativeProbes: some Sendable & AsyncSequence<Self, Never> {
     AsyncStream { continuation in
       defer { continuation.finish() }
       for element in allRepresentativeProbes {
