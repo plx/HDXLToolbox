@@ -1,17 +1,10 @@
 import SwiftSyntax
 
-public enum TypeArchetype: Sendable, Hashable, CaseIterable, Codable {
-  case `actor`
-  case `class`
-  case `enum`
-  case `struct`
-}
-
 public struct CharacterizedTypeName: Sendable, Hashable, Codable {
-  public var typeArchetype: TypeArchetype
+  public var typeArchetype: TypeDeclarationArchetype
   public var typeName: String
   
-  public init(typeArchetype: TypeArchetype, typeName: String) {
+  public init(typeArchetype: TypeDeclarationArchetype, typeName: String) {
     self.typeArchetype = typeArchetype
     self.typeName = typeName
   }
@@ -48,8 +41,24 @@ public struct CharacterizedTypeName: Sendable, Hashable, Codable {
 extension DeclGroupSyntax {
 
   @inlinable
+  public var visibilityLevel: VisibilityLevel? {
+    modifiers
+      .lazy
+      .compactMap(\.visibilityLevel)
+      .first
+  }
+  
+  @inlinable
+  public var inlinabilityDisposition: InlinabilityDisposition? {
+    attributes
+      .lazy
+      .compactMap(\.inlinabilityDisposition)
+      .first
+  }
+
+  @inlinable
   public func typeNameWithAllSimpleGenericParameters(
-    excludingArchetypes excludedArchetypes: Set<TypeArchetype> = []
+    excludingArchetypes excludedArchetypes: Set<TypeDeclarationArchetype> = []
   ) -> (CharacterizedTypeName, [String])? {
     if let actorDeclaration = self.as(ActorDeclSyntax.self) {
       guard

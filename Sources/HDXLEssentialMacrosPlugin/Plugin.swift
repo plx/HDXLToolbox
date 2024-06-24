@@ -20,6 +20,11 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     ConditionallyVectorArithmeticMacro.self,
     ConditionallyRandomAccessCollectionMacro.self,
     
+    // unconditional conformance help
+    StorageComparableMacro.self,
+    StorageCustomStringConvertibleMacro.self,
+    StorageCustomDebugStringConvertibleMacro.self,
+    
     // COW-related
     COWPropertyMacro.self,
     COWBoxPropertyMacro.self,

@@ -61,3 +61,21 @@ public macro ConditionallyRandomAccessCollection() = #externalMacro(
   module: "HDXLEssentialMacrosPlugin",
   type: "ConditionallyRandomAccessCollectionMacro"
 )
+
+@attached(extension, conformances: Comparable, names: named(<))
+public macro StorageComparable() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "StorageComparableMacro"
+)
+
+@attached(extension, conformances: CustomStringConvertible, names: named(description))
+public macro StorageCustomStringConvertible() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "StorageCustomStringConvertibleMacro"
+)
+
+@attached(extension, conformances: CustomDebugStringConvertible, names: named(debugDescription))
+public macro StorageCustomDebugStringConvertible() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "StorageCustomDebugStringConvertibleMacro"
+)

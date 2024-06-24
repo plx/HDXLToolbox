@@ -15,6 +15,9 @@ import HDXLEssentialMacros
 @ConditionallyAutoIdentifiable
 @ConditionallyEncodable
 @ConditionallyDecodable
+@StorageComparable
+@StorageCustomStringConvertible
+@StorageCustomDebugStringConvertible
 public struct Chain9CollectionIndex<A,B,C,D,E,F,G,H,I>
 where
 A: Comparable,
@@ -56,22 +59,6 @@ I: Comparable
 }
 
 // -------------------------------------------------------------------------- //
-// MARK: - Comparable
-// -------------------------------------------------------------------------- //
-
-extension Chain9CollectionIndex: Comparable {
-  
-  @inlinable
-  public static func <(
-    lhs: Self,
-    rhs: Self
-  ) -> Bool {
-    lhs.storage < rhs.storage
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
 // MARK: - CaseIterable
 // -------------------------------------------------------------------------- //
 
@@ -101,32 +88,6 @@ I: CaseIterable
       I.allCases.onDemandMap(Self.init(i:))
     )
   }
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension Chain9CollectionIndex: CustomStringConvertible {
-  
-  @inlinable
-  public var description: String {
-    String(describing: storage)
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension Chain9CollectionIndex: CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    String(reflecting: storage)
-  }
-  
 }
 
 // -------------------------------------------------------------------------- //
