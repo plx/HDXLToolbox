@@ -9,6 +9,7 @@ import HDXLEssentialMacros
 
 /// A collection providing the contents of its constituent collections, one after the other.
 @frozen
+@COWWrapper
 @ConditionallySendable
 @ConditionallyEquatable
 @ConditionallyHashable
@@ -82,157 +83,40 @@ A.Element == I.Element
 extension Chain9Collection {
   
   @inlinable
-  public var a: A {
-    get {
-      storage.a
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.a = newValue
-      case false:
-        storage = storage.with(
-          a: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var a: A
   
   @inlinable
-  public var b: B {
-    get {
-      storage.b
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.b = newValue
-      case false:
-        storage = storage.with(
-          b: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var b: B
 
   @inlinable
-  public var c: C {
-    get {
-      storage.c
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.c = newValue
-      case false:
-        storage = storage.with(
-          c: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var c: C
 
   @inlinable
-  public var d: D {
-    get {
-      storage.d
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.d = newValue
-      case false:
-        storage = storage.with(
-          d: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var d: D
 
   @inlinable
-  public var e: E {
-    get {
-      storage.e
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.e = newValue
-      case false:
-        storage = storage.with(
-          e: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var e: E
 
   @inlinable
-  public var f: F {
-    get {
-      storage.f
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.f = newValue
-      case false:
-        storage = storage.with(
-          f: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var f: F
 
   @inlinable
-  public var g: G {
-    get {
-      storage.g
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.g = newValue
-      case false:
-        storage = storage.with(
-          g: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var g: G
 
   @inlinable
-  public var h: H {
-    get {
-      storage.h
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.h = newValue
-      case false:
-        storage = storage.with(
-          h: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var h: H
 
   @inlinable
-  public var i: I {
-    get {
-      storage.i
-    }
-    set {
-      switch isKnownUniquelyReferenced(&storage) {
-      case true:
-        storage.i = newValue
-      case false:
-        storage = storage.with(
-          i: newValue
-        )
-      }
-    }
-  }
+  @COWProperty
+  public var i: I
 
 }
 

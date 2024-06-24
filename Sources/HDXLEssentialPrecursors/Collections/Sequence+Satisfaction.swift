@@ -1,5 +1,4 @@
 import Foundation
-import HDXLEssentialPrecursors
 
 extension Sequence {
 
@@ -7,7 +6,7 @@ extension Sequence {
   ///
   /// - note: I really can't see why this isn't in the stdlib.
   @inlinable
-  public func anySatisfy(_ predicate: (Element) throws -> Bool ) rethrows -> Bool {
+  package func anySatisfy(_ predicate: (Element) throws -> Bool ) rethrows -> Bool {
     for element in self {
       if try predicate(element) {
         return true
@@ -18,7 +17,7 @@ extension Sequence {
   
   /// Returns the count of elements in `self` that satisfy `predicate`
   @inlinable
-  public func countSatisfying(_ predicate: (Element) throws -> Bool) rethrows -> Int {
+  package func countSatisfying(_ predicate: (Element) throws -> Bool) rethrows -> Int {
     var count: Int = 0
     for element in self {
       if try predicate(element) {
@@ -30,7 +29,7 @@ extension Sequence {
 
   /// Returns the count of elements in `self` that fail-to-satisfy `predicate`
   @inlinable
-  public func countFailing(_ predicate: (Element) throws -> Bool) rethrows -> Int {
+  package func countFailing(_ predicate: (Element) throws -> Bool) rethrows -> Int {
     var count: Int = 0
     for element in self {
       if !(try predicate(element)) {

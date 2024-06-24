@@ -10,6 +10,7 @@ import HDXLEssentialMacros
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@COWWrapper
 @ConditionallySendable
 @ConditionallyEquatable
 @ConditionallyHashable
@@ -126,9 +127,6 @@ extension COWProduct9 : AlgebraicProduct9 {
   
   public typealias ArityPosition = Arity9Position
 
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { false }
-
 }
 
 // -------------------------------------------------------------------------- //
@@ -136,113 +134,41 @@ extension COWProduct9 : AlgebraicProduct9 {
 // -------------------------------------------------------------------------- //
 
 extension COWProduct9 {
-  
-  @inlinable
-  internal mutating func ensureUniqueStorage() {
-    guard !isKnownUniquelyReferenced(&storage) else {
-      return
-    }
-    
-    storage = storage.obtainClone()
-  }
-  
-  @inlinable
-  public var a: A {
-    get {
-      storage.value.a
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.a = newValue
-    }
-  }
-  
-  @inlinable
-  public var b: B {
-    get {
-      storage.value.b
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.b = newValue
-    }
-  }
 
   @inlinable
-  public var c: C {
-    get {
-      storage.value.c
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.c = newValue
-    }
-  }
+  @COWBoxProperty
+  public var a: A
+  
+  @inlinable
+  @COWBoxProperty
+  public var b: B
 
   @inlinable
-  public var d: D {
-    get {
-      storage.value.d
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.d = newValue
-    }
-  }
-  
-  @inlinable
-  public var e: E {
-    get {
-      storage.value.e
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.e = newValue
-    }
-  }
-  
-  @inlinable
-  public var f: F {
-    get {
-      storage.value.f
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.f = newValue
-    }
-  }
+  @COWBoxProperty
+  public var c: C
 
   @inlinable
-  public var g: G {
-    get {
-      storage.value.g
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.g = newValue
-    }
-  }
+  @COWBoxProperty
+  public var d: D
   
   @inlinable
-  public var h: H {
-    get {
-      storage.value.h
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.h = newValue
-    }
-  }
+  @COWBoxProperty
+  public var e: E
   
   @inlinable
-  public var i: I {
-    get {
-      storage.value.i
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.i = newValue
-    }
-  }
+  @COWBoxProperty
+  public var f: F
 
+  @inlinable
+  @COWBoxProperty
+  public var g: G
+  
+  @inlinable
+  @COWBoxProperty
+  public var h: H
+  
+  @inlinable
+  @COWBoxProperty
+  public var i: I
+  
 }

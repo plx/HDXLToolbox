@@ -2,12 +2,14 @@ import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain9CollectionStorage - Definition
 // -------------------------------------------------------------------------- //
 
 @usableFromInline
+@COWStorage
 internal final class Chain9CollectionStorage<A,B,C,D,E,F,G,H,I>
 where
 A: Collection,
@@ -810,18 +812,67 @@ internal extension Chain9CollectionStorage {
   
   @inlinable
   func position(forLinearPosition linearPosition: Int) -> Position {
-    if self.rangeForA.contains(linearPosition) {
+    if rangeForA.contains(linearPosition) {
       return .a(
         self.a.index(
           self.a.startIndex,
           offsetBy: linearPosition - self.rangeForA.lowerBound
         )
       )
-    } else if self.rangeForB.contains(linearPosition) {
+    } else if rangeForB.contains(linearPosition) {
       return .b(
         self.b.index(
           self.b.startIndex,
           offsetBy: linearPosition - self.rangeForB.lowerBound
+        )
+      )
+    } else if rangeForC.contains(linearPosition) {
+      return .c(
+        self.c.index(
+          self.c.startIndex,
+          offsetBy: linearPosition - self.rangeForC.lowerBound
+        )
+      )
+    } else if rangeForD.contains(linearPosition) {
+      return .d(
+        self.d.index(
+          self.d.startIndex,
+          offsetBy: linearPosition - self.rangeForD.lowerBound
+        )
+      )
+    } else if rangeForE.contains(linearPosition) {
+      return .e(
+        self.e.index(
+          self.e.startIndex,
+          offsetBy: linearPosition - self.rangeForE.lowerBound
+        )
+      )
+    } else if rangeForF.contains(linearPosition) {
+      return .f(
+        self.f.index(
+          self.f.startIndex,
+          offsetBy: linearPosition - self.rangeForF.lowerBound
+        )
+      )
+    } else if rangeForG.contains(linearPosition) {
+      return .g(
+        self.g.index(
+          self.g.startIndex,
+          offsetBy: linearPosition - self.rangeForG.lowerBound
+        )
+      )
+    } else if rangeForH.contains(linearPosition) {
+      return .h(
+        self.h.index(
+          self.h.startIndex,
+          offsetBy: linearPosition - self.rangeForH.lowerBound
+        )
+      )
+    } else if rangeForI.contains(linearPosition) {
+      return .i(
+        self.i.index(
+          self.i.startIndex,
+          offsetBy: linearPosition - self.rangeForI.lowerBound
         )
       )
     } else {

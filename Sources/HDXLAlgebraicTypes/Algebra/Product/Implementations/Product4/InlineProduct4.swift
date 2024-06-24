@@ -74,8 +74,5 @@ extension InlineProduct4 : AlgebraicProduct4 {
   
   public typealias ArityPosition = Arity4Position
 
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { true }
-
 }
 

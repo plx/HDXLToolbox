@@ -10,6 +10,7 @@ import HDXLEssentialMacros
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@COWWrapper
 @ConditionallySendable
 @ConditionallyEquatable
 @ConditionallyHashable
@@ -100,10 +101,7 @@ C: Identifiable
 extension COWProduct3 : AlgebraicProduct3 {
   
   public typealias ArityPosition = Arity3Position
-
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { false }
-
+  
 }
 
 // -------------------------------------------------------------------------- //
@@ -113,45 +111,15 @@ extension COWProduct3 : AlgebraicProduct3 {
 extension COWProduct3 {
   
   @inlinable
-  internal mutating func ensureUniqueStorage() {
-    guard !isKnownUniquelyReferenced(&storage) else {
-      return
-    }
-    
-    storage = storage.obtainClone()
-  }
-  
+  @COWBoxProperty
+  public var a: A
+
   @inlinable
-  public var a: A {
-    get {
-      storage.value.a
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.a = newValue
-    }
-  }
-  
+  @COWBoxProperty
+  public var b: B
+
   @inlinable
-  public var b: B {
-    get {
-      storage.value.b
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.b = newValue
-    }
-  }
-  
-  @inlinable
-  public var c: C {
-    get {
-      storage.value.c
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.c = newValue
-    }
-  }
-      
+  @COWBoxProperty
+  public var c: C
+
 }

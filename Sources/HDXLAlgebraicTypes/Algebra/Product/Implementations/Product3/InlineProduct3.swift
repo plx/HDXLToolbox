@@ -69,8 +69,5 @@ extension InlineProduct3 : AlgebraicProduct3 {
   
   public typealias ArityPosition = Arity3Position
 
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { true }
-
 }
 

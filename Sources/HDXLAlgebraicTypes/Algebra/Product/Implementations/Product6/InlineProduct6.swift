@@ -85,8 +85,5 @@ extension InlineProduct6 : AlgebraicProduct6 {
   
   public typealias ArityPosition = Arity6Position
 
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { true }
-
 }
 

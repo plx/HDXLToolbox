@@ -99,9 +99,5 @@ I: Identifiable
 extension InlineProduct9 : AlgebraicProduct9 {
   
   public typealias ArityPosition = Arity9Position
-
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { true }
-
+  
 }
-

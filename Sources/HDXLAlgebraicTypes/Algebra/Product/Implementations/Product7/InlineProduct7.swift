@@ -89,9 +89,5 @@ G: Identifiable
 extension InlineProduct7 : AlgebraicProduct7 {
   
   public typealias ArityPosition = Arity7Position
-
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { true }
-
+  
 }
-

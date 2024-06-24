@@ -1,4 +1,5 @@
 import Foundation
+import HDXLEssentialPrecursors
 
 extension Set {
   
@@ -93,17 +94,7 @@ extension Set {
     
     return "[ \(elements) ]"
   }
-  
-  @inlinable
-  internal var unlessEmpty: Self? {
-    switch isEmpty {
-    case true:
-      nil
-    case false:
-      self
-    }
-  }
-  
+    
   @inlinable
   internal func nonEmptyIntersection(with other: Self) -> Self? {
     intersection(other).unlessEmpty

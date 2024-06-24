@@ -3,7 +3,7 @@ import HDXLEssentialPrecursors
 
 extension AlgebraicProduct3 {
   
-  /// Shorthand for the type of a homogeneous-value extractor.
+  /// S,horthand for the type of a homogeneous-value extractor.
   public typealias HomogeneousValueExtractor<T> = Sum3<
     (A) -> T,
     (B) -> T,

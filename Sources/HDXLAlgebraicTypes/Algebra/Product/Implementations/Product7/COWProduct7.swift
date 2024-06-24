@@ -10,6 +10,7 @@ import HDXLEssentialMacros
 /// Product-2 that stores all values "out-of-line" (e.g. on the heap), implemented
 /// as a typical COW-style `struct` wrapper around a `class` that holds the data.
 @frozen
+@COWWrapper
 @ConditionallySendable
 @ConditionallyEquatable
 @ConditionallyHashable
@@ -117,9 +118,6 @@ extension COWProduct7 : AlgebraicProduct7 {
   
   public typealias ArityPosition = Arity7Position
 
-  @inlinable
-  public static var withDerivationShouldEnsureUniqueCopyByDefault: Bool { false }
-
 }
 
 // -------------------------------------------------------------------------- //
@@ -129,89 +127,31 @@ extension COWProduct7 : AlgebraicProduct7 {
 extension COWProduct7 {
   
   @inlinable
-  internal mutating func ensureUniqueStorage() {
-    guard !isKnownUniquelyReferenced(&storage) else {
-      return
-    }
-    
-    storage = storage.obtainClone()
-  }
+  @COWBoxProperty
+  public var a: A
   
   @inlinable
-  public var a: A {
-    get {
-      storage.value.a
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.a = newValue
-    }
-  }
+  @COWBoxProperty
+  public var b: B
+
+  @inlinable
+  @COWBoxProperty
+  public var c: C
+
+  @inlinable
+  @COWBoxProperty
+  public var d: D
   
   @inlinable
-  public var b: B {
-    get {
-      storage.value.b
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.b = newValue
-    }
-  }
+  @COWBoxProperty
+  public var e: E
   
   @inlinable
-  public var c: C {
-    get {
-      storage.value.c
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.c = newValue
-    }
-  }
-  
+  @COWBoxProperty
+  public var f: F
+
   @inlinable
-  public var d: D {
-    get {
-      storage.value.d
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.d = newValue
-    }
-  }
-  
-  @inlinable
-  public var e: E {
-    get {
-      storage.value.e
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.e = newValue
-    }
-  }
-  
-  @inlinable
-  public var f: F {
-    get {
-      storage.value.f
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.f = newValue
-    }
-  }
-  
-  @inlinable
-  public var g: G {
-    get {
-      storage.value.g
-    }
-    set {
-      ensureUniqueStorage()
-      storage.value.g = newValue
-    }
-  }
-  
+  @COWBoxProperty
+  public var g: G
+
 }

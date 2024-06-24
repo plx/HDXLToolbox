@@ -18,6 +18,12 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     // not really "general-purpose" like the others:
     ConditionallyAdditiveArithmeticMacro.self,
     ConditionallyVectorArithmeticMacro.self,
-    ConditionallyRandomAccessCollectionMacro.self
+    ConditionallyRandomAccessCollectionMacro.self,
+    
+    // COW-related
+    COWPropertyMacro.self,
+    COWBoxPropertyMacro.self,
+    COWWrapperMacro.self,
+    COWStorageMacro.self
   ]
 }
