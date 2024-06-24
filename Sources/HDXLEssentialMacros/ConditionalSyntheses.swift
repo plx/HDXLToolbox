@@ -79,3 +79,10 @@ public macro StorageCustomDebugStringConvertible() = #externalMacro(
   module: "HDXLEssentialMacrosPlugin",
   type: "StorageCustomDebugStringConvertibleMacro"
 )
+
+@attached(extension, conformances: CustomDebugStringConvertible, names: named(debugDescription))
+public macro ConstructorDebugDescription() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConstructorDebugDescriptionMacro"
+)
+

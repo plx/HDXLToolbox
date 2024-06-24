@@ -29,6 +29,12 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     COWPropertyMacro.self,
     COWBoxPropertyMacro.self,
     COWWrapperMacro.self,
-    COWStorageMacro.self
+    COWStorageMacro.self,
+    
+    // Stringification
+    ConstructorDebugDescriptionMacro.self,
+    
+    // Assistance
+    PreferredMemberwiseInitializerMacro.self
   ]
 }

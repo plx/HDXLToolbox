@@ -49,6 +49,7 @@ internal final class COWExerciserStorage<Foo, Bar, Baz> {
 }
 
 @COWWrapper
+@ConstructorDebugDescription
 public struct COWExerciser<Foo, Bar, Baz> {
   
   @usableFromInline
@@ -65,5 +66,20 @@ public struct COWExerciser<Foo, Bar, Baz> {
   
   @COWProperty
   public var baz: Baz
+  
+  internal init(storage: Storage) {
+    self.storage = storage
+  }
+  
+  @PreferredMemberwiseInitializer
+  public init(foo: Foo, bar: Bar, baz: Baz) {
+    self.init(
+      storage: Storage(
+        foo: foo,
+        bar: bar,
+        baz: baz
+      )
+    )
+  }
 }
 

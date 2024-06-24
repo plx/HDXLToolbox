@@ -11,4 +11,13 @@ extension AttributeListSyntax.Element {
     return attributeSyntax.inlinabilityDisposition
   }
   
+  @inlinable
+  public var isPreferredMememberwiseInitializer: Bool {
+    guard case .attribute(let attributeSyntax) = self else {
+      return false
+    }
+    
+    return attributeSyntax.isPreferredMememberwiseInitializer
+  }
+  
 }

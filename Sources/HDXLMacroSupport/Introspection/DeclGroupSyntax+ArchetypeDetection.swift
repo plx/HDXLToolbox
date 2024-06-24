@@ -56,8 +56,25 @@ extension TypeDeclarationArchetype {
       false
     }
   }
-  
+
+  @inlinable
+  public var isActorClassOrStruct: Bool {
+    switch self {
+    case .actor:
+      true
+    case .class:
+      true
+    case .enum:
+      false
+    case .struct:
+      true
+    case .protocol:
+      false
+    }
+  }
+
 }
+
 extension DeclSyntaxProtocol {
   
   @inlinable
