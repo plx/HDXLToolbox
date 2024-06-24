@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: TopLevelEncoder - Type-Erasue
@@ -24,6 +25,8 @@ extension TopLevelEncoder {
 ///
 /// - Note: exist b/c `TopLevelEncoder.Output` isn't declared as a prinary associated type and, thus, `any TopLevelEncoder` isn't a workable choice.
 @frozen
+@StorageCustomStringConvertible
+@StorageCustomDebugStringConvertible
 public struct AnyTopLevelEncoder<Output> {
   
   @usableFromInline
@@ -55,32 +58,6 @@ public struct AnyTopLevelEncoder<Output> {
     try storage.encode(value)
   }
 
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension AnyTopLevelEncoder : CustomStringConvertible {
-  
-  @inlinable
-  public var description: String {
-    String(describing: storage)
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension AnyTopLevelEncoder : CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    "\(String(reflecting: Self.self))(storage: \(String(reflecting: storage)))"
-  }
-  
 }
 
 // -------------------------------------------------------------------------- //

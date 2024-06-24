@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol AutoIdentifiable where Self: Hashable, Self: Identifiable, ID == Self { }
+package protocol AutoIdentifiable where Self: Hashable, Self: Identifiable, ID == Self { }
 
 extension AutoIdentifiable {
   @inlinable

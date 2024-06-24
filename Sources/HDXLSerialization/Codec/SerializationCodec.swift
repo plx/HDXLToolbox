@@ -1,5 +1,7 @@
 import Foundation
 import Combine
+import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 // ^ just for top-level encoder
 
 // -------------------------------------------------------------------------- //
@@ -14,6 +16,7 @@ import Combine
 /// 2. improved ergonomics when declaring and implementing serialization-related code
 ///
 @frozen
+@ConstructorDebugDescription
 public struct SerializationCodec<Representation> {
   
   @usableFromInline
@@ -29,6 +32,7 @@ public struct SerializationCodec<Representation> {
   public var decoder: AnyTopLevelDecoder<Representation> { _decoder }
   
   @inlinable
+  @PreferredMemberwiseInitializer
   internal init(
     _encoder: AnyTopLevelEncoder<Representation>,
     _decoder: AnyTopLevelDecoder<Representation>
@@ -104,17 +108,3 @@ extension SerializationCodec : CustomStringConvertible {
   }
   
 }
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension SerializationCodec : CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    "\(String(reflecting: Self.self))(encoder: \(String(reflecting: _encoder)), decoder: \(String(reflecting: _decoder)))"
-  }
-  
-}
-

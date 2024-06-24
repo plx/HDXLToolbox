@@ -24,19 +24,9 @@ extension JSONSerializationDateStrategy: Equatable { }
 extension JSONSerializationDateStrategy: Hashable { }
 extension JSONSerializationDateStrategy: CaseIterable { }
 extension JSONSerializationDateStrategy: Codable { }
+extension JSONSerializationDateStrategy: Identifiable, AutoIdentifiable { }
 extension JSONSerializationDateStrategy: CustomStringConvertible { }
 extension JSONSerializationDateStrategy: CustomDebugStringConvertible { }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Identifiable
-// -------------------------------------------------------------------------- //
-
-extension JSONSerializationDateStrategy: Identifiable {
-  public typealias ID = Self
-  
-  @inlinable
-  public var id: ID { self }
-}
 
 // -------------------------------------------------------------------------- //
 // MARK: - CaseNameAwareEnumeration

@@ -203,7 +203,8 @@ let package = Package(
       dependencies: [
         "HDXLEssentialPrecursors",
         "HDXLObjectCollections",
-        "HDXLUtilityCollections"
+        "HDXLUtilityCollections",
+        "HDXLEssentialMacros"
       ]
     ),
     .testTarget(
@@ -258,7 +259,8 @@ let package = Package(
       .target(
         name: "HDXLSerialization",
         dependencies: [
-          "HDXLEssentialPrecursors"
+          "HDXLEssentialPrecursors",
+          "HDXLEssentialMacros"
         ]
       ),
     .target(

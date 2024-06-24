@@ -1,11 +1,13 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: JSONSerializationConfiguration
 // -------------------------------------------------------------------------- //
 
 /// Holds complete configuration information for Apple's `JSONEncoder` and `JSONDecoder`.
+@ConstructorDebugDescription
 public struct JSONSerializationConfiguration {
   public var keyStrategy: JSONSerializationKeyStrategy
   public var dateStrategy: JSONSerializationDateStrategy
@@ -14,6 +16,7 @@ public struct JSONSerializationConfiguration {
   public var formatOptions: JSONSerializationFormatOptions
   
   @inlinable
+  @PreferredMemberwiseInitializer
   public init(
     keyStrategy: JSONSerializationKeyStrategy,
     dateStrategy: JSONSerializationDateStrategy,
@@ -37,18 +40,7 @@ extension JSONSerializationConfiguration: Sendable { }
 extension JSONSerializationConfiguration: Equatable { }
 extension JSONSerializationConfiguration: Hashable { }
 extension JSONSerializationConfiguration: Codable { }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Identifiable
-// -------------------------------------------------------------------------- //
-
-// TODO: autoidentifiable support
-extension JSONSerializationConfiguration: Identifiable {
-  public typealias ID = Self
-  
-  @inlinable
-  public var id: ID { self }
-}
+extension JSONSerializationConfiguration: Identifiable, AutoIdentifiable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
@@ -66,29 +58,6 @@ extension JSONSerializationConfiguration: CustomStringConvertible {
         dataStrategy,
         nonConformingFloatStrategy,
         formatOptions
-      )
-    )
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension JSONSerializationConfiguration: CustomDebugStringConvertible {
-  
-  // TODO: these should be macro-generated / automatically-implemented
-  @inlinable
-  public var debugDescription: String {
-    String(
-      forConstructorOf: Self.self,
-      arguments: (
-        ("keyStrategy", keyStrategy),
-        ("dataStrategy", dataStrategy),
-        ("dataStrategy", dataStrategy),
-        ("nonConformingFloatStrategy", nonConformingFloatStrategy),
-        ("formatOptions", formatOptions)
       )
     )
   }

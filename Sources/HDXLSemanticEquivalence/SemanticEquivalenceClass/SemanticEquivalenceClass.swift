@@ -2,6 +2,7 @@ import Foundation
 import HDXLEssentialPrecursors
 import HDXLObjectCollections
 import HDXLUtilityCollections
+import HDXLEssentialMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: SemanticEquivalenceClass

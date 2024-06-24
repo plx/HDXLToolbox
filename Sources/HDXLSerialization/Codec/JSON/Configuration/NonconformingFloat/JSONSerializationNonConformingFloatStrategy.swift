@@ -22,12 +22,7 @@ extension JSONSerializationNonConformingFloatStrategy: Sendable { }
 extension JSONSerializationNonConformingFloatStrategy: Equatable { }
 extension JSONSerializationNonConformingFloatStrategy: Hashable { }
 extension JSONSerializationNonConformingFloatStrategy: Codable { }
-extension JSONSerializationNonConformingFloatStrategy: Identifiable {
-  public typealias ID = Self
-  
-  @inlinable
-  public var id: ID { self }
-}
+extension JSONSerializationNonConformingFloatStrategy: Identifiable, AutoIdentifiable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible

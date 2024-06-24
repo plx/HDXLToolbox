@@ -63,19 +63,10 @@ extension JSONSerializationFormatOptions: Equatable { }
 extension JSONSerializationFormatOptions: Hashable { }
 extension JSONSerializationFormatOptions: CaseIterable { }
 extension JSONSerializationFormatOptions: Codable { }
+extension JSONSerializationFormatOptions: Identifiable, AutoIdentifiable { }
 extension JSONSerializationFormatOptions: CustomStringConvertible { }
 extension JSONSerializationFormatOptions: CustomDebugStringConvertible { }
 
-// -------------------------------------------------------------------------- //
-// MARK: - Identifiable
-// -------------------------------------------------------------------------- //
-
-extension JSONSerializationFormatOptions: Identifiable {
-  public typealias ID = Self
-  
-  @inlinable
-  public var id: ID { self }
-}
 
 // -------------------------------------------------------------------------- //
 // MARK: - FlagOptionSet

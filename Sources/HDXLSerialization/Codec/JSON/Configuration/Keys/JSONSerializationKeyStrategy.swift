@@ -24,19 +24,9 @@ extension JSONSerializationKeyStrategy: Equatable { }
 extension JSONSerializationKeyStrategy: Hashable { }
 extension JSONSerializationKeyStrategy: CaseIterable { }
 extension JSONSerializationKeyStrategy: Codable { }
+extension JSONSerializationKeyStrategy: Identifiable, AutoIdentifiable { }
 extension JSONSerializationKeyStrategy: CustomStringConvertible { }
 extension JSONSerializationKeyStrategy: CustomDebugStringConvertible { }
-
-// -------------------------------------------------------------------------- //
-// MARK: - Identifiable
-// -------------------------------------------------------------------------- //
-
-extension JSONSerializationKeyStrategy: Identifiable {
-  public typealias ID = Self
-  
-  @inlinable
-  public var id: ID { self }
-}
 
 // -------------------------------------------------------------------------- //
 // MARK: - CaseNameAwareEnumeration
