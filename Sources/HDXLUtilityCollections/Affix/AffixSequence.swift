@@ -11,7 +11,7 @@ extension Sequence {
   public func withAffixes(
     prefixElement: Element?,
     suffixElement: Element?
-  ) -> AffixSequence<Self> {
+  ) -> some Sequence<Element> {
     AffixSequence<Self>(
       prefixElement: prefixElement,
       base: self,
@@ -20,7 +20,7 @@ extension Sequence {
   }
   
   @inlinable
-  public func withPrefixElement(_ prefixElement: Element) -> AffixSequence<Self> {
+  public func withPrefixElement(_ prefixElement: Element) -> some Sequence<Element> {
     AffixSequence<Self>(
       prefixElement: prefixElement,
       base: self,
@@ -29,7 +29,7 @@ extension Sequence {
   }
   
   @inlinable
-  public func withSuffixElement(_ suffixElement: Element) -> AffixSequence<Self> {
+  public func withSuffixElement(_ suffixElement: Element) -> some Sequence<Element> {
     AffixSequence<Self>(
       prefixElement: nil,
       base: self,
