@@ -7,8 +7,10 @@ import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
+@usableFromInline
 enum TempError : Error {
   case noGenericsFound
+  case noConformancesProvided
   case wrongArchetype
   case noMemberwiseInitializer
   case noVisibilityLevel

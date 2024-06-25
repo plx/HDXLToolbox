@@ -5,6 +5,8 @@ import HDXLEssentialMacros
 
 @frozen
 @ConditionallySendable
+@AlwaysEquatable
+@AlwaysComparable
 @ConditionallyHashable
 @ConditionallyEncodable
 @ConditionallyDecodable
@@ -31,6 +33,3 @@ public struct CabooseCollectionIndex<Base>: PositionIndexStorageWrapper where Ba
   }
   
 }
-
-extension CabooseCollectionIndex: Equatable { }
-extension CabooseCollectionIndex: Comparable { }

@@ -1,5 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
+import HDXLCollectionSupport
 
 @frozen
 public struct AffixSequenceIterator<Base>: IteratorProtocol where Base: IteratorProtocol {
@@ -15,7 +17,15 @@ public struct AffixSequenceIterator<Base>: IteratorProtocol where Base: Iterator
   internal var suffixElement: Element?
   
   @usableFromInline
-  internal var state: AffixSequenceIterationState = .prefix
+  internal enum IterationState {
+    case prefix
+    case base
+    case suffix
+    case exhausted
+  }
+
+  @usableFromInline
+  internal var state: IterationState = .prefix
   
   @inlinable
   internal init(

@@ -20,10 +20,22 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     ConditionallyVectorArithmeticMacro.self,
     ConditionallyRandomAccessCollectionMacro.self,
     
-    // unconditional conformance help
+    // unconditional conformances:
+    AlwaysSendableMacro.self,
+    AlwaysEquatableMacro.self,
+    AlwaysComparableMacro.self,
+    AlwaysHashableMacro.self,
+    AlwaysEncodableMacro.self,
+    AlwaysDecodableMacro.self,
+    AlwaysCodableMacro.self,
+    AlwaysCaseIterableMacro.self,    
+    
+    // storage-based conveniences:
     StorageComparableMacro.self,
     StorageCustomStringConvertibleMacro.self,
     StorageCustomDebugStringConvertibleMacro.self,
+    
+    //
     
     // COW-related
     COWPropertyMacro.self,
@@ -38,3 +50,4 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     PreferredMemberwiseInitializerMacro.self
   ]
 }
+

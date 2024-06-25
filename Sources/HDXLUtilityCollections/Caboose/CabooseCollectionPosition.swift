@@ -5,6 +5,7 @@ import HDXLEssentialMacros
 
 @usableFromInline
 @ConditionallySendable
+@AlwaysEquatable
 @ConditionallyHashable
 @ConditionallyEncodable
 @ConditionallyDecodable
@@ -15,8 +16,6 @@ package enum CabooseCollectionPosition<Base> where Base: Comparable {
   case caboose
   
 }
-
-extension CabooseCollectionPosition: Equatable { }
 
 extension CabooseCollectionPosition: Comparable {
   

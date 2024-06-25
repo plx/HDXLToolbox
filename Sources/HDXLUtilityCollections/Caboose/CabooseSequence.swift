@@ -3,10 +3,13 @@ import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLEssentialMacros
 
-public typealias CabooseCollection<Element, Base> = CabooseSequence<Element, Base> where Base: Collection<Element>
+// ------------------------------------------------------------------------- //
+// MARK: Sequence + Caboose
+// ------------------------------------------------------------------------- //
 
 extension Sequence {
-  
+
+  /// Returns a sequence like `self`, except with `caboose` provided as the last element.
   @inlinable
   public func with(caboose: Element) -> some Sequence<Element> {
     CabooseSequence<Element, Self>(
@@ -17,7 +20,37 @@ extension Sequence {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: CabooseSequence
+// ------------------------------------------------------------------------- //
 
+/// Shorthand for a ``CabooseCollection`` that's also a `Collection` (e.g. b/c it's wrapping some underlying `Collection`).
+public typealias CabooseCollection<Element, Base> = CabooseSequence<Element, Base> where Base: Collection<Element>
+
+/// Shorthand for a ``CabooseCollection`` that's also a `BidirectionalCollection` (e.g. b/c it's wrapping some underlying `BidirectionalCollection`).
+public typealias CabooseBidirectionalCollection<Element, Base> = CabooseSequence<Element, Base> where Base: BidirectionalCollection<Element>
+
+/// Shorthand for a ``CabooseCollection`` that's also a `RandomAccessCollection` (e.g. b/c it's wrapping some underlying `RandomAccessCollection`).
+public typealias CabooseRandomAccessCollection<Element, Base> = CabooseSequence<Element, Base> where Base: RandomAccessCollection<Element>
+
+/// ``CabooseSequence`` adapts an underlying base sequence by attaching an additional element at the end of the sequence.
+///
+/// In other words, it performs the following adaption:
+///
+/// - original: `[engineCar, diningCar, passengerCar]`
+/// - caboose: `caboose`
+/// - adapted: `[engineCar, diningCar, passengerCar, caboose]`
+///
+/// ...but without modifying the underlying sequence *or*, say, copying the original + the caboose into some newly-allocated array.
+///
+/// - Note: a caboose collection will *never* be empty.
+/// - Note: a caboose collection will inherit the "collectionality" of the underlying sequence (e.g. it's a collection iff `Base` is a collection, etc.).
+///
+/// - seealso: ``AffixSequence``
+/// - seealso: ``CabooseCollection``
+/// - seealso: ``CabooseBidirectionalCollection``
+/// - seealso: ``CabooseRandomAccessCollection``
+///
 @frozen
 @ConditionallySendable
 @ConditionallyEquatable
@@ -54,6 +87,10 @@ extension CabooseSequence: CustomStringConvertible {
   
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Sequence
+// ------------------------------------------------------------------------- //
+
 extension CabooseSequence: Sequence {
   
   public typealias Iterator = CabooseSequenceIterator<Element, Base.Iterator>
@@ -73,7 +110,11 @@ extension CabooseSequence: Sequence {
   
 }
 
-extension CabooseSequence: 
+// ------------------------------------------------------------------------- //
+// MARK: - Collection
+// ------------------------------------------------------------------------- //
+
+extension CabooseSequence:
   Collection,
   InternalPositionCollection,
   LinearizableInternalPositionCollection
@@ -85,6 +126,8 @@ Base: Collection
   
   public typealias Index = CabooseCollectionIndex<Base.Index>
   
+  // MARK: - Collection API
+
   @inlinable
   public var isEmpty: Bool { false }
   
@@ -92,6 +135,8 @@ Base: Collection
   public var count: Int {
     base.count + 1
   }
+  
+  // MARK: - InternalPositionCollection API
   
   @inlinable
   package var firstInternalPosition: InternalPosition? {
@@ -107,7 +152,7 @@ Base: Collection
   package var lastInternalPosition: InternalPosition? {
     .caboose
   }
-
+  
   @inlinable
   package subscript(position: InternalPosition) -> Element {
     switch position {
@@ -119,6 +164,27 @@ Base: Collection
     }
   }
   
+  @inlinable
+  package func internalPosition(
+    after position: InternalPosition
+  ) -> InternalPosition? {
+    switch position {
+    case .base(let baseIndex):
+      precondition(baseIndex < base.endIndex)
+      let nextIndex = base.index(after: baseIndex)
+      switch nextIndex < base.endIndex {
+      case true:
+        return .base(nextIndex)
+      case false:
+        return .caboose
+      }
+    case .caboose:
+      preconditionFailure("Attempted to subscript the endIndex.")
+    }
+  }
+  
+  // MARK: - LinearizableInternalPositionCollection API
+
   @inlinable
   package func linearPosition(forInternalPosition internalPosition: InternalPosition) -> Int {
     switch internalPosition {
@@ -142,28 +208,13 @@ Base: Collection
     }
   }
 
-  @inlinable
-  package func internalPosition(
-    after position: InternalPosition
-  ) -> InternalPosition? {
-    switch position {
-    case .base(let baseIndex):
-      precondition(baseIndex < base.endIndex)
-      let nextIndex = base.index(after: baseIndex)
-      switch nextIndex < base.endIndex {
-      case true:
-        return .base(nextIndex)
-      case false:
-        return .caboose
-      }
-    case .caboose:
-      preconditionFailure("Attempted to subscript the endIndex.")
-    }
-  }
-  
 }
 
-extension CabooseSequence: 
+// ------------------------------------------------------------------------- //
+// MARK: - BidirectionalCollection
+// ------------------------------------------------------------------------- //
+
+extension CabooseSequence:
   BidirectionalCollection,
   InternalPositionBidirectionalCollection
 where
@@ -192,13 +243,21 @@ Base: BidirectionalCollection
 
 }
 
-extension CabooseSequence: 
+// ------------------------------------------------------------------------- //
+// MARK: - RandomAccessCollection
+// ------------------------------------------------------------------------- //
+
+extension CabooseSequence:
   RandomAccessCollection,
   InternalPositionRandomAcccessCollection
 where 
 Base: RandomAccessCollection { }
 
-extension CabooseSequence: 
+// ------------------------------------------------------------------------- //
+// MARK: - MutableCollection
+// ------------------------------------------------------------------------- //
+
+extension CabooseSequence:
   MutableCollection,
   InternalPositionMutableCollection
 where

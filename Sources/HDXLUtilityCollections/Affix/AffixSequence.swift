@@ -2,15 +2,17 @@ import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 
-public typealias AffixCollection<Base> = AffixSequence<Base> where Base: Collection
-public typealias AffixBidirectionalCollection<Base> = AffixSequence<Base> where Base: BidirectionalCollection
-public typealias AffixRandomAccessCollection<Base> = AffixSequence<Base> where Base: RandomAccessCollection
+// ------------------------------------------------------------------------- //
+// MARK: Sequence + Affixes
+// ------------------------------------------------------------------------- //
 
 extension Sequence {
+
+  /// Provides a sequence adapted to provide the `prefixElement` before the elements from `self` and then the `suffixElement` after the elements from `self`.
   @inlinable
-  public func withAffixes(
-    prefixElement: Element?,
-    suffixElement: Element?
+  public func with(
+    prefixElement: Element,
+    suffixElement: Element
   ) -> some Sequence<Element> {
     AffixSequence<Self>(
       prefixElement: prefixElement,
@@ -19,8 +21,9 @@ extension Sequence {
     )
   }
   
+  /// Provides a sequence adapted to provide the `prefixElement` before the elements from `self`.
   @inlinable
-  public func withPrefixElement(_ prefixElement: Element) -> some Sequence<Element> {
+  public func with(prefixElement: Element) -> some Sequence<Element> {
     AffixSequence<Self>(
       prefixElement: prefixElement,
       base: self,
@@ -28,8 +31,9 @@ extension Sequence {
     )
   }
   
+  /// Provides a sequence adapted to provide the `suffixElement` after the elements from `self`.
   @inlinable
-  public func withSuffixElement(_ suffixElement: Element) -> some Sequence<Element> {
+  public func with(suffixElement: Element) -> some Sequence<Element> {
     AffixSequence<Self>(
       prefixElement: nil,
       base: self,
@@ -38,6 +42,46 @@ extension Sequence {
   }
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: AffixSequence
+// ------------------------------------------------------------------------- //
+
+/// Shorthand for an ``AffixSequence`` that's also a `Collection` (e.g. b/c it's wrapping some underlying `Collection`).
+public typealias AffixCollection<Base> = AffixSequence<Base> where Base: Collection
+
+/// Shorthand for an ``AffixSequence`` that's also a `BidirectionalCollection` (e.g. b/c it's wrapping some underlying `BidirectionalCollection`).
+public typealias AffixBidirectionalCollection<Base> = AffixSequence<Base> where Base: BidirectionalCollection
+
+/// Shorthand for an ``AffixSequence`` that's also a `RandomAccessCollection` (e.g. b/c it's wrapping some underlying `RandomAccessCollection`).
+public typealias AffixRandomAccessCollection<Base> = AffixSequence<Base> where Base: RandomAccessCollection
+
+/// ``AffixSequence`` adapts an underyling sequence to possibly (a) have an additional ``prefixElement`` at the beginning
+/// and/or (b) possibly have an additional ``suffixElement`` at the end.
+///
+/// In other words, you go from this:
+///
+/// - `original`: `[foo, bar, baz]`
+/// - `adapted`: `[prefix, foo, bar, baz]`
+///
+/// ...except without either *modifying* the underlying sequence *or* allocating new storage and copying things into it.
+///
+/// - note: ``AffixSequence`` inherits the collectionality of its ``Base``
+///
+/// - note:
+///
+/// This is deliberately *not* a `MutableCollection` due to the awkwardness of maintaining the invariants.
+///
+/// More-precisely, the affixes are of type `Element?` but the affix-sequence remains exposed as a sequence of `Element`.
+/// Pulling this off is easy for an *immutable* implementation--all we need to do is *never* vend indices corresponding to nil affixes.
+///
+/// In theory we could still expose mutability (w/ non-nil `Element` values)  b/c, in theory, users should never get indices
+/// that don't correspond to non-negative affixes. In practice, the risk feels high and the need feels low--happy to revisit in the future.
+///
+/// - seealso: ``CabooseSequence``
+/// - seealso: ``AffixCollection``
+/// - seealso: ``AffixBidirectionalCollection``
+/// - seealso: ``AffixRandomAccessCollection``
+///
 @frozen
 public struct AffixSequence<Base>: Sequence where Base: Sequence {
   public typealias Element = Base.Element
@@ -88,230 +132,238 @@ extension AffixSequence: Hashable where Base: Hashable, Base.Element: Hashable {
 extension AffixSequence: Encodable where Base: Encodable, Base.Element: Encodable { }
 extension AffixSequence: Decodable where Base: Decodable, Base.Element: Decodable { }
 
-extension AffixSequence: Collection where Base: Collection {
+extension AffixSequence: 
+  Collection,
+  InternalPositionCollection,
+  LinearizableInternalPositionCollection
+where 
+Base: Collection
+{
   public typealias Index = AffixCollectionIndex<Base.Index>
   
   @usableFromInline
-  internal typealias Position = AffixCollectionPosition<Base.Index>
+  package typealias InternalPosition = AffixCollectionPosition<Base.Index>
   
   @inlinable
   public var isEmpty: Bool {
-    prefixElement == nil
-    &&
-    suffixElement == nil
-    &&
-    base.isEmpty
+    allAreTrue(
+      prefixElement == nil,
+      suffixElement == nil,
+      base.isEmpty
+    )
   }
   
   @inlinable
   public var count: Int {
-    prefixElement.oneIfPresent
-    +
-    base.count
-    +
-    suffixElement.oneIfPresent
+    prefixElementCount + baseElementCount + suffixElementCount
   }
   
   @inlinable
-  public var startIndex: Index {
-    if prefixElement != nil {
+  package var hasPrefixElement: Bool { prefixElement != nil }
+
+  @inlinable
+  package var hasSuffixElement: Bool { suffixElement != nil }
+  
+  @inlinable
+  package var hasBaseElements: Bool { !base.isEmpty }
+
+  @inlinable
+  package var prefixElementCount: Int { hasPrefixElement.oneIfTrue }
+  
+  @inlinable
+  package var suffixElementCount: Int { hasSuffixElement.oneIfTrue }
+  
+  @inlinable
+  package var baseElementCount: Int { base.count }
+
+  @inlinable
+  package var prefixLinearPosition: Int? {
+    switch hasPrefixElement {
+    case true:
+      0
+    case false:
+      nil
+    }
+  }
+
+  @inlinable
+  package var baseLinearPositionRange: ClosedRange<Int>? {
+    let baseElementCount = baseElementCount
+    guard baseElementCount > 0 else {
+      return nil
+    }
+    
+    switch hasPrefixElement {
+    case true:
+      return 1...baseElementCount
+    case false:
+      return 0...(baseElementCount - 1)
+    }
+  }
+
+  @inlinable
+  package var suffixLinearPosition: Int? {
+    guard hasSuffixElement else {
+      return nil
+    }
+    
+    return prefixElementCount + baseElementCount
+  }
+
+  @inlinable
+  package var firstInternalPosition: InternalPosition? {
+    if hasPrefixElement {
       .prefix
-    } else if !base.isEmpty {
-      Index(baseIndex: base.startIndex)
-    } else if suffixElement != nil {
+    } else if let firstBaseElementIndex = base.firstSubscriptableIndex {
+      .base(firstBaseElementIndex)
+    } else if hasSuffixElement {
       .suffix
     } else {
-      endIndex
+      nil
     }
   }
   
   @inlinable
-  public var endIndex: Index {
-    .endIndex
-  }
-  
-  @inlinable
-  internal func mandatoryElement(forIndex index: Index) -> Element {
-    guard let position = index.position else {
-      fatalAttemptToSubscriptEndIndex(index)
+  package var lastInternalPosition: InternalPosition? {
+    if hasSuffixElement {
+      .suffix
+    } else if let lastBaseElementIndex = base.finalSubscriptableIndex {
+      .base(lastBaseElementIndex)
+    } else if hasPrefixElement {
+      .prefix
+    } else {
+      nil
     }
-    switch position {
+  }
+
+  @inlinable
+  package subscript(internalPosition: InternalPosition) -> Element {
+    switch internalPosition {
     case .prefix:
-      guard let prefixElement = prefixElement else {
-        fatalError("Mistakenly subscripted an absent prefix element on \(String(reflecting: self))!")
+      guard let prefixElement else {
+        preconditionFailure(
+          """
+          Attempted to subscript the non-existant `.prefix` position on \(String(reflecting: self))!
+          """
+        )
       }
+      
       return prefixElement
     case .base(let baseIndex):
+      precondition(baseIndex < base.endIndex)
       return base[baseIndex]
     case .suffix:
-      guard let suffixElement = suffixElement else {
-        fatalError("Mistakenly subscripted an absent suffix element on \(String(reflecting: self))!")
+      guard let suffixElement else {
+        preconditionFailure(
+          """
+          Attempted to subscript the non-existant `.suffix` position on \(String(reflecting: self))!
+          """
+        )
       }
+      
       return suffixElement
     }
   }
   
   @inlinable
-  public subscript(position: Index) -> Element {
-    mandatoryElement(forIndex: position)
-  }
-  
-  @inlinable
-  public func distance(
-    from start: AffixCollectionIndex<Base.Index>,
-    to end: AffixCollectionIndex<Base.Index>
-  ) -> Int {
-    linearIndex(forIndex: end)
-    -
-    linearIndex(forIndex: start)
-  }
-  
-  @inlinable
-  public func index(after i: Index) -> Index {
-    guard let position = i.position else {
-      fatalAttemptToAdvanceEndIndex(i)
-    }
+  package func internalPosition(
+    after position: InternalPosition
+  ) -> InternalPosition? {
     switch position {
     case .prefix:
-      if let firstInBase = base.firstSubscriptableIndex {
-        return Index(baseIndex: firstInBase)
-      } else if suffixElement != nil {
+      if let firstBaseIndex = base.firstSubscriptableIndex {
+        return .base(firstBaseIndex)
+      } else if hasSuffixElement {
         return .suffix
       } else {
-        return .endIndex
+        return nil
       }
     case .base(let baseIndex):
-      switch base.subscriptableIndex(after: baseIndex) {
-      case .some(let nextBaseIndex):
-        return Index(baseIndex: nextBaseIndex)
-      case .none:
-        if suffixElement != nil {
-          return .prefix
-        } else {
-          return .endIndex
-        }
+      precondition(baseIndex < base.endIndex)
+      if let nextBaseIndex = base.subscriptableIndex(after: baseIndex) {
+        return .base(nextBaseIndex)
+      } else if hasSuffixElement {
+        return .suffix
+      } else {
+        return nil
       }
     case .suffix:
-      return .endIndex
+      return nil
     }
   }
   
-  @inlinable
-  public func index(
-    _ i: Index,
-    offsetBy distance: Int
-  ) -> Index {
-    index(
-      forLinearIndex: (
-        linearIndex(
-          forIndex: i
-        )
-        +
-        distance
-      )
-    )
-  }
+  // MARK: - LinearizableInternalPositionCollection API
   
   @inlinable
-  internal func linearIndex(forPosition position: Position) -> Int {
-    switch position {
+  package func linearPosition(forInternalPosition internalPosition: InternalPosition) -> Int {
+    switch internalPosition {
     case .prefix:
-      0
+      precondition(hasPrefixElement)
+      return 0
     case .base(let baseIndex):
-      prefixElement.oneIfPresent
-      +
-      base.distance(
-        from: base.startIndex,
-        to: baseIndex
-      )
+      precondition(baseIndex < base.endIndex)
+      return prefixElementCount + base.distanceFromStart(to: baseIndex)
     case .suffix:
-      prefixElement.oneIfPresent
-      +
-      base.count
+      precondition(hasSuffixElement)
+      return prefixElementCount + baseElementCount
     }
   }
   
   @inlinable
-  internal func linearIndex(forIndex index: Index) -> Int {
-    switch index.position {
-    case .some(let position):
-      linearIndex(forPosition: position)
-    case .none:
-      count
-    }
-  }
-  
-  @inlinable
-  internal func mandatoryPosition(forLinearIndex linearIndex: Int) -> Position {
-    if linearIndex == 0 && prefixElement != nil {
-      return .prefix
+  package func internalPosition(forLinearPosition linearPosition: Int) -> InternalPosition? {
+    if let suffixLinearPosition, suffixLinearPosition == linearPosition {
+      .suffix
+    } else if let baseLinearPositionRange, baseLinearPositionRange.contains(linearPosition) {
+      .base(
+        base.index(
+          offsetFromStartBy: linearPosition - baseLinearPositionRange.lowerBound
+        )
+      )
+    } else if let prefixLinearPosition, prefixLinearPosition == linearPosition {
+      .prefix
     } else {
-      let baseCount = base.count
-      let adjustedIndex = linearIndex - prefixElement.oneIfPresent
-      if adjustedIndex < baseCount {
-        return .base(
-          base.index(
-            base.startIndex,
-            offsetBy: adjustedIndex
-          )
-        )
-      } else if suffixElement != nil && adjustedIndex == baseCount {
-        return .suffix
-      } else {
-        fatalError("Tried to convert get a mandatory position from a linear index \(linearIndex) with no such equivalent position in \(String(reflecting: self))!")
-      }
+      nil
     }
   }
-  
-  @inlinable
-  internal func index(forLinearIndex linearIndex: Int) -> Index {
-    switch linearIndex == count {
-    case true:
-      .endIndex
-    case false:
-      Index(position: mandatoryPosition(forLinearIndex: linearIndex))
-    }
-  }
-  
+
 }
 
-extension AffixSequence: BidirectionalCollection where Base: BidirectionalCollection {
+extension AffixSequence: 
+  BidirectionalCollection,
+  InternalPositionBidirectionalCollection
+where
+Base: BidirectionalCollection
+{
   @inlinable
-  public func index(before i: Index) -> Index {
-    switch i.position {
-    case .none:
-      if suffixElement != nil {
-        return .suffix
-      } else if let final = base.finalSubscriptableIndex {
-        return Index(baseIndex: final)
-      } else if prefixElement != nil {
+  package func internalPosition(
+    before position: InternalPosition
+  ) -> InternalPosition? {
+    switch position {
+    case .suffix:
+      if let finalBaseIndex = base.finalSubscriptableIndex {
+        return .base(finalBaseIndex)
+      } else if hasPrefixElement {
         return .prefix
       } else {
-        fatalAttemptToGoBackFromStartIndex(i)
+        return nil
       }
-    case .some(let position):
-      switch position {
-      case .prefix:
-        fatalAttemptToGoBackFromStartIndex(i)
-      case .base(let baseIndex):
-        if let previous = base.subscriptableIndex(before: baseIndex) {
-          return Index(baseIndex: previous)
-        } else if prefixElement != nil {
-          return .prefix
-        } else {
-          fatalAttemptToGoBackFromStartIndex(i)
-        }
-      case .suffix:
-        if let final = base.finalSubscriptableIndex {
-          return Index(baseIndex: final)
-        } else if prefixElement != nil {
-          return .prefix
-        } else {
-          fatalAttemptToGoBackFromStartIndex(i)
-        }
+    case .base(let baseIndex):
+      precondition(baseIndex > base.startIndex)
+      if let previousBaseIndex = base.subscriptableIndex(before: baseIndex) {
+        return .base(previousBaseIndex)
+      } else if hasPrefixElement {
+        return .prefix
+      } else {
+        return nil
       }
+    case .prefix:
+      return nil
     }
   }
+
 }
 
-extension AffixSequence: RandomAccessCollection where Base: RandomAccessCollection { }
+extension AffixSequence: 
+  RandomAccessCollection,
+  InternalPositionRandomAcccessCollection
+where Base: RandomAccessCollection { }

@@ -1,33 +1,32 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 @frozen
-public struct AffixCollectionIndex<Base>: Comparable where Base: Comparable {
-  @usableFromInline
-  internal typealias Position = AffixCollectionPosition<Base>
+@ConditionallySendable
+@AlwaysEquatable
+@AlwaysComparable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
+public struct AffixCollectionIndex<Base>: PositionIndexStorageWrapper where Base: Comparable {
   
   @usableFromInline
-  internal var position: Position?
+  package typealias Position = AffixCollectionPosition<Base>
+  
+  @usableFromInline
+  package typealias Storage = PositionIndexStorage<Position>
+  
+  @usableFromInline
+  package var storage: Storage
   
   @inlinable
-  internal init(
-    baseIndex: Base
-  ) {
-    self.init(
-      position: .base(baseIndex)
-    )
+  package init(storage: Storage) {
+    self.storage = storage
   }
   
-  @inlinable
-  internal init(position: Position) {
-    self.position = position
-  }
-  
-  @inlinable
-  internal init(__unsafePosition position: Position?) {
-    self.position = position
-  }
-
   @inlinable
   internal static var prefix: Self {
     Self(position: .prefix)
@@ -38,30 +37,4 @@ public struct AffixCollectionIndex<Base>: Comparable where Base: Comparable {
     Self(position: .suffix)
   }
 
-  @inlinable
-  internal static var endIndex: Self {
-    Self(__unsafePosition: nil)
-  }
-  
-  @inlinable
-  public static func < (
-    lhs: AffixCollectionIndex<Base>,
-    rhs: AffixCollectionIndex<Base>
-  ) -> Bool {
-    switch (lhs.position, rhs.position) {
-    case (.some(let l), .some(let r)):
-      return l < r
-    case (.some, .none):
-      return true
-    case (.none, .some):
-      return false
-    case (.none, .none):
-      return false
-    }
-  }
 }
-
-extension AffixCollectionIndex: Sendable where Base: Sendable { }
-extension AffixCollectionIndex: Hashable where Base: Hashable { }
-extension AffixCollectionIndex: Codable where Base: Codable { }
-

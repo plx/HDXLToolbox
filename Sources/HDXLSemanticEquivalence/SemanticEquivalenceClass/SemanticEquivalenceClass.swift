@@ -21,6 +21,11 @@ import HDXLEssentialMacros
 /// I don't see a way to expose them usefully (and they're rather special-purpose
 /// vis-a-vis use with `SemanticEquivalenceTable`). That could change, someday.
 ///
+@ConditionallySendable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConstructorDebugDescription
 public struct SemanticEquivalenceClass<Element>
 where Element: SemanticEquivalenceClassIdentifierConvertible
 {
@@ -34,7 +39,7 @@ where Element: SemanticEquivalenceClassIdentifierConvertible
   internal var _equivalentElements: [Element]
   
   // ------------------------------------------------------------------------ //
-  // MARK: Exposed Properties
+  // MARK: - Exposed Properties
   // ------------------------------------------------------------------------ //
   
   /// The *reference element* will always be equivalence class's most-favored element.
@@ -51,19 +56,32 @@ where Element: SemanticEquivalenceClassIdentifierConvertible
   }
   
   // ------------------------------------------------------------------------ //
-  // MARK: Initialization
+  // MARK: - Initialization
   // ------------------------------------------------------------------------ //
+
+  /// Construct an equivalence class from an initial reference element.
+  @inlinable
+  @PreferredMemberwiseInitializer
+  internal init(
+    referenceElement: Element,
+    equivalentElements: [Element]
+  ) {
+    // /////////////////////////////////////////////////////////////////////////
+    defer { pedanticAssert(hasConsistentInternalState) }
+    // /////////////////////////////////////////////////////////////////////////
+    self._referenceElement = referenceElement
+    self._equivalentElements = equivalentElements
+  }
 
   /// Construct an equivalence class from an initial reference element.
   @inlinable
   public init(
     referenceElement: Element
   ) {
-    // /////////////////////////////////////////////////////////////////////////
-    defer { pedanticAssert(hasConsistentInternalState) }
-    // /////////////////////////////////////////////////////////////////////////
-    self._referenceElement = referenceElement
-    self._equivalentElements = []
+    self.init(
+      referenceElement: referenceElement,
+      equivalentElements: []
+    )
   }
   
 }
@@ -394,11 +412,7 @@ extension SemanticEquivalenceClass {
 // MARK: - Synthesized Conformances
 // -------------------------------------------------------------------------- //
 
-extension SemanticEquivalenceClass : Sendable where Element: Sendable { }
 extension SemanticEquivalenceClass : Equatable { }
-extension SemanticEquivalenceClass : Hashable where Element: Hashable { }
-extension SemanticEquivalenceClass : Encodable where Element: Encodable { }
-extension SemanticEquivalenceClass : Decodable where Element: Decodable { }
 
 // -------------------------------------------------------------------------- //
 // MARK: - Identifiable
@@ -423,25 +437,6 @@ extension SemanticEquivalenceClass : CustomStringConvertible {
       describingLabeledTuple: (
         ("class-identifier", referenceElement.semanticEquivalenceClassIdentifier),
         ("equivalent-element-count", equivalentElementCount)
-      )
-    )
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension SemanticEquivalenceClass : CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    String(
-      forConstructorOf: Self.self,
-      arguments: (
-        ("referenceElement", referenceElement),
-        ("equivalentElements", equivalentElements)
       )
     )
   }

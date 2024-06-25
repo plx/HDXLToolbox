@@ -1,22 +1,25 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
+import HDXLCollectionSupport
 
 @usableFromInline
-internal enum AffixCollectionPosition<Base> where Base: Comparable {
+@ConditionallySendable
+@AlwaysEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
+package enum AffixCollectionPosition<Base> where Base: Comparable {
   case prefix
   case base(Base)
   case suffix
 }
 
-extension AffixCollectionPosition: Sendable where Base: Sendable { }
-extension AffixCollectionPosition: Equatable { }
-extension AffixCollectionPosition: Hashable where Base: Hashable { }
-extension AffixCollectionPosition: Encodable where Base: Encodable { }
-extension AffixCollectionPosition: Decodable where Base: Decodable { }
-
 extension AffixCollectionPosition: Comparable {
+  
   @inlinable
-  internal static func < (
+  package static func < (
     lhs: AffixCollectionPosition<Base>,
     rhs: AffixCollectionPosition<Base>
   ) -> Bool {
@@ -41,6 +44,5 @@ extension AffixCollectionPosition: Comparable {
       false
     }
   }
+  
 }
-
-
