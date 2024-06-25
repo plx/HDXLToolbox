@@ -1,21 +1,27 @@
 import Foundation
+import HDXLEssentialPrecursors
+import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 @usableFromInline
-internal enum CabooseCollectionPosition<Base> where Base: Comparable {
+@ConditionallySendable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
+package enum CabooseCollectionPosition<Base> where Base: Comparable {
   
   case base(Base)
   case caboose
   
 }
 
-extension CabooseCollectionPosition: Sendable where Base: Sendable { }
 extension CabooseCollectionPosition: Equatable { }
-extension CabooseCollectionPosition: Hashable where Base: Hashable { }
 
 extension CabooseCollectionPosition: Comparable {
   
   @inlinable
-  internal static func < (
+  package static func < (
     lhs: CabooseCollectionPosition<Base>,
     rhs: CabooseCollectionPosition<Base>
   ) -> Bool {

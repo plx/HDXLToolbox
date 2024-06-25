@@ -33,7 +33,7 @@ public struct StorageCustomDebugStringConvertibleMacro: ExtensionMacro {
       fatalError()
     }
 
-    let operatorInlinabilityDisposition = InlinabilityDisposition.strongestAvailableInlinability(
+    let operatorInlinabilityDisposition = InlinabilityDisposition.strongestAvailableFunctionOrMethodInlinability(
       visibilityLevel: visibilityLevel,
       inlinabilityDisposition: declaration.inlinabilityDisposition
     )

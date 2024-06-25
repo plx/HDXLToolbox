@@ -20,7 +20,11 @@ public macro ConditionallyHashable() = #externalMacro(
   type: "ConditionallyHashableMacro"
 )
 
-@attached(extension, conformances: Identifiable, AutoIdentifiable)
+@attached(
+  extension,
+  conformances: Identifiable, AutoIdentifiable,
+  names: named(ID), named(id)
+)
 public macro ConditionallyAutoIdentifiable() = #externalMacro(
   module: "HDXLEssentialMacrosPlugin",
   type: "ConditionallyAutoIdentifiableMacro"

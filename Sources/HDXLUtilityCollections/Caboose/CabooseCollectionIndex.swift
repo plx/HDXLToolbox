@@ -1,62 +1,36 @@
 import Foundation
+import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 @frozen
-public struct CabooseCollectionIndex<Base> where Base: Comparable {
+@ConditionallySendable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
+public struct CabooseCollectionIndex<Base>: PositionIndexStorageWrapper where Base: Comparable {
+
   @usableFromInline
-  internal typealias Position = CabooseCollectionPosition<Base>
+  package typealias Position = CabooseCollectionPosition<Base>
   
   @usableFromInline
-  internal var position: Position?
-
-  @inlinable
-  internal init() {
-    self.position = nil
-  }
-
-  @inlinable
-  internal init(_position position: Position) {
-    self.position = position
-  }
-
-  @inlinable
-  internal init(baseIndex: Base) {
-    self.position = .base(baseIndex)
-  }
+  package typealias Storage = PositionIndexStorage<Position>
   
   @usableFromInline
-  internal static var caboose: CabooseCollectionIndex<Base> {
-    CabooseCollectionIndex<Base>(_position: .caboose)
-  }
+  package var storage: Storage
   
+  @inlinable
+  package init(storage: Storage) {
+    self.storage = storage
+  }
+
   @usableFromInline
-  internal static var endIndex: CabooseCollectionIndex<Base> {
-    CabooseCollectionIndex<Base>()
+  internal static var caboose: Self {
+    Self(position: .caboose)
   }
   
 }
 
-extension CabooseCollectionIndex: Sendable where Base: Sendable { }
 extension CabooseCollectionIndex: Equatable { }
-extension CabooseCollectionIndex: Hashable where Base: Hashable { }
-
-extension CabooseCollectionIndex: Comparable {
-  
-  @inlinable
-  public static func < (
-    lhs: CabooseCollectionIndex<Base>,
-    rhs: CabooseCollectionIndex<Base>
-  ) -> Bool {
-    switch (lhs.position, rhs.position) {
-    case (.some(let l), .some(let r)):
-      return l < r
-    case (.some, .none):
-      return true
-    case (.none, .some):
-      return false
-    case (.none, .none):
-      return false
-    }
-  }
-  
-}
+extension CabooseCollectionIndex: Comparable { }

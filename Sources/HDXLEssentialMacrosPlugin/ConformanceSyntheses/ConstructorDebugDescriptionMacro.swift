@@ -8,6 +8,7 @@ import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
 enum TempError : Error {
+  case noGenericsFound
   case wrongArchetype
   case noMemberwiseInitializer
   case noVisibilityLevel
@@ -54,7 +55,7 @@ public struct ConstructorDebugDescriptionMacro: ExtensionMacro {
 //      fatalError()
     }
     
-    let inlinabilityDisposition = InlinabilityDisposition.strongestAvailableInlinability(
+    let inlinabilityDisposition = InlinabilityDisposition.strongestAvailableFunctionOrMethodInlinability(
       visibilityLevel: visibilityLevel,
       inlinabilityDisposition: declaration.inlinabilityDisposition
     )

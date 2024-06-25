@@ -218,7 +218,8 @@ let package = Package(
     .target(
       name: "HDXLCollectionSupport",
       dependencies: [
-        "HDXLAlgebraicTypes"
+        "HDXLAlgebraicTypes",
+        "HDXLEssentialMacros"
       ]
     ),
     .testTarget(

@@ -1,11 +1,18 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // ------------------------------------------------------------------------- //
 // MARK: PositionIndexStorage
 // ------------------------------------------------------------------------- //
 
 @usableFromInline
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
 package enum PositionIndexStorage<Position> {
   
   case position(Position)
@@ -21,16 +28,6 @@ package enum PositionIndexStorage<Position> {
     }
   }
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension PositionIndexStorage: Sendable where Position: Sendable {}
-extension PositionIndexStorage: Equatable where Position: Equatable {}
-extension PositionIndexStorage: Hashable where Position: Hashable {}
-extension PositionIndexStorage: Encodable where Position: Encodable {}
-extension PositionIndexStorage: Decodable where Position: Decodable {}
 
 // ------------------------------------------------------------------------- //
 // MARK: - Comparable
@@ -52,27 +49,6 @@ extension PositionIndexStorage: Comparable where Position: Comparable {
       false
     case (.endIndex, .endIndex):
       false
-    }
-  }
-  
-}
-
-// ------------------------------------------------------------------------- //
-// MARK: - Identifiable
-// ------------------------------------------------------------------------- //
-
-extension PositionIndexStorage: Identifiable where Position: Identifiable {
-  
-  @usableFromInline
-  package typealias ID = PositionIndexStorage<Position.ID>
-  
-  @inlinable
-  package var id: ID {
-    switch self {
-    case .position(let position):
-      .position(position.id)
-    case .endIndex:
-      .endIndex
     }
   }
   

@@ -25,9 +25,24 @@ public struct ConditionallyAutoIdentifiableMacro: ExtensionMacro {
         excludingArchetypes: [.actor]
       )
     else {
-      // TODO: import previous error utilities
-      fatalError()
+      throw TempError.noGenericsFound
     }
+    
+    let visibilityLevel = declaration.visibilityLevel ?? .internal
+
+    let typeInlinabilityDisposition = InlinabilityDisposition.strongestAvailableTypeDeclarationInlinability(
+      visibilityLevel: visibilityLevel,
+      inlinabilityDisposition: declaration.inlinabilityDisposition
+    )
+
+    let typeInlinabilityText: String = typeInlinabilityDisposition?.sourceCodeStringRepresentation ?? ""
+
+    let methodInlinabilityDisposition = InlinabilityDisposition.strongestAvailableFunctionOrMethodInlinability(
+      visibilityLevel: visibilityLevel,
+      inlinabilityDisposition: declaration.inlinabilityDisposition
+    )
+
+    let methodInlinabilityText: String = methodInlinabilityDisposition?.sourceCodeStringRepresentation ?? ""
     
     let rawGenericParameterList: String = simpleGenericParameters
       .lazy
@@ -40,7 +55,13 @@ public struct ConditionallyAutoIdentifiableMacro: ExtensionMacro {
         extension \(type.trimmed) : \(raw: conformedProtocolNames.joined(separator: ", "))
         where
         \(raw: rawGenericParameterList)
-        { }
+        { 
+          \(raw: typeInlinabilityText)
+          \(visibilityLevel.tokenRepresentation()) typealias ID = Self
+        
+          \(raw: methodInlinabilityText)
+          \(visibilityLevel.tokenRepresentation()) var id: ID { self }
+        }
         """
       )
     ]
