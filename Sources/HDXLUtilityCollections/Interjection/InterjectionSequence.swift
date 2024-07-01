@@ -1,6 +1,7 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 public typealias InterjectionCollection<Base> = InterjectionSequence<Base> where Base: Collection
 public typealias InterjectionBidirectionalCollection<Base> = InterjectionSequence<Base> where Base: BidirectionalCollection
@@ -9,15 +10,30 @@ public typealias InterjectionRandomAccessCollection<Base> = InterjectionSequence
 extension Sequence {
   
   @inlinable
-  public func interjected(by interjection: Element) -> some Sequence<Element> {
-    return InterjectionSequence<Self>(
+  public func with(interjection: Element) -> some Sequence<Element> {
+    InterjectionSequence<Self>(
       interjection: interjection,
       base: self
     )
   }
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: InterjectionSequence
+// ------------------------------------------------------------------------- //
+
+/// ``InterjectionSequence`` adapts the underlying ``base`` sequence by inserting an ``interjection``
+/// element in-between each adjacent pair from ``base``.
+///
+/// In other words:
+///
+/// - `original`: `[mock, ing, bird]`
+/// - `adapted`: `[mock, yeah, ing, yeah, bird]`
+///
+/// ...(yeah, yeah, yeah).
+///
 @frozen
+@ConstructorDebugDescription
 public struct InterjectionSequence<Base>: Sequence where Base: Sequence {
   public typealias Element = Base.Element
   public typealias Iterator = InterjectionSequenceIterator<Base.Iterator>
@@ -29,6 +45,7 @@ public struct InterjectionSequence<Base>: Sequence where Base: Sequence {
   internal let base: Base
   
   @inlinable
+  @PreferredMemberwiseInitializer
   internal init(
     interjection: Element,
     base: Base
@@ -46,11 +63,21 @@ public struct InterjectionSequence<Base>: Sequence where Base: Sequence {
   }
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Synthesized Properties
+// ------------------------------------------------------------------------- //
+
 extension InterjectionSequence: Sendable where Base: Sendable, Base.Element: Sendable {}
 extension InterjectionSequence: Equatable where Base: Equatable, Base.Element: Equatable {}
 extension InterjectionSequence: Hashable where Base: Hashable, Base.Element: Hashable {}
 extension InterjectionSequence: Encodable where Base: Encodable, Base.Element: Encodable {}
 extension InterjectionSequence: Decodable where Base: Decodable, Base.Element: Decodable {}
+
+extension InterjectionSequence: Identifiable, AutoIdentifiable where Base: Hashable, Base.Element: Hashable {}
+
+// ------------------------------------------------------------------------- //
+// MARK: - CustomStringConvertible
+// ------------------------------------------------------------------------- //
 
 extension InterjectionSequence: CustomStringConvertible {
   
@@ -61,137 +88,162 @@ extension InterjectionSequence: CustomStringConvertible {
   
 }
 
-extension InterjectionSequence: CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    "\(String(reflecting: type(of: self)))(interjection: \(String(reflecting: interjection)), base: \(String(reflecting: base)))"
-  }
-  
-}
+// ------------------------------------------------------------------------- //
+// MARK: - Collection
+// ------------------------------------------------------------------------- //
 
-extension InterjectionSequence: Collection where Base: Collection {
+extension InterjectionSequence: 
+  Collection,
+  InternalPositionCollection,
+  LinearizableInternalPositionCollection
+where Base: Collection {
+  
+  @usableFromInline
+  package typealias InternalPosition = InterjectionCollectionPosition<Base.Index>
+  
   public typealias Index = InterjectionCollectionIndex<Base.Index>
   
+  // MARK: - Collection API
+  
   @inlinable
-  public var isEmpty: Bool {
-    base.isEmpty
-  }
+  public var isEmpty: Bool { base.isEmpty }
   
   @inlinable
   public var count: Int {
-    base.count.impliedInterposeElementCount
+    base.count + Swift.max(0, base.count - 1)
   }
   
+  // MARK: - InternalPositionCollection API
+  
   @inlinable
-  public var startIndex: Index {
-    switch isEmpty {
-    case true:
-      endIndex
-    case false:
-      Index(index: base.startIndex)
+  package var firstInternalPosition: InternalPosition? {
+    switch base.firstSubscriptableIndex {
+    case .some(let subcriptableBaseIndex):
+      .element(subcriptableBaseIndex)
+    case .none:
+      nil
     }
   }
   
   @inlinable
-  public var endIndex: Index {
-    .endIndex
+  package var lastInternalPosition: InternalPosition? {
+    switch base.finalSubscriptableIndex {
+    case .some(let subcriptableBaseIndex):
+      .element(subcriptableBaseIndex)
+    case .none:
+      nil
+    }
   }
   
-  //  @inlinable
-  //  public func distance(
-  //    from start: Index,
-  //    to end: Index
-  //  ) -> Int {
-  //    switch (start.position, end.position) {
-  //    case (.none, .none):
-  //      return 0
-  //    case (.some(.element(let startBaseIndex)), .none):
-  //      return (2 * (
-  //        base.distance(
-  //          from: startBaseIndex,
-  //          to: base.endIndex
-  //        ))) - 1
-  //    case (.some(.interposition(let startBaseInterposition)), .none):
-  //        return
-  //
-  //    case (.some(.element(let startBaseIndex)), .some(.element(let endBaseIndex))):
-  //      return 2 * base.distance(
-  //        from: startBaseIndex,
-  //        to: endBaseIndex
-  //      )
-  //    case (.some(.interposition(let startBaseInterposition)), .some(.interposition(let endBaseInterposition))):
-  //      return 2 * base.distance(
-  //        from: startBaseInterposition.precedingElement,
-  //        to: endBaseInterposition.precedingElement
-  //      )
-  //    }
-  //  }
-  //
   @inlinable
-  public subscript(index: Index) -> Element {
-    guard let position = index.position else {
-      fatalAttemptToSubscriptEndIndex(index)
-    }
+  package subscript(position: InternalPosition) -> Element {
     switch position {
     case .element(let baseIndex):
-      return base[baseIndex]
+      base[baseIndex]
     case .interjection:
-      return interjection
+      interjection
     }
   }
   
   @inlinable
-  public func index(
-    after i: Index
-  ) -> Index {
-    guard let position = i.position else {
-      fatalAttemptToAdvanceEndIndex(i)
-    }
+  package func internalPosition(
+    after position: InternalPosition
+  ) -> InternalPosition? {
     switch position {
-    case .element(let baseIndex):
-      let nextBaseIndex = base.index(after: baseIndex)
-      switch nextBaseIndex == base.endIndex {
-      case true:
-        return .endIndex
-      case false:
-        return Index(
-          interjection: Index.Interjection(
-            precedingElement: baseIndex,
-            subsequentElement: nextBaseIndex
+    case .element(let elementIndex):
+      precondition(elementIndex < base.endIndex)
+      switch base.subscriptableIndex(after: elementIndex) {
+      case .some(let nextSubscriptableIndex):
+        return .interjection(
+          InternalPosition.Interjection(
+            precedingElement: elementIndex,
+            subsequentElement: nextSubscriptableIndex
           )
         )
+      case .none:
+        return nil
       }
-    case .interjection(let baseIndexInterjection):
-      return Index(index: baseIndexInterjection.subsequentElement)
+    case .interjection(let interjectionIndices):
+      precondition(interjectionIndices.subsequentElement < base.endIndex)
+      return .element(interjectionIndices.subsequentElement)
     }
   }
   
-}
-
-extension InterjectionSequence: BidirectionalCollection where Base: BidirectionalCollection {
+  // MARK: - LinearizableInternalPositionCollection API
   
   @inlinable
-  public func index(
-    before i: Index
-  ) -> Index {
-    switch i.position {
-    case .none:
-      guard let baseIndex = base.finalSubscriptableIndex else {
-        fatalAttemptToGoBackFromStartIndex(i)
-      }
-      return Index(index: baseIndex)
-    case .some(.element(let baseIndex)):
-      return Index(
-        interjection: Index.Interjection(
-          precedingElement: base.index(before: baseIndex),
-          subsequentElement: baseIndex
-        )
-      )
-    case .some(.interjection(let baseInterjection)):
-      return Index(index: baseInterjection.precedingElement)
+  package func linearPosition(forInternalPosition internalPosition: InternalPosition) -> Int {
+    switch internalPosition {
+    case .element(let elementIndex):
+      precondition(elementIndex < base.endIndex)
+      return 2 * base.distanceFromStart(to: elementIndex)
+    case .interjection(let interjectionIndices):
+      return 1 + 2 * base.distanceFromStart(to: interjectionIndices.precedingElement)
     }
   }
+  
+  @inlinable
+  package func internalPosition(forLinearPosition linearPosition: Int) -> InternalPosition? {
+    guard (0..<count).contains(linearPosition) else {
+      return nil
+    }
+    let (baseLinearPosition, remainder) = linearPosition.quotientAndRemainder(dividingBy: 2)
+    let baseIndex = base.index(offsetFromStartBy: baseLinearPosition)
+    precondition(baseIndex < base.endIndex)
+    switch remainder == 0 {
+    case true:
+      return .element(baseIndex)
+    case false:
+      let nextBaseIndex = base.index(after: baseIndex)
+      precondition(nextBaseIndex < base.endIndex)
+      return .interjection(
+        InternalPosition.Interjection(
+          precedingElement: baseIndex,
+          subsequentElement: nextBaseIndex
+        )
+      )
+    }
+  }  
 }
 
-extension InterjectionSequence: RandomAccessCollection where Base: RandomAccessCollection { }
+// ------------------------------------------------------------------------- //
+// MARK: - BidirectionalCollection
+// ------------------------------------------------------------------------- //
+
+extension InterjectionSequence: 
+  BidirectionalCollection,
+  InternalPositionBidirectionalCollection
+where Base: BidirectionalCollection {
+  
+  @inlinable
+  package func internalPosition(
+    before position: InternalPosition
+  ) -> InternalPosition? {
+    switch position {
+    case .element(let elementIndex):
+      guard let previousElementIndex = base.subscriptableIndex(before: elementIndex) else {
+        preconditionFailure("Attempted to go back from the start position.")
+      }
+      
+      return .interjection(
+        InternalPosition.Interjection(
+          precedingElement: previousElementIndex,
+          subsequentElement: elementIndex
+        )
+      )
+    case .interjection(let interjectionIndices):
+      precondition(interjectionIndices.precedingElement >= base.startIndex)
+      return .element(interjectionIndices.precedingElement)
+    }
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - RandomAccessCollection
+// ------------------------------------------------------------------------- //
+
+extension InterjectionSequence: 
+  RandomAccessCollection,
+  InternalPositionRandomAcccessCollection
+where Base: RandomAccessCollection { }

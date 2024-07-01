@@ -12,7 +12,8 @@ import HDXLEssentialMacros
 @ConditionallySendable
 @ConditionallyEquatable
 @ConditionallyHashable
-@ConditionallyCodable
+@ConditionallyEncodable
+@ConditionallyDecodable
 @ConditionallyRandomAccessCollection
 public struct Chain2Collection<A,B>
 where

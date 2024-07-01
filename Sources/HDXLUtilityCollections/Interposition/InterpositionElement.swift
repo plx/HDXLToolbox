@@ -1,16 +1,24 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // ------------------------------------------------------------------------- //
 // MARK: InterpositionElement
 // ------------------------------------------------------------------------- //
 
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConstructorDebugDescription
 public struct InterpositionElement<Element> {
   public var precedingElement: Element
   public var subsequentElement: Element
   
   @inlinable
+  @PreferredMemberwiseInitializer
   public init(
     precedingElement: Element,
     subsequentElement: Element
@@ -19,35 +27,6 @@ public struct InterpositionElement<Element> {
     self.subsequentElement = subsequentElement
   }
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: - Primary API
-// ------------------------------------------------------------------------- //
-
-extension InterpositionElement {
-  
-  @inlinable
-  public func componentMap<T>(
-    componentType: T.Type,
-    _ transformation: (Element) throws -> T
-  ) rethrows -> InterpositionElement<T> {
-    InterpositionElement<T>(
-      precedingElement: try transformation(precedingElement),
-      subsequentElement: try transformation(subsequentElement)
-    )
-  }
-  
-}
-
-// ------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension InterpositionElement: Sendable where Element: Sendable { }
-extension InterpositionElement: Equatable where Element: Equatable { }
-extension InterpositionElement: Hashable where Element: Hashable { }
-extension InterpositionElement: Encodable where Element: Encodable { }
-extension InterpositionElement: Decodable where Element: Decodable { }
 
 // ------------------------------------------------------------------------- //
 // MARK: - Comparable
@@ -126,20 +105,22 @@ extension InterpositionElement: CustomStringConvertible {
   }
 }
 
+
 // ------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
+// MARK: - Mapping API
 // ------------------------------------------------------------------------- //
 
-extension InterpositionElement: CustomDebugStringConvertible {
+extension InterpositionElement {
   
   @inlinable
-  public var debugDescription: String {
-    String(
-      forConstructorOf: Self.self,
-      arguments: (
-        ("precedingElement", precedingElement),
-        ("subsequentElement", subsequentElement)
-      )
+  public func componentMap<T>(
+    componentType: T.Type,
+    _ transformation: (Element) throws -> T
+  ) rethrows -> InterpositionElement<T> {
+    InterpositionElement<T>(
+      precedingElement: try transformation(precedingElement),
+      subsequentElement: try transformation(subsequentElement)
     )
   }
+  
 }

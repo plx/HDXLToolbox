@@ -187,6 +187,7 @@ let package = Package(
       dependencies: [
         "HDXLEssentialPrecursors",
         "HDXLEssentialMacros",
+        "HDXLToolboxPackageMacros",
         "HDXLCollectionSupport"
       ]
     ),
@@ -323,6 +324,34 @@ let package = Package(
     ),
     .target(
       name: "HDXLEssentialMacros",
+      dependencies: [
+        "HDXLEssentialPrecursors",
+        "HDXLMacroSupport",
+        "HDXLEssentialMacrosPlugin",
+        .product(
+          name: "SwiftSyntax",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftParser",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxBuilder",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftSyntaxMacros",
+          package: "swift-syntax"
+        ),
+        .product(
+          name: "SwiftDiagnostics",
+          package: "swift-syntax"
+        )
+      ]
+    ),
+    .target(
+      name: "HDXLToolboxPackageMacros",
       dependencies: [
         "HDXLEssentialPrecursors",
         "HDXLMacroSupport",

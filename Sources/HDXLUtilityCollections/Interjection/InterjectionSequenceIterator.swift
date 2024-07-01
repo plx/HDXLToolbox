@@ -6,7 +6,15 @@ public struct InterjectionSequenceIterator<Base>: IteratorProtocol where Base: I
   public typealias Element = Base.Element
   
   @usableFromInline
-  internal typealias State = InterjectionSequenceIterationState<Element>
+  internal enum IterationState {
+    case initial
+    case element
+    case interjection(Element)
+    case exhausted
+  }
+  
+  @usableFromInline
+  internal typealias State = IterationState
   
   @usableFromInline
   internal var interjection: Element

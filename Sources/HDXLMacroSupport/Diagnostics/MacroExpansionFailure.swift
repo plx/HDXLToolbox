@@ -1,0 +1,348 @@
+import SwiftSyntax
+import SwiftDiagnostics
+import HDXLEssentialPrecursors
+
+public func failureDetails<each T>(
+  elements: (repeat (String, each T))
+) -> String {
+  var result: String = ""
+  for (caption, element)  in repeat each elements {
+    result.appendAdditionalLine(
+      """
+      
+      ---------------------------------------------------
+      --- DETAILS: `\(caption)`
+      ---------------------------------------------------
+      
+      """
+    )
+    result.appendAdditionalLine(String(reflecting: element))
+  }
+  
+  return result
+}
+
+public func expansionRequirement<R>(
+  explanation: @autoclosure () -> String,
+  details: @autoclosure () -> String? = nil,
+  function: StaticString = #function,
+  fileID: StaticString = #fileID,
+  line: UInt = #line,
+  column: UInt = #column,
+  _ closure: () throws -> R
+) throws(MacroExpansionFailure) -> R {
+  do {
+    return try closure()
+  }
+  catch let macroExpansionFailure as MacroExpansionFailure {
+    throw macroExpansionFailure
+  }
+  catch let anyOtherFailure {
+    throw MacroExpansionFailure(
+      encapsulating: anyOtherFailure,
+      explanation: explanation(),
+      function: function,
+      fileID: fileID,
+      line: line,
+      column: column
+    )
+  }
+}
+
+public func expansionRequirement<T,R>(
+  `get` property: KeyPath<T,R?>,
+  from source: T,
+  function: StaticString = #function,
+  fileID: StaticString = #fileID,
+  line: UInt = #line,
+  column: UInt = #column,
+  _ closure: () throws -> R
+) throws(MacroExpansionFailure) -> R {
+  guard let requirement = source[keyPath: property] else {
+    throw MacroExpansionFailure(
+      explanation: "Couldn't extract `\(property)` from `\(source)`!",
+      details: nil,
+      function: function,
+      fileID: fileID,
+      line: line,
+      column: column
+    )
+  }
+  
+  return requirement
+}
+
+public struct MacroExpansionFailure : Error {
+  
+  public let explanation: String
+  public let details: String?
+  public let suberrors: [any Error]
+      
+  public let function: StaticString
+  public let fileID: StaticString
+  public let line: UInt
+  public let column: UInt
+  
+  public init(
+    explanation: String,
+    details: String?,
+    suberrors: [any Error] = [],
+    function: StaticString = #function,
+    fileID: StaticString = #fileID,
+    line: UInt = #line,
+    column: UInt = #column
+  ) {
+    self.explanation = explanation
+    self.details = details
+    self.suberrors = suberrors
+    self.function = function
+    self.fileID = fileID
+    self.line = line
+    self.column = column
+  }
+
+  public init(
+    encapsulating anyOtherError: any Error,
+    explanation: String,
+    details: String? = nil,
+    function: StaticString = #function,
+    fileID: StaticString = #fileID,
+    line: UInt = #line,
+    column: UInt = #column
+  ) {
+    precondition(nil == anyOtherError as? MacroExpansionFailure)
+    self.init(
+      explanation: explanation,
+      details: details,
+      suberrors: [anyOtherError],
+      function: function,
+      fileID: fileID,
+      line: line,
+      column: column
+    )
+  }
+
+  public func encapsulated(
+    with explanation: String,
+    details: String? = nil,
+    function: StaticString = #function,
+    fileID: StaticString = #fileID,
+    line: UInt = #line,
+    column: UInt = #column
+  ) -> MacroExpansionFailure {
+    MacroExpansionFailure(
+      explanation: explanation,
+      details: details,
+      suberrors: [self] + suberrors,
+      function: function,
+      fileID: fileID,
+      line: line,
+      column: column
+    )
+  }
+  
+}
+
+extension MacroExpansionFailure {
+  
+  public static func withAutomaticEncapsulation<R>(
+    explanation: @autoclosure () -> String,
+    details: @autoclosure () -> String? = nil,
+    function: StaticString = #function,
+    fileID: StaticString = #fileID,
+    line: UInt = #line,
+    column: UInt = #column,
+    _ closure: () throws -> R
+  ) throws -> R {
+    do {
+      return try closure()
+    }
+    catch let macroExpansionFailure as MacroExpansionFailure {
+      throw macroExpansionFailure
+    }
+    catch let anyOtherError {
+      throw MacroExpansionFailure(
+        encapsulating: anyOtherError,
+        explanation: explanation(),
+        details: details(),
+        function: function,
+        fileID: fileID,
+        line: line,
+        column: column
+      )
+    }
+  }
+}
+
+extension MacroExpansionFailure: CustomStringConvertible {
+  
+  public var description: String {
+    "\(explanation) @ \(line) in \(function) from \(fileID)"
+  }
+  
+}
+
+extension MacroExpansionFailure: CustomDebugStringConvertible {
+  
+  public var debugDescription: String {
+    String(
+      forConstructorOf: Self.self,
+      arguments: (
+        ("explanation", explanation),
+        ("suberrors", suberrors),
+        ("function", function),
+        ("fileID", fileID),
+        ("line", line),
+        ("column", column)
+        // deliberately omit details for brevity
+      )
+    )
+  }
+  
+}
+
+extension String {
+  
+  mutating func appendAdditionalLine(_  additionalLine: String) {
+    append("\n")
+    append(additionalLine)
+  }
+
+  mutating func appendAdditionalLine(
+    _  additionalLine: String,
+    reindentedWith indent: String
+  ) {
+    appendAdditionalLine("\(indent)\(additionalLine)")
+  }
+
+  mutating func appendAdditionalLine(
+    _  additionalLine: String,
+    indentation: String,
+    depth: Int
+  ) {
+    appendAdditionalLine(
+      additionalLine,
+      reindentedWith: String(
+        repeating: indentation,
+        count: depth
+      )
+    )
+  }
+
+  mutating func appendAdditionalLines(_  additionalLines: some Sequence<String>) {
+    for additionalLine in additionalLines {
+      appendAdditionalLine(additionalLine)
+    }
+  }
+  
+  mutating func appendAdditionalLines(
+    _  additionalLines: some Sequence<String>,
+    reindentedWith indent: String
+  ) {
+    appendAdditionalLines(
+      additionalLines.onDemandMap { "\(indent)\($0)" }
+    )
+  }
+
+  mutating func appendAdditionalLines(
+    _  additionalLines: some Sequence<String>,
+    indentation: String,
+    depth: Int
+  ) {
+    appendAdditionalLines(
+      additionalLines,
+      reindentedWith: String(
+        repeating: indentation,
+        count: depth
+      )
+    )
+  }
+
+}
+
+extension MacroExpansionFailure {
+  
+  private func addPrettyPrintedFields(
+    to inProgressString: inout String,
+    indentation: String,
+    depth: Int
+  ) {
+    inProgressString.appendAdditionalLines(
+      [
+        "- `explanation`: \(explanation)",
+        "- `function`: \(function)",
+        "- `fileID`: \(fileID)",
+        "- `line`: \(line)",
+        "- `column`: \(column)"
+      ],
+      indentation: indentation,
+      depth: depth
+    )
+    
+    inProgressString.appendAdditionalLine(
+      "- `suberrors`:",
+      indentation: indentation,
+      depth: depth
+    )
+    
+    let count = suberrors.count
+    for (index, suberror) in suberrors.enumerated() {
+      addPrettyPrintedSuberror(
+        suberror,
+        index: index,
+        count: count,
+        to: &inProgressString,
+        indentation: indentation,
+        depth: depth + 1
+      )
+    }
+  }
+  
+  private func addPrettyPrintedSuberror(
+    _ suberror: any Error,
+    index: Int,
+    count: Int,
+    to inProgressString: inout String,
+    indentation: String,
+    depth: Int
+  ) {
+    inProgressString.appendAdditionalLine(
+      "- `error` (\(1 + index)/\(count)):",
+      indentation: indentation,
+      depth: depth
+    )
+    inProgressString.appendAdditionalLine(
+      "- `type`: \(String(reflecting: type(of: suberror)))",
+      indentation: indentation,
+      depth: depth + 1
+    )
+    switch suberror as? MacroExpansionFailure {
+    case .some(let macroExpansionFailure):
+      macroExpansionFailure.addPrettyPrintedFields(
+        to: &inProgressString,
+        indentation: indentation,
+        depth: depth + 1
+      )
+    case .none:
+      inProgressString.appendAdditionalLine(
+        "- `debugDescription`: \(String(reflecting: suberror))",
+        indentation: indentation,
+        depth: depth + 1
+      )
+    }
+  }
+  
+  public func prettyPrinted(
+    indentation: String = "  ",
+    depth: Int = 0
+  ) -> String {
+    mutation(of: "`MacroExpansionFailure`") {
+      addPrettyPrintedFields(
+        to: &$0,
+        indentation: indentation,
+        depth: depth + 1
+      )
+    }
+  }
+  
+}

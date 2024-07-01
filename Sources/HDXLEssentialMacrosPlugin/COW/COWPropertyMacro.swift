@@ -1,27 +1,27 @@
-import Foundation
 import SwiftSyntax
-import SwiftParser
 import SwiftSyntaxMacros
-import SwiftSyntaxBuilder
-import SwiftDiagnostics
-import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-public struct COWPropertyMacro: AccessorMacro {
+public struct COWPropertyMacro: DiagnosticDomainAwareMacro { }
+
+extension COWPropertyMacro: ContextualizedAccessorMacro {
   
-  public static func expansion(
-    of node: AttributeSyntax,
-    providingAccessorsOf declaration: some DeclSyntaxProtocol,
-    in context: some MacroExpansionContext
+  public static let protocolAttachmentDisposition: AttachmentDisposition = .excluded
+  public static let enumAttachmentDisposition: AttachmentDisposition = .excluded
+  
+  public static func contextualizedExpansion(
+    in attachmentContext: AttachedMacroContext<some DeclSyntaxProtocol, some MacroExpansionContext>
   ) throws -> [AccessorDeclSyntax] {
-    guard
-      let variableDeclaration = declaration.as(VariableDeclSyntax.self),
-      let variableBinding = variableDeclaration.bindings.first,
-      let variableIdentifierPattern = variableBinding.pattern.as(IdentifierPatternSyntax.self)
-    else {
-      fatalError() // TODO: real errors
-    }
+    let variableDeclaration = try attachmentContext.expansionRequirement(
+      declarationAs: VariableDeclSyntax.self
+    )
     
+    let variableIdentifierPattern = try attachmentContext.expansionRequirement(
+      property: \.bindings.first,
+      of: variableDeclaration,
+      as: IdentifierPatternSyntax.self
+    )
+
     return [
       """
       get {

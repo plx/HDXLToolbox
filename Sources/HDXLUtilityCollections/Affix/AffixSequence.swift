@@ -1,14 +1,19 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 // ------------------------------------------------------------------------- //
 // MARK: Sequence + Affixes
 // ------------------------------------------------------------------------- //
 
 extension Sequence {
-
+  
   /// Provides a sequence adapted to provide the `prefixElement` before the elements from `self` and then the `suffixElement` after the elements from `self`.
+  ///
+  /// - seealso: ``with(prefixElement:)``
+  /// - seealso: ``with(suffixElement:)``
+  /// - seealso: ``with(caboose:)``
   @inlinable
   public func with(
     prefixElement: Element,
@@ -22,6 +27,10 @@ extension Sequence {
   }
   
   /// Provides a sequence adapted to provide the `prefixElement` before the elements from `self`.
+  ///
+  /// - seealso: ``with(suffixElement:)``
+  /// - seealso: ``with(prefixElement:suffixElement:)``
+  /// - seealso: ``with(caboose:)``
   @inlinable
   public func with(prefixElement: Element) -> some Sequence<Element> {
     AffixSequence<Self>(
@@ -32,6 +41,12 @@ extension Sequence {
   }
   
   /// Provides a sequence adapted to provide the `suffixElement` after the elements from `self`.
+  ///
+  /// - Note: if you truly only need a single suffix element, consider using `with(caboose:)` instead.
+  ///
+  /// - seealso: ``with(prefixElement:)``
+  /// - seealso: ``with(prefixElement:suffixElement:)``
+  /// - seealso: ``with(caboose:)``
   @inlinable
   public func with(suffixElement: Element) -> some Sequence<Element> {
     AffixSequence<Self>(
@@ -40,10 +55,57 @@ extension Sequence {
       suffixElement: suffixElement
     )
   }
+  
+  /// Provides a sequence adapted to provide the `prefixElement` before the elements from `self` and then the `suffixElement` after the elements from `self`.
+  ///
+  /// - seealso: ``with(prefixElement:)``
+  /// - seealso: ``with(suffixElement:)``
+  /// - seealso: ``with(caboose:)``
+  @inlinable
+  public func with(
+    possiblePrefixElement: Element?,
+    possibleSuffixElement: Element?
+  ) -> some Sequence<Element> {
+    AffixSequence<Self>(
+      prefixElement: possiblePrefixElement,
+      base: self,
+      suffixElement: possibleSuffixElement
+    )
+  }
+  
+  /// Provides a sequence adapted to provide the `prefixElement` before the elements from `self`.
+  ///
+  /// - seealso: ``with(suffixElement:)``
+  /// - seealso: ``with(prefixElement:suffixElement:)``
+  /// - seealso: ``with(caboose:)``
+  @inlinable
+  public func with(possiblePrefixElement: Element?) -> some Sequence<Element> {
+    AffixSequence<Self>(
+      prefixElement: possiblePrefixElement,
+      base: self,
+      suffixElement: nil
+    )
+  }
+  
+  /// Provides a sequence adapted to provide the `suffixElement` after the elements from `self`.
+  ///
+  /// - Note: if you truly only need a single suffix element, consider using `with(caboose:)` instead.
+  ///
+  /// - seealso: ``with(prefixElement:)``
+  /// - seealso: ``with(prefixElement:suffixElement:)``
+  /// - seealso: ``with(caboose:)``
+  @inlinable
+  public func with(possibleSuffixElement: Element?) -> some Sequence<Element> {
+    AffixSequence<Self>(
+      prefixElement: nil,
+      base: self,
+      suffixElement: possibleSuffixElement
+    )
+  }
 }
 
 // ------------------------------------------------------------------------- //
-// MARK: AffixSequence
+// MARK: Synonyms
 // ------------------------------------------------------------------------- //
 
 /// Shorthand for an ``AffixSequence`` that's also a `Collection` (e.g. b/c it's wrapping some underlying `Collection`).
@@ -55,17 +117,21 @@ public typealias AffixBidirectionalCollection<Base> = AffixSequence<Base> where 
 /// Shorthand for an ``AffixSequence`` that's also a `RandomAccessCollection` (e.g. b/c it's wrapping some underlying `RandomAccessCollection`).
 public typealias AffixRandomAccessCollection<Base> = AffixSequence<Base> where Base: RandomAccessCollection
 
-/// ``AffixSequence`` adapts an underyling sequence to possibly (a) have an additional ``prefixElement`` at the beginning
-/// and/or (b) possibly have an additional ``suffixElement`` at the end.
+// ------------------------------------------------------------------------- //
+// MARK: AffixSequence
+// ------------------------------------------------------------------------- //
+
+/// ``AffixSequence`` adapts its underlying base sequence to (possibly) have any combination of:
+///
+/// - a possible ``prefixElement`` preceding the elements from ``base``
+/// - a possible ``suffixElement`` following the elements from ``base``
 ///
 /// In other words, you go from this:
 ///
 /// - `original`: `[foo, bar, baz]`
 /// - `adapted`: `[prefix, foo, bar, baz]`
 ///
-/// ...except without either *modifying* the underlying sequence *or* allocating new storage and copying things into it.
-///
-/// - note: ``AffixSequence`` inherits the collectionality of its ``Base``
+/// ...to except without either *modifying* the underlying sequence *or* allocating new storage and copying things into it.
 ///
 /// - note:
 ///
@@ -83,6 +149,7 @@ public typealias AffixRandomAccessCollection<Base> = AffixSequence<Base> where B
 /// - seealso: ``AffixRandomAccessCollection``
 ///
 @frozen
+@ConstructorDebugDescription
 public struct AffixSequence<Base>: Sequence where Base: Sequence {
   public typealias Element = Base.Element
   public typealias Iterator = AffixSequenceIterator<Base.Iterator>
@@ -95,8 +162,9 @@ public struct AffixSequence<Base>: Sequence where Base: Sequence {
 
   @usableFromInline
   internal let suffixElement: Element?
-  
+    
   @inlinable
+  @PreferredMemberwiseInitializer
   internal init(
     prefixElement: Element?,
     base: Base,
@@ -126,13 +194,36 @@ public struct AffixSequence<Base>: Sequence where Base: Sequence {
   }
 }
 
+// ------------------------------------------------------------------------- //
+// MARK: - Synthesized Conformances
+// ------------------------------------------------------------------------- //
+
 extension AffixSequence: Sendable where Base: Sendable, Base.Element: Sendable { }
 extension AffixSequence: Equatable where Base: Equatable, Base.Element: Equatable { }
 extension AffixSequence: Hashable where Base: Hashable, Base.Element: Hashable { }
 extension AffixSequence: Encodable where Base: Encodable, Base.Element: Encodable { }
 extension AffixSequence: Decodable where Base: Decodable, Base.Element: Decodable { }
 
-extension AffixSequence: 
+extension AffixSequence: Identifiable, AutoIdentifiable where Base: Hashable, Base.Element: Hashable { }
+
+// ------------------------------------------------------------------------- //
+// MARK: - Custom String Convertible
+// ------------------------------------------------------------------------- //
+
+extension AffixSequence: CustomStringConvertible {
+  
+  @inlinable
+  public var description: String {
+    "\(String(describing: base)) in-between (\(String(describing: prefixElement)), \(String(describing: suffixElement)))"
+  }
+  
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: - Collection
+// ------------------------------------------------------------------------- //
+
+extension AffixSequence:
   Collection,
   InternalPositionCollection,
   LinearizableInternalPositionCollection
@@ -328,7 +419,11 @@ Base: Collection
 
 }
 
-extension AffixSequence: 
+// ------------------------------------------------------------------------- //
+// MARK: - BidirectionalCollection
+// ------------------------------------------------------------------------- //
+
+extension AffixSequence:
   BidirectionalCollection,
   InternalPositionBidirectionalCollection
 where
@@ -363,7 +458,11 @@ Base: BidirectionalCollection
 
 }
 
-extension AffixSequence: 
+// ------------------------------------------------------------------------- //
+// MARK: - RandomAccessCollection
+// ------------------------------------------------------------------------- //
+
+extension AffixSequence:
   RandomAccessCollection,
   InternalPositionRandomAcccessCollection
 where Base: RandomAccessCollection { }

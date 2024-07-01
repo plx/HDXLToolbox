@@ -16,8 +16,6 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     ConditionallyAutoIdentifiableMacro.self,
     
     // not really "general-purpose" like the others:
-    ConditionallyAdditiveArithmeticMacro.self,
-    ConditionallyVectorArithmeticMacro.self,
     ConditionallyRandomAccessCollectionMacro.self,
     
     // unconditional conformances:
@@ -47,7 +45,19 @@ struct HDXLEssentialMacrosPlugin: CompilerPlugin {
     ConstructorDebugDescriptionMacro.self,
     
     // Assistance
-    PreferredMemberwiseInitializerMacro.self
+    PreferredMemberwiseInitializerMacro.self,
+    
+    // Algebraic
+    //    CollectionsWithCommonElementTypeMacro.self,
+    DeclareChainCollectionStorageMacro.self,
+    AddAlgebraicProductLikeStringificationMacro.self,
+    AddAlgebraicProductLikeStorageAndForwardingMacro.self,
+    AddChainCollectionStorageImplementationMacro.self,
+    AddFixedChainCollectionStorageComponentsMacro.self,
+    ResettableLazyCalculationMacro.self,
+    AddAlgebraicSumLikeIndexInitializationMacro.self,
+    AddChainCollectionIndexCaseIterableMacro.self,
+    AddChainIndexFixedComponentsMacro.self
   ]
 }
 

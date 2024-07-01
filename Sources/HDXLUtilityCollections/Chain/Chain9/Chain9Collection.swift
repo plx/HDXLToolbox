@@ -15,142 +15,21 @@ import HDXLEssentialMacros
 @ConditionallyHashable
 @ConditionallyCodable
 @ConditionallyRandomAccessCollection
+@AddArity9AlgebraicProductLikeBacking
+@AddAlgebraicProductLikeStringification(caption: "chain-of")
 public struct Chain9Collection<A,B,C,D,E,F,G,H,I>
 where
 A: Collection,
-B: Collection,
-C: Collection,
-D: Collection,
-E: Collection,
-F: Collection,
-G: Collection,
-H: Collection,
-I: Collection,
-A.Element == B.Element,
-A.Element == C.Element,
-A.Element == D.Element,
-A.Element == E.Element,
-A.Element == F.Element,
-A.Element == G.Element,
-A.Element == H.Element,
-A.Element == I.Element
+B: Collection<A.Element>,
+C: Collection<A.Element>,
+D: Collection<A.Element>,
+E: Collection<A.Element>,
+F: Collection<A.Element>,
+G: Collection<A.Element>,
+H: Collection<A.Element>,
+I: Collection<A.Element>
 {
-  
-  @usableFromInline
-  internal typealias Storage = Chain9CollectionStorage<A,B,C,D,E,F,G,H,I>
-  
-  @usableFromInline
-  internal var storage: Storage
-  
-  @inlinable
-  internal init(storage: Storage) {
-    self.storage = storage
-  }
-  
-  @inlinable
-  public init(
-    _ a: A,
-    _ b: B,
-    _ c: C,
-    _ d: D,
-    _ e: E,
-    _ f: F,
-    _ g: G,
-    _ h: H,
-    _ i: I
-  ) {
-    self.init(
-      storage: Storage(
-        a,
-        b,
-        c,
-        d,
-        e,
-        f,
-        g,
-        h,
-        i
-      )
-    )
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - Property Exposure
-// -------------------------------------------------------------------------- //
-
-extension Chain9Collection {
-  
-  @inlinable
-  @COWProperty
-  public var a: A
-  
-  @inlinable
-  @COWProperty
-  public var b: B
-
-  @inlinable
-  @COWProperty
-  public var c: C
-
-  @inlinable
-  @COWProperty
-  public var d: D
-
-  @inlinable
-  @COWProperty
-  public var e: E
-
-  @inlinable
-  @COWProperty
-  public var f: F
-
-  @inlinable
-  @COWProperty
-  public var g: G
-
-  @inlinable
-  @COWProperty
-  public var h: H
-
-  @inlinable
-  @COWProperty
-  public var i: I
-
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension Chain9Collection : CustomStringConvertible {
-  
-  @inlinable
-  public var description: String {
-    String(
-      forCaption: "chain-of",
-      describingTuple: storage.constituentTuple
-    )
     
-  }
-  
-}
-
-// -------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// -------------------------------------------------------------------------- //
-
-extension Chain9Collection : CustomDebugStringConvertible {
-  
-  @inlinable
-  public var debugDescription: String {
-    String(
-      forConstructorOf: Self.self,
-      unlabeledArguments: storage.constituentTuple
-    )
-  }
-  
 }
 
 // -------------------------------------------------------------------------- //

@@ -1,28 +1,23 @@
-import Foundation
 import SwiftSyntax
-import SwiftParser
 import SwiftSyntaxMacros
-import SwiftSyntaxBuilder
-import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-public struct COWStorageMacro {}
+public struct COWStorageMacro : DiagnosticDomainAwareMacro {}
 
-extension COWStorageMacro: ExtensionMacro {
+extension COWStorageMacro : ContextualizedAttachedMacro {
   
-  public static func expansion(
-    of node: AttributeSyntax,
-    attachedTo declaration: some DeclGroupSyntax,
+  public static let classAttachmentDisposition: AttachmentDisposition = .required
+  
+}
+
+extension COWStorageMacro: ContextualizedExtensionMacro {
+  
+  public static func contextualizedExpansion(
+    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
     providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
+    conformingTo protocols: [TypeSyntax]
   ) throws -> [ExtensionDeclSyntax] {
-    guard declaration.is(ClassDeclSyntax.self) else {
-      // TODO: real errors!
-      fatalError("This only works for classes!")
-    }
-    
     return [
       try ExtensionDeclSyntax(
         """
@@ -36,7 +31,21 @@ extension COWStorageMacro: ExtensionMacro {
   
 }
 
-extension COWStorageMacro: MemberMacro {
+extension COWStorageMacro: ContextualizedMemberMacro {
+  
+  public static func contextualizedExpansion(
+    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
+    conformingTo protocols: [TypeSyntax]
+  ) throws -> [DeclSyntax] {
+    let classDeclaration = try attachmentContext.expansionRequirement(
+      declarationAs: ClassDeclSyntax.self
+    )
+
+    let initializerBlock = try attachmentContext.expansionRequirement(
+      "declarationAs: ClassDeclSyntax.self"
+    )
+  }
+
   public static func expansion(
     of node: AttributeSyntax,
     providingMembersOf declaration: some DeclGroupSyntax,

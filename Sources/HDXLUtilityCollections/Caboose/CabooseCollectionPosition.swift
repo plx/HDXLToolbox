@@ -26,13 +26,13 @@ extension CabooseCollectionPosition: Comparable {
   ) -> Bool {
     switch (lhs, rhs) {
     case (.base(let l), .base(let r)):
-      return l < r
+      l < r
     case (.base, .caboose):
-      return true
+      true
     case (.caboose, .base):
-      return false
+      false
     case (.caboose, .caboose):
-      return false
+      false
     }
   }
   

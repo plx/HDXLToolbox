@@ -7,31 +7,14 @@ import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-//public struct COWWrapperMacro: ExtensionMacro {
-//  public static func expansion(
-//    of node: AttributeSyntax,
-//    attachedTo declaration: some DeclGroupSyntax,
-//    providingExtensionsOf type: some TypeSyntaxProtocol,
-//    conformingTo protocols: [TypeSyntax],
-//    in context: some MacroExpansionContext
-//  ) throws -> [ExtensionDeclSyntax] {
-//    [
-//      try ExtensionDeclSyntax(
-//        """
-//        extension \(type.trimmed) : COWWrapperProtocol { }
-//        """
-//      )
-//    ]
-//  }
-//  
-//}
+public struct COWWrapperMacro: DiagnosticDomainAwareMacro { }
 
-public struct COWWrapperMacro: MemberMacro {
-  public static func expansion(
-    of node: AttributeSyntax,
-    providingMembersOf declaration: some DeclGroupSyntax,
-    conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
+extension COWWrapperMacro: ContextualizedMemberMacro {
+  public static let structAttachmentDisposition: AttachmentDisposition = .required
+  
+  public static func contextualizedExpansion(
+    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
+    conformingTo protocols: [TypeSyntax]
   ) throws -> [DeclSyntax] {
     [
       """
