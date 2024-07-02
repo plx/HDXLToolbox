@@ -53,7 +53,7 @@ extension MacroExpansionContext {
   
   @inlinable
   public func abstractSourceLocation(
-    for node: some SyntaxProtocol,
+    attributionNode node: some SyntaxProtocol,
     position: DiagnosticPositionStrategy
   ) -> AbstractSourceLocation? {
     switch position {
@@ -67,41 +67,11 @@ extension MacroExpansionContext {
       )
     }
   }
-  
-//  @inlinable
-//  public func recordDiagnostic(
-//    from domain: (some MacroDiagnosticDomain).Type,
-//    for node: some SyntaxProtocol,
-//    subject: (some SyntaxProtocol)? = nil,
-//    severity: DiagnosticSeverity,
-//    messageID messageIdentifier: String = .standardMessageID,
-//    explanation: String,
-//    highlights: [Syntax]? = nil,
-//    notes: [Note] = [],
-//    fixIts: [FixIt] = []
-//  ) {
-//    diagnose(
-//      Diagnostic(
-//        node: node,
-//        position: subject?.positionAfterSkippingLeadingTrivia, // TODO: more-granular location reporting
-//        message: HDXLMacroDiagnostic(
-//          message: explanation,
-//          severity: severity,
-//          diagnosticID: domain.messageID(
-//            id: messageIdentifier
-//          )
-//        ),
-//        highlights: highlights,
-//        notes: notes,
-//        fixIts: fixIts
-//      )
-//    )
-//  }
 
   @inlinable
   public func recordDiagnostic(
-    for node: any SyntaxProtocol,
-    subject: (any SyntaxProtocol)? = nil,
+    attributionNode node: any SyntaxProtocol,
+    subjectNode: (any SyntaxProtocol)? = nil,
     severity: DiagnosticSeverity,
     domainID domainIdentifier: String,
     messageID messageIdentifier: String,
@@ -113,7 +83,7 @@ extension MacroExpansionContext {
     diagnose(
       Diagnostic(
         node: node,
-        position: subject?.positionAfterSkippingLeadingTrivia, // TODO: more-granular location reporting
+        position: subjectNode?.positionAfterSkippingLeadingTrivia, // TODO: more-granular location reporting
         message: HDXLMacroDiagnostic(
           message: explanation,
           severity: severity,

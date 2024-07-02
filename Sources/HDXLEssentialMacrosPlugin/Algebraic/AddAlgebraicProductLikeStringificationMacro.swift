@@ -13,23 +13,21 @@ extension AddAlgebraicProductLikeStringificationMacro: UnconditionalConformanceM
   public static let conformedProtocolNames: [String] = ["CustomStringConvertible", "CustomDebugStringConvertible"]
   
   public static func unconditionalExtensions(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some ExtensionMacroContextProtocol
   ) throws -> [ExtensionDeclSyntax] {
-    let genericParameters = try attachmentContext.expansionRequirement(
-      nonEmptyProperty: \.simpleGenericParameterNames,
+    let genericParameters = try attachmentContext.requireNonEmptyProperty(
+      \.simpleGenericParameterNames,
       of: attachmentContext.declaration
     )
     
-    let labeledArgumentList = try attachmentContext.expansionRequirement(
-      property: \.arguments,
-      of: attachmentContext.attributeNode,
+    let labeledArgumentList = try attachmentContext.requireSyntaxProperty(
+      \.arguments,
+      of: attachmentContext.macroInvocationNode,
       as: LabeledExprListSyntax.self
     )
     
-    let captionExpression = try attachmentContext.expansionRequirement(
-      property: \.first,
+    let captionExpression = try attachmentContext.requireSyntaxProperty(
+      \.first?.expression,
       of: labeledArgumentList,
       as: StringLiteralExprSyntax.self
     )
@@ -39,7 +37,7 @@ extension AddAlgebraicProductLikeStringificationMacro: UnconditionalConformanceM
     return [
       try ExtensionDeclSyntax(
         """
-        extension \(type.trimmed) : CustomStringConvertible {
+        extension \(attachmentContext.extendedType.trimmed) : CustomStringConvertible {
         
           @inlinable
           public var description: String {
@@ -57,7 +55,7 @@ extension AddAlgebraicProductLikeStringificationMacro: UnconditionalConformanceM
       
       try ExtensionDeclSyntax(
         """
-        extension \(type.trimmed) : CustomDebugStringConvertible {
+        extension \(attachmentContext.extendedType.trimmed) : CustomDebugStringConvertible {
         
           @inlinable
           public var debugDescription: String {

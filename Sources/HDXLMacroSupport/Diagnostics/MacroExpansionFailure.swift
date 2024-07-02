@@ -2,29 +2,8 @@ import SwiftSyntax
 import SwiftDiagnostics
 import HDXLEssentialPrecursors
 
-public func failureDetails<each T>(
-  elements: (repeat (String, each T))
-) -> String {
-  var result: String = ""
-  for (caption, element)  in repeat each elements {
-    result.appendAdditionalLine(
-      """
-      
-      ---------------------------------------------------
-      --- DETAILS: `\(caption)`
-      ---------------------------------------------------
-      
-      """
-    )
-    result.appendAdditionalLine(String(reflecting: element))
-  }
-  
-  return result
-}
-
-public func expansionRequirement<R>(
+public func require<R>(
   explanation: @autoclosure () -> String,
-  details: @autoclosure () -> String? = nil,
   function: StaticString = #function,
   fileID: StaticString = #fileID,
   line: UInt = #line,
@@ -49,7 +28,7 @@ public func expansionRequirement<R>(
   }
 }
 
-public func expansionRequirement<T,R>(
+public func require<T,R>(
   `get` property: KeyPath<T,R?>,
   from source: T,
   function: StaticString = #function,
@@ -61,7 +40,6 @@ public func expansionRequirement<T,R>(
   guard let requirement = source[keyPath: property] else {
     throw MacroExpansionFailure(
       explanation: "Couldn't extract `\(property)` from `\(source)`!",
-      details: nil,
       function: function,
       fileID: fileID,
       line: line,
@@ -75,7 +53,6 @@ public func expansionRequirement<T,R>(
 public struct MacroExpansionFailure : Error {
   
   public let explanation: String
-  public let details: String?
   public let suberrors: [any Error]
       
   public let function: StaticString
@@ -85,7 +62,6 @@ public struct MacroExpansionFailure : Error {
   
   public init(
     explanation: String,
-    details: String?,
     suberrors: [any Error] = [],
     function: StaticString = #function,
     fileID: StaticString = #fileID,
@@ -93,7 +69,6 @@ public struct MacroExpansionFailure : Error {
     column: UInt = #column
   ) {
     self.explanation = explanation
-    self.details = details
     self.suberrors = suberrors
     self.function = function
     self.fileID = fileID
@@ -104,7 +79,6 @@ public struct MacroExpansionFailure : Error {
   public init(
     encapsulating anyOtherError: any Error,
     explanation: String,
-    details: String? = nil,
     function: StaticString = #function,
     fileID: StaticString = #fileID,
     line: UInt = #line,
@@ -113,7 +87,6 @@ public struct MacroExpansionFailure : Error {
     precondition(nil == anyOtherError as? MacroExpansionFailure)
     self.init(
       explanation: explanation,
-      details: details,
       suberrors: [anyOtherError],
       function: function,
       fileID: fileID,
@@ -124,7 +97,6 @@ public struct MacroExpansionFailure : Error {
 
   public func encapsulated(
     with explanation: String,
-    details: String? = nil,
     function: StaticString = #function,
     fileID: StaticString = #fileID,
     line: UInt = #line,
@@ -132,7 +104,6 @@ public struct MacroExpansionFailure : Error {
   ) -> MacroExpansionFailure {
     MacroExpansionFailure(
       explanation: explanation,
-      details: details,
       suberrors: [self] + suberrors,
       function: function,
       fileID: fileID,
@@ -147,7 +118,6 @@ extension MacroExpansionFailure {
   
   public static func withAutomaticEncapsulation<R>(
     explanation: @autoclosure () -> String,
-    details: @autoclosure () -> String? = nil,
     function: StaticString = #function,
     fileID: StaticString = #fileID,
     line: UInt = #line,
@@ -164,7 +134,6 @@ extension MacroExpansionFailure {
       throw MacroExpansionFailure(
         encapsulating: anyOtherError,
         explanation: explanation(),
-        details: details(),
         function: function,
         fileID: fileID,
         line: line,
@@ -194,7 +163,6 @@ extension MacroExpansionFailure: CustomDebugStringConvertible {
         ("fileID", fileID),
         ("line", line),
         ("column", column)
-        // deliberately omit details for brevity
       )
     )
   }

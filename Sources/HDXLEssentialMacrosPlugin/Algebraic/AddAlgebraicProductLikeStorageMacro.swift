@@ -7,29 +7,23 @@ import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-public struct AddAlgebraicProductLikeStorageAndForwardingMacro { }
+public struct AddAlgebraicProductLikeStorageAndForwardingMacro : DiagnosticDomainAwareMacro { }
 
-extension AddAlgebraicProductLikeStorageAndForwardingMacro: MemberMacro {
-  public static func expansion(
-    of node: AttributeSyntax,
-    providingMembersOf declaration: some DeclGroupSyntax,
-    conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
+extension AddAlgebraicProductLikeStorageAndForwardingMacro: ContextualizedMemberMacro {
+  
+  public static let structAttachmentDisposition: AttachmentDisposition = .required
+  
+  public static func contextualizedExpansion(
+    in attachmentContext: some MemberMacroContextProtocol
   ) throws -> [DeclSyntax] {
-    guard
-      let structDeclaration = declaration.as(StructDeclSyntax.self)
-    else {
-      // TODO: real errors!
-      fatalError("We'll be back!")
-    }
     
-    guard
-      let genericParameters = structDeclaration.simpleGenericParameterNames,
-      !genericParameters.isEmpty
-    else {
-      // TODO: real errors!
-      fatalError("We'll be back!")
-    }
+    let structDeclaration = try attachmentContext.requireDeclaration(
+      as: StructDeclSyntax.self
+    )
+    let genericParameters = try attachmentContext.requireNonEmptyProperty(
+      \.simpleGenericParameterNames,
+       of: structDeclaration
+    )
     
     let genericParameterSuffix = "<\(genericParameters.joined(separator: ","))>"
     

@@ -10,15 +10,15 @@ extension COWBoxPropertyMacro: ContextualizedAccessorMacro {
   public static let enumAttachmentDisposition: AttachmentDisposition = .excluded
   
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclSyntaxProtocol, some MacroExpansionContext>
+    in attachmentContext: some AccessorMacroContextProtocol
   ) throws -> [AccessorDeclSyntax] {
     
-    let variableDeclaration = try attachmentContext.expansionRequirement(
-      declarationAs: VariableDeclSyntax.self
+    let variableDeclaration = try attachmentContext.requireDeclaration(
+      as: VariableDeclSyntax.self
     )
     
-    let variableIdentifierPattern = try attachmentContext.expansionRequirement(
-      property: \.bindings.first,
+    let variableIdentifierPattern = try attachmentContext.requireSyntaxProperty(
+      \.bindings.first?.pattern,
       of: variableDeclaration,
       as: IdentifierPatternSyntax.self
     )

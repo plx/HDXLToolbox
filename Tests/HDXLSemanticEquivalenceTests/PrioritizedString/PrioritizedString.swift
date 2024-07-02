@@ -3,6 +3,7 @@ import XCTest
 //import /*HDXLCommonUtilities*/
 import HDXLTestingSupport
 @testable import HDXLSemanticEquivalence
+import HDXLEssentialPrecursors
 
 /// Dummy class for testing the semantic-equivalence system: `label` determines
 /// *semantics* and then `priority` determines favorability (with higher `priority`

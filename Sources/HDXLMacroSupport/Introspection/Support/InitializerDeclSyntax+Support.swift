@@ -5,7 +5,7 @@ extension InitializerDeclSyntax {
   
   @inlinable
   public var isPreferredMemberwiseInitializer: Bool {
-    attributes.anySatisfy(\.isPreferredMememberwiseInitializer)
+    attributes.anySatisfy(\.isPreferredMemberwiseInitializer)
   }
   
   @inlinable

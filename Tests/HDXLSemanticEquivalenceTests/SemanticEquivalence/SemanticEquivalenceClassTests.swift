@@ -37,17 +37,13 @@ class SemanticEquivalenceClassTests: XCTestCase {
         "foo",
         fooEquivalenceClass.semanticEquivalenceClassIdentifier
       )
-      XCTAssertTrue(
-        fooEquivalenceClass.isValid
-      )
+      XCTAssertTrue(fooEquivalenceClass.hasConsistentInternalState)
       for (fooIndex,foo) in foos.enumerated().dropFirst() {
         // ------------------------------------------------------------------ //
         // pre-update block
         // ------------------------------------------------------------------ //
         // confirm the equivalence class has valid internal state:
-        XCTAssertTrue(
-          fooEquivalenceClass.isValid
-        )
+        XCTAssertTrue(fooEquivalenceClass.hasConsistentInternalState)
         // confirm the earlier ones are still inside:
         for (lowerIndex, lowerFoo) in foos.enumerated() where lowerIndex < fooIndex {
           XCTAssertTrue(
@@ -95,9 +91,7 @@ class SemanticEquivalenceClassTests: XCTestCase {
         // post-update block
         // ------------------------------------------------------------------ //
         // confirm the equivalence class has valid internal state:
-        XCTAssertTrue(
-          fooEquivalenceClass.isValid
-        )
+        XCTAssertTrue(fooEquivalenceClass.hasConsistentInternalState)
         // foo should've become the new reference element:
         XCTAssertEqual(
           foo,
@@ -155,12 +149,12 @@ class SemanticEquivalenceClassTests: XCTestCase {
   let repeatCount: Int = 3
   lazy var repeats: Range<Int> = 0..<repeatCount
   
-  lazy var unorganizedTestValues: [PrioritizedStringDuo] = CartesianProduct(
+  lazy var unorganizedTestValues = [PrioritizedStringDuo].transformedCartesianProduct(
     repeats,
     labels,
     captions,
     priorities
-  ).asTuples().map {
+  ) {
       (_,label,caption,priority) -> PrioritizedStringDuo
       in
       PrioritizedStringDuo(
@@ -172,36 +166,38 @@ class SemanticEquivalenceClassTests: XCTestCase {
   
   func testEquivalenceClassDetails() {
     haltingOnFirstError {
-      for (label,caption) in CartesianProduct(labels,captions).asTuples() {
-        var equivalenceClass = SemanticEquivalenceClass<PrioritizedStringDuo>(
-          referenceElement: PrioritizedStringDuo(
-            label: label,
-            caption: caption,
-            priority: -99
+      for label in labels {
+        for caption in captions {
+          var equivalenceClass = SemanticEquivalenceClass<PrioritizedStringDuo>(
+            referenceElement: PrioritizedStringDuo(
+              label: label,
+              caption: caption,
+              priority: -99
+            )
           )
-        )
-        XCTAssertTrue(equivalenceClass.isValid)
-        for probe in unorganizedTestValues {
-          XCTAssertTrue(equivalenceClass.isValid)
-          XCTAssertEqual(
-            equivalenceClass.shouldInclude(
-              element: probe
-            ),
-            (probe.label == label && probe.caption == caption)
-          )
-          if equivalenceClass.shouldInclude(element: probe) {
-            equivalenceClass.incorporate(element: probe)
+          XCTAssertTrue(equivalenceClass.hasConsistentInternalState)
+          for probe in unorganizedTestValues {
+            XCTAssertTrue(equivalenceClass.hasConsistentInternalState)
+            XCTAssertEqual(
+              equivalenceClass.shouldInclude(
+                element: probe
+              ),
+              (probe.label == label && probe.caption == caption)
+            )
+            if equivalenceClass.shouldInclude(element: probe) {
+              equivalenceClass.incorporate(element: probe)
+            }
+            XCTAssertTrue(equivalenceClass.hasConsistentInternalState)
           }
-          XCTAssertTrue(equivalenceClass.isValid)
-        }
-        XCTAssertTrue(equivalenceClass.isValid)
-        for probe in unorganizedTestValues {
-          XCTAssertEqual(
-            equivalenceClass.contains(
-              element: probe
-            ),
-            (probe.label == label && probe.caption == caption)
-          )
+          XCTAssertTrue(equivalenceClass.hasConsistentInternalState)
+          for probe in unorganizedTestValues {
+            XCTAssertEqual(
+              equivalenceClass.contains(
+                element: probe
+              ),
+              (probe.label == label && probe.caption == caption)
+            )
+          }
         }
       }
     }

@@ -54,4 +54,3 @@ public struct InterjectionCollectionIndex<Base>: PositionIndexStorageWrapper whe
   }
 
 }
-

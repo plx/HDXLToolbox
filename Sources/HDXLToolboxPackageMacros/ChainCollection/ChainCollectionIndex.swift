@@ -7,7 +7,7 @@ import HDXLEssentialPrecursors
   names: named(allCases)
 )
 public macro AddChainCollectionIndexCaseIterable() = #externalMacro(
-  module: "HDXLEssentialMacrosPlugin",
+  module: "HDXLToolboxPackageMacrosPlugin",
   type: "AddChainCollectionIndexCaseIterableMacro"
 )
 
@@ -15,8 +15,8 @@ public macro AddChainCollectionIndexCaseIterable() = #externalMacro(
   member,
   names: named(Position), named(Storage), named(storage), named(init(storage:)), named(init(position:)), named(endIndex)
 )
-public macro AddChainIndexFixedComponents() = #externalMacro(
-  module: "HDXLEssentialMacrosPlugin",
-  type: "AddChainIndexFixedComponentsMacro"
+public macro AddChainCollectionIndexFixedComponents() = #externalMacro(
+  module: "HDXLToolboxPackageMacrosPlugin",
+  type: "AddChainCollectionIndexFixedComponentsMacro"
 )
 

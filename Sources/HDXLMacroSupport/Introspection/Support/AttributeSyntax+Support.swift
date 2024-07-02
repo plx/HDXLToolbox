@@ -39,8 +39,8 @@ extension AttributeSyntax {
   }
   
   @inlinable
-  public var isPreferredMememberwiseInitializer: Bool {
-    isIdentifier(named: "PreferredMememberwiseInitializer")
+  public var isPreferredMemberwiseInitializer: Bool {
+    isIdentifier(named: "PreferredMemberwiseInitializer")
   }
   
 }

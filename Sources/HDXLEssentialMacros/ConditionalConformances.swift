@@ -2,6 +2,8 @@ import Foundation
 import SwiftUI
 import HDXLEssentialPrecursors
 
+// MARK: Simple
+
 @attached(extension, conformances: Sendable)
 public macro ConditionallySendable() = #externalMacro(
   module: "HDXLEssentialMacrosPlugin",
@@ -96,3 +98,62 @@ public macro ConstructorDebugDescription() = #externalMacro(
   type: "ConstructorDebugDescriptionMacro"
 )
 
+// MARK: Needs Base Element
+
+@attached(extension, conformances: Sendable)
+public macro ConditionallySendableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallySendableMacro"
+)
+
+@attached(extension, conformances: Equatable)
+public macro ConditionallyEquatableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyEquatableMacro"
+)
+
+@attached(extension, conformances: Hashable)
+public macro ConditionallyHashableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyHashableMacro"
+)
+
+@attached(
+  extension,
+  conformances: Identifiable, AutoIdentifiable,
+  names: named(ID), named(id)
+)
+public macro ConditionallyAutoIdentifiableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyAutoIdentifiableMacro"
+)
+
+@attached(extension, conformances: Codable)
+public macro ConditionallyCodableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyCodableMacro"
+)
+
+@attached(extension, conformances: Encodable)
+public macro ConditionallyEncodableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyEncodableMacro"
+)
+
+@attached(extension, conformances: Decodable)
+public macro ConditionallyDecodableNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyDecodableMacro"
+)
+
+@attached(extension, conformances: AdditiveArithmetic)
+public macro ConditionallyAdditiveArithmeticNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyAdditiveArithmeticMacro"
+)
+
+@attached(extension, conformances: VectorArithmetic)
+public macro ConditionallyVectorArithmeticNeedsBaseElement() = #externalMacro(
+  module: "HDXLEssentialMacrosPlugin",
+  type: "ConditionallyVectorArithmeticMacro"
+)

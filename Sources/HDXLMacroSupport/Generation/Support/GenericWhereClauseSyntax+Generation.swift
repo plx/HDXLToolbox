@@ -1,11 +1,14 @@
 import SwiftSyntax
+import HDXLEssentialPrecursors
 
 extension GenericWhereClauseSyntax {
   
   @inlinable
-  public init(requirements: some Sequence<GenericRequirementSyntax>) {
+  public init(requirements: some Collection<GenericRequirementSyntax>) {
     self.init(
-      requirements: GenericRequirementListSyntax(requirements)
+      requirements: GenericRequirementListSyntax(
+        withTrailingCommasInsertedBetween: requirements
+      )
     )
   }
 

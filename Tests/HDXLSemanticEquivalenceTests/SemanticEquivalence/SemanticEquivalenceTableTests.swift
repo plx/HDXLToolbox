@@ -3,6 +3,7 @@ import XCTest
 import HDXLTestingSupport
 import HDXLAlgebraicTypes
 @testable import HDXLSemanticEquivalence
+import HDXLUtilityCollections
 
 class SemanticEquivalenceTableTests: XCTestCase {
   
@@ -228,8 +229,7 @@ class SemanticEquivalenceTableTests: XCTestCase {
         highestBaz
       ]
 
-      // for our first trick: try removing just-x:
-      for removalTarget in ChainCollection(foos,bars,bazs,quuxes) {
+      for removalTarget in chain(foos,bars,bazs,quuxes) {
         var scratchTable = completeTable
         scratchTable.removeEquivalenceClassesSatisfying(predicate: {$0.contains(element: removalTarget)})
         for removalCandidate in removalReferences {
@@ -258,7 +258,7 @@ class SemanticEquivalenceTableTests: XCTestCase {
       }
 
       // now for our next trick: try removing all-but-x:
-      for removalTarget in ChainCollection(foos,bars,bazs,quuxes) {
+      for removalTarget in chain(foos,bars,bazs,quuxes) {
         var scratchTable = completeTable
         scratchTable.removeEquivalenceClassesFailing(predicate: {$0.contains(element: removalTarget)})
         for removalCandidate in removalReferences {
@@ -298,12 +298,12 @@ class SemanticEquivalenceTableTests: XCTestCase {
   let repeatCount: Int = 3
   lazy var repeats: Range<Int> = 0..<repeatCount
   
-  lazy var unorganizedTestValues: [PrioritizedStringDuo] = CartesianProduct(
+  lazy var unorganizedTestValues = [PrioritizedStringDuo].transformedCartesianProduct(
     repeats,
     labels,
     captions,
     priorities
-  ).asTuples().map {
+  ) {
     (_,label,caption,priority) -> PrioritizedStringDuo
     in
     return PrioritizedStringDuo(
@@ -314,7 +314,7 @@ class SemanticEquivalenceTableTests: XCTestCase {
   }
   
   func testSemanticEquivalenceTableAgainstCannedPrioritizedStringDuos() throws {
-    haltingOnFirstError {
+    try haltingOnFirstError {
       
       let table = SemanticEquivalenceTable<PrioritizedStringDuo>(
         elements: unorganizedTestValues
@@ -346,9 +346,7 @@ class SemanticEquivalenceTableTests: XCTestCase {
         XCTAssertTrue(
           equivalenceClass.contains(element: example)
         )
-        XCTAssertTrue(
-          equivalenceClass.isValid
-        )
+        XCTAssertTrue(equivalenceClass.hasConsistentInternalState)
         
         for otherEquivalenceClass in table.equivalenceClasses {
           XCTAssertEqual(
@@ -359,17 +357,18 @@ class SemanticEquivalenceTableTests: XCTestCase {
         
       }
       
-      for (x,y) in CartesianProduct(unorganizedTestValues, unorganizedTestValues).asTuples() {
+      for x in unorganizedTestValues {
         let xClass = try XCTUnwrap(table.equivalenceClass(forElement: x))
         XCTAssertTrue(xClass.contains(element: x))
-        let yClass = try XCTUnwrap(table.equivalenceClass(forElement: y))
-        XCTAssertTrue(yClass.contains(element: y))
-        XCTAssertEqual(
-          x.hasEquivalentSemantics(to: y),
-          xClass == yClass
-        )
+        for y in unorganizedTestValues {
+          let yClass = try XCTUnwrap(table.equivalenceClass(forElement: y))
+          XCTAssertTrue(yClass.contains(element: y))
+          XCTAssertEqual(
+            x.hasEquivalentSemantics(to: y),
+            xClass == yClass
+          )
+        }
       }
-      
     }
   }
 

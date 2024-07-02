@@ -1,5 +1,6 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 // ------------------------------------------------------------------------- //
 // MARK: InterposeSequenceElement - Definition
@@ -15,6 +16,11 @@ import HDXLEssentialPrecursors
 /// - seealso: ``InterposeSequenceElementType`` for the corresopnding case-enumeration.
 ///
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
 public enum InterposeSequenceElement<Element> {
   public typealias Interposition = InterpositionElement<Element>
 
@@ -126,16 +132,6 @@ extension InterposeSequenceElement {
   }
   
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension InterposeSequenceElement: Sendable where Element: Sendable { }
-extension InterposeSequenceElement: Equatable where Element: Equatable { }
-extension InterposeSequenceElement: Hashable where Element: Hashable { }
-extension InterposeSequenceElement: Encodable where Element: Encodable { }
-extension InterposeSequenceElement: Decodable where Element: Decodable { }
 
 // ------------------------------------------------------------------------- //
 // MARK: - CaseIterable

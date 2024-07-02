@@ -1,10 +1,17 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLEssentialMacros
 
 @usableFromInline
-internal enum EndcapInterposeCollectionPosition<Index> where Index: Comparable {
+@ConditionallySendable
+@AlwaysEquatable
+@ConditionallyHashable
+@ConditionallyAutoIdentifiable
+@ConditionallyEncodable
+@ConditionallyDecodable
+package enum EndcapInterposeCollectionPosition<Index> where Index: Comparable {
   @usableFromInline
-  internal typealias Interposition = InterpositionElement<Index>
+  package typealias Interposition = InterpositionElement<Index>
   
   case intro
   case element(Index)
@@ -13,24 +20,14 @@ internal enum EndcapInterposeCollectionPosition<Index> where Index: Comparable {
 }
 
 // ------------------------------------------------------------------------- //
-// MARK: EndcapInterposeCollectionIndex - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension EndcapInterposeCollectionPosition: Sendable where Index: Sendable { }
-extension EndcapInterposeCollectionPosition: Equatable { }
-extension EndcapInterposeCollectionPosition: Hashable where Index: Hashable { }
-extension EndcapInterposeCollectionPosition: Encodable where Index: Encodable { }
-extension EndcapInterposeCollectionPosition: Decodable where Index: Decodable { }
-
-// ------------------------------------------------------------------------- //
 // MARK: EndcapInterposeCollectionIndex - Comparable
 // ------------------------------------------------------------------------- //
 
 extension EndcapInterposeCollectionPosition: Comparable {
   @inlinable
-  internal static func < (
-    lhs: EndcapInterposeCollectionPosition<Index>,
-    rhs: EndcapInterposeCollectionPosition<Index>
+  package static func < (
+    lhs: Self,
+    rhs: Self
   ) -> Bool {
     switch (lhs, rhs) {
     case (.intro, .intro):

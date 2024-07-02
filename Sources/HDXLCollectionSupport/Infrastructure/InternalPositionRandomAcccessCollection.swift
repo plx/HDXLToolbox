@@ -1,10 +1,10 @@
 import HDXLEssentialPrecursors
 
 @usableFromInline
-package protocol InternalPositionRandomAcccessCollection: InternalPositionBidirectionalCollection, RandomAccessCollection {
+package protocol InternalPositionRandomAccessCollection: InternalPositionBidirectionalCollection, RandomAccessCollection {
   }
 
-extension InternalPositionRandomAcccessCollection {
+extension InternalPositionRandomAccessCollection {
   
   @inlinable
   public var startIndex: Index { _startIndex }

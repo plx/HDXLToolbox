@@ -464,5 +464,5 @@ Base: BidirectionalCollection
 
 extension AffixSequence:
   RandomAccessCollection,
-  InternalPositionRandomAcccessCollection
+  InternalPositionRandomAccessCollection
 where Base: RandomAccessCollection { }

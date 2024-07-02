@@ -16,9 +16,7 @@ extension StorageCustomDebugStringConvertibleMacro: ContextualizedExtensionMacro
   public static let enumAttachmentDisposition: AttachmentDisposition = .excluded
 
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some ExtensionMacroContextProtocol
   ) throws -> [ExtensionDeclSyntax] {
     let visibilityLevel = attachmentContext.visibilityLevel
     
@@ -32,7 +30,7 @@ extension StorageCustomDebugStringConvertibleMacro: ContextualizedExtensionMacro
     return [
       try ExtensionDeclSyntax(
         """
-        extension \(type.trimmed) : CustomDebugStringConvertible {
+        extension \(attachmentContext.extendedType.trimmed) : CustomDebugStringConvertible {
         
           \(raw: operatorInlinabilityText)
           \(visibilityLevel.tokenRepresentation()) var debugDescription: String {

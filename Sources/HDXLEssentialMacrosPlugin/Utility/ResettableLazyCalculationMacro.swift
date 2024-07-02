@@ -34,19 +34,21 @@ extension ResettableLazyCalculationMacro: ContextualizedPeerMacro {
   public static let enumAttachmentDisposition: AttachmentDisposition = .excluded
 
   public static func contextualizedExpansion(
-    in expansionContext: AttachedMacroContext<some DeclSyntaxProtocol, some MacroExpansionContext>
+    in expansionContext: some PeerMacroContextProtocol
   ) throws -> [DeclSyntax] {
     
-    let functionDeclaration = try expansionContext.expansionRequirement(
-      declarationAs: FunctionDeclSyntax.self
+    let functionDeclaration = try expansionContext.requireDeclaration(
+      as: FunctionDeclSyntax.self
     )
     
-    let calculationType = try expansionContext.expansionRequirement(
-      property: \.signature.returnClause?.type,
+    let calculationType = try expansionContext.requireProperty(
+      \.signature.returnClause?.type,
       of: functionDeclaration
     )
     
-    let nameComponents = try expansionContext.expansionRequirement("Function name needs to match `calculate*`") {
+    let nameComponents = try expansionContext.requireValue(
+      "Function name needs to match `calculate*`"
+    ) {
       try /calculate(\w+)/.wholeMatch(in: functionDeclaration.name.text)
     }
         

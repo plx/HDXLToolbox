@@ -3,6 +3,7 @@ import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
 import HDXLEssentialMacros
+import HDXLToolboxPackageMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain2CollectionIndex
@@ -18,7 +19,7 @@ import HDXLEssentialMacros
 @StorageComparable
 @StorageCustomStringConvertible
 @StorageCustomDebugStringConvertible
-@AddChainIndexFixedComponents
+@AddChainCollectionIndexFixedComponents
 @AddArity2SumLikeIndexInitialization
 @AddChainCollectionIndexCaseIterable
 public struct Chain2CollectionIndex<A,B>

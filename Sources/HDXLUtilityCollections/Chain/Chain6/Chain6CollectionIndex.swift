@@ -3,6 +3,7 @@ import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
 import HDXLEssentialMacros
+import HDXLToolboxPackageMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain6CollectionIndex
@@ -18,7 +19,7 @@ import HDXLEssentialMacros
 @StorageComparable
 @StorageCustomStringConvertible
 @StorageCustomDebugStringConvertible
-@AddChainIndexFixedComponents
+@AddChainCollectionIndexFixedComponents
 @AddArity6SumLikeIndexInitialization
 @AddChainCollectionIndexCaseIterable
 public struct Chain6CollectionIndex<A,B,C,D,E,F>

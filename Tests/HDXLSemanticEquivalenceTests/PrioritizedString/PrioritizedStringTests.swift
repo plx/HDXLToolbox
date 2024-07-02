@@ -103,11 +103,13 @@ class PrioritizedStringTests: XCTestCase {
         bar2b
       )
       
-      for (foo,bar) in CartesianProduct(foos,bars).asTuples() {
-        XCTAssertNotEqual(
-          foo,
-          bar
-        )
+      for foo in foos {
+        for bar in bars {
+          XCTAssertNotEqual(
+            foo,
+            bar
+          )
+        }
       }
     }
     
@@ -191,13 +193,14 @@ class PrioritizedStringTests: XCTestCase {
       foo1b.shouldBeFavored(over: foo2b)
     )
 
-    for (foo,bar) in CartesianProduct(foos, bars).asTuples() {
-      XCTAssertEqual(
-        SemanticEquivalenceComparisonResult.distinct,
-        foo <~> bar
-      )
+    for foo in foos {
+      for bar in bars {
+        XCTAssertEqual(
+          SemanticEquivalenceComparisonResult.distinct,
+          foo <~> bar
+        )
+      }
     }
-
   }
 
 }

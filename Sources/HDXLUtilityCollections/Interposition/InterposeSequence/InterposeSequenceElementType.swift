@@ -31,21 +31,11 @@ public enum InterposeSequenceElementType: UInt8 {
 extension InterposeSequenceElementType: Sendable { }
 extension InterposeSequenceElementType: Equatable { }
 extension InterposeSequenceElementType: Hashable { }
+extension InterposeSequenceElementType: Identifiable, AutoIdentifiable { }
 extension InterposeSequenceElementType: CaseIterable { }
 extension InterposeSequenceElementType: Codable { }
 extension InterposeSequenceElementType: CustomStringConvertible { }
 extension InterposeSequenceElementType: CustomDebugStringConvertible { }
-
-// ------------------------------------------------------------------------- //
-// MARK: - Identifiable
-// ------------------------------------------------------------------------- //
-
-extension InterposeSequenceElementType: Identifiable {
-  public typealias ID = Self
-  
-  @inlinable
-  public var id: ID { self }
-}
 
 // ------------------------------------------------------------------------- //
 // MARK: - CaseNameAwareEnumeration

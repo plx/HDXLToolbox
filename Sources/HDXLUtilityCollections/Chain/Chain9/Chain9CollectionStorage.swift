@@ -3,6 +3,7 @@ import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
 import HDXLEssentialMacros
+import HDXLToolboxPackageMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain9CollectionStorage - Definition
@@ -10,8 +11,8 @@ import HDXLEssentialMacros
 
 
 @usableFromInline
-@AddChainCollectionStorageImplementation
-@AddFixedChainCollectionStorageComponents
+@AddChainCollectionStorageVariableComponents
+@AddChainCollectionStorageFixedComponents
 @AddArity9ChainCollectionStorageImplementation
 internal final class Chain9CollectionStorage<A,B,C,D,E,F,G,H,I>
 where

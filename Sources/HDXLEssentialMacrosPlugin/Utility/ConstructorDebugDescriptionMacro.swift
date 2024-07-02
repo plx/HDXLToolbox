@@ -14,11 +14,9 @@ extension ConstructorDebugDescriptionMacro: ContextualizedExtensionMacro {
   public static let enumAttachmentDisposition: AttachmentDisposition = .excluded
   
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some ExtensionMacroContextProtocol
   ) throws -> [ExtensionDeclSyntax] {
-    let memberwiseInitializer = try attachmentContext.expansionRequirement(
+    let memberwiseInitializer = try attachmentContext.requireValue(
       "We need to find an `init` that's been explicitly-annotated with `PreferredMemberwiseInitializer`"
     ) {
       attachmentContext
@@ -29,16 +27,7 @@ extension ConstructorDebugDescriptionMacro: ContextualizedExtensionMacro {
         .first(where: \.isPreferredMemberwiseInitializer)
     }
 
-    let visibilityLevel = try attachmentContext.expansionRequirement(
-      property: \.visibilityLevel,
-      of: attachmentContext.declaration
-    )
-    
-    let inlinabilityDisposition = InlinabilityDisposition.strongestAvailableFunctionOrMethodInlinability(
-      visibilityLevel: visibilityLevel,
-      inlinabilityDisposition: attachmentContext.declaration.inlinabilityDisposition
-    )
-    
+    let (visibilityLevel, inlinabilityDisposition) = attachmentContext.functionOrMethodGenerationDetails
     let inlinabilityText: String = inlinabilityDisposition?.sourceCodeStringRepresentation ?? ""
     
     // TODO: create a convenience-constructor for the constructor-of part of this method
@@ -57,7 +46,7 @@ extension ConstructorDebugDescriptionMacro: ContextualizedExtensionMacro {
     return [
       try ExtensionDeclSyntax(
         """
-        extension \(type.trimmed) : CustomDebugStringConvertible {
+        extension \(attachmentContext.extendedType.trimmed) : CustomDebugStringConvertible {
         
           \(raw: inlinabilityText)
           \(visibilityLevel.tokenRepresentation()) var debugDescription: String {

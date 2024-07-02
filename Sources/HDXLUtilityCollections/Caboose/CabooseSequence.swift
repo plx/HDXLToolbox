@@ -121,6 +121,7 @@ extension CabooseSequence:
 where
 Base: Collection
 {
+  
   @usableFromInline
   package typealias InternalPosition = CabooseCollectionPosition<Base.Index>
   
@@ -249,7 +250,7 @@ Base: BidirectionalCollection
 
 extension CabooseSequence:
   RandomAccessCollection,
-  InternalPositionRandomAcccessCollection
+  InternalPositionRandomAccessCollection
 where 
 Base: RandomAccessCollection { }
 

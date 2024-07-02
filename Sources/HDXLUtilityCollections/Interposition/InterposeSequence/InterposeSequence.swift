@@ -1,6 +1,31 @@
 import Foundation
 import HDXLEssentialPrecursors
 import HDXLCollectionSupport
+import HDXLEssentialMacros
+
+// ------------------------------------------------------------------------- //
+// MARK: InterposeSequence - Definition
+// ------------------------------------------------------------------------- //
+
+extension Sequence {
+  @inlinable
+  public var interpositions: some Sequence<InterposeSequenceElement<Element>> {
+    InterposeSequence(base: self)
+  }
+}
+
+// ------------------------------------------------------------------------- //
+// MARK: InterposeSequence - Definition
+// ------------------------------------------------------------------------- //
+
+/// Convenience when you need to require ``InterposeSequence`` to conform to ``Collection``.
+public typealias InterposeCollection<Base> = InterposeSequence<Base> where Base: Collection
+
+/// Convenience when you need to require ``InterposeSequence`` to conform to ``BidirectionalCollection``.
+public typealias InterposeBidirectionalCollection<Base> = InterposeSequence<Base> where Base: BidirectionalCollection
+
+/// Convenience when you need to require ``InterposeSequence`` to conform to ``RandomAccessCollection``.
+public typealias InterposeRandomAccessCollection<Base> = InterposeSequence<Base> where Base: RandomAccessCollection
 
 // ------------------------------------------------------------------------- //
 // MARK: InterposeSequence - Definition
@@ -35,6 +60,12 @@ import HDXLCollectionSupport
 /// - seealso: ``InterposeSequenceIndex`` for the index used when this picks
 ///
 @frozen
+@ConditionallySendable
+@ConditionallyEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
 public struct InterposeSequence<Base>: Sequence where Base: Sequence {
   public typealias Iterator = InterposeSequenceIterator<Base.Iterator>
   public typealias BaseElement = Base.Element
@@ -58,16 +89,6 @@ public struct InterposeSequence<Base>: Sequence where Base: Sequence {
     Iterator(baseIterator: base.makeIterator())
   }
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension InterposeSequence: Sendable where Base: Sendable { }
-extension InterposeSequence: Equatable where Base: Equatable { }
-extension InterposeSequence: Hashable where Base: Hashable { }
-extension InterposeSequence: Encodable where Base: Encodable { }
-extension InterposeSequence: Decodable where Base: Decodable { }
 
 // ------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
@@ -95,8 +116,17 @@ extension InterposeSequence: CustomDebugStringConvertible {
 // MARK: - Collection
 // ------------------------------------------------------------------------- //
 
-extension InterposeSequence: Collection where Base: Collection {
+extension InterposeSequence: 
+  Collection,
+  InternalPositionCollection,
+  LinearizableInternalPositionCollection
+where Base: Collection
+{
+  @usableFromInline
+  package typealias InternalPosition = InterposeCollectionPosition<Base.Index>
   public typealias Index = InterposeCollectionIndex<Base.Index>
+  
+  // MARK: - Collection API
   
   @inlinable
   public var isEmpty: Bool {
@@ -107,62 +137,35 @@ extension InterposeSequence: Collection where Base: Collection {
   public var count: Int {
     base.count.impliedInterposeElementCount
   }
+
+  // MARK: - InternalPositionCollection API
   
   @inlinable
-  public var startIndex: Index {
-    switch isEmpty {
-    case true:
-      endIndex
-    case false:
-      Index(index: base.startIndex)
+  package var firstInternalPosition: InternalPosition? {
+    switch base.firstSubscriptableIndex {
+    case .some(let subcriptableBaseIndex):
+      .element(subcriptableBaseIndex)
+    case .none:
+      nil
     }
   }
   
   @inlinable
-  public var endIndex: Index {
-    .endIndex
+  package var lastInternalPosition: InternalPosition? {
+    switch base.finalSubscriptableIndex {
+    case .some(let subscriptableBaseIndex):
+      .element(subscriptableBaseIndex)
+    case .none:
+      nil
+    }
   }
   
-//  @inlinable
-//  public func distance(
-//    from start: Index,
-//    to end: Index
-//  ) -> Int {
-//    switch (start.position, end.position) {
-//    case (.none, .none):
-//      return 0
-//    case (.some(.element(let startBaseIndex)), .none):
-//      return (2 * (
-//        base.distance(
-//          from: startBaseIndex,
-//          to: base.endIndex
-//        ))) - 1
-//    case (.some(.interposition(let startBaseInterposition)), .none):
-//        return
-//
-//    case (.some(.element(let startBaseIndex)), .some(.element(let endBaseIndex))):
-//      return 2 * base.distance(
-//        from: startBaseIndex,
-//        to: endBaseIndex
-//      )
-//    case (.some(.interposition(let startBaseInterposition)), .some(.interposition(let endBaseInterposition))):
-//      return 2 * base.distance(
-//        from: startBaseInterposition.precedingElement,
-//        to: endBaseInterposition.precedingElement
-//      )
-//    }
-//  }
-//
   @inlinable
-  public subscript(index: Index) -> Element {
-    guard let position = index.position else {
-      fatalAttemptToSubscriptEndIndex(index)
-    }
+  package subscript(position: InternalPosition) -> Element {
     switch position {
     case .element(let baseIndex):
-      return .element(
-        base[baseIndex]
-      )
+      precondition(baseIndex < base.endIndex)
+      return .element(base[baseIndex])
     case .interposition(let interposition):
       return .interposition(
         Interposition(
@@ -174,28 +177,63 @@ extension InterposeSequence: Collection where Base: Collection {
   }
   
   @inlinable
-  public func index(
-    after i: Index
-  ) -> Index {
-    guard let position = i.position else {
-      fatalAttemptToAdvanceEndIndex(i)
-    }
+  package func internalPosition(
+    after position: InternalPosition
+  ) -> InternalPosition? {
     switch position {
     case .element(let baseIndex):
-      let nextBaseIndex = base.index(after: baseIndex)
-      switch nextBaseIndex == base.endIndex {
+      precondition(baseIndex < base.endIndex)
+      let nextIndex = base.index(after: baseIndex)
+      switch nextIndex < base.endIndex {
       case true:
-        return .endIndex
-      case false:
-        return Index(
-          interposition: Index.Interposition(
+        return .interposition(
+          InternalPosition.Interposition(
             precedingElement: baseIndex,
-            subsequentElement: nextBaseIndex
+            subsequentElement: nextIndex
           )
         )
+      case false:
+        return nil
       }
-    case .interposition(let baseIndexInderposition):
-      return Index(index: baseIndexInderposition.subsequentElement)
+    case .interposition(let interposition):
+      precondition(interposition.subsequentElement < base.endIndex)
+      return .element(interposition.subsequentElement)
+    }
+  }
+  
+  // MARK: - LinearizableInternalPositionCollection API
+  
+  @inlinable
+  package func linearPosition(forInternalPosition internalPosition: InternalPosition) -> Int {
+    switch internalPosition {
+    case .element(let baseIndex):
+      precondition(baseIndex < base.endIndex)
+      return 2 * base.distanceFromStart(to: baseIndex)
+    case .interposition(let interposition):
+      return 1 + 2 * base.distanceFromStart(to: interposition.precedingElement)
+    }
+  }
+  
+  @inlinable
+  package func internalPosition(forLinearPosition linearPosition: Int) -> InternalPosition? {
+    guard (0...(base.count * 2)).contains(linearPosition) else {
+      return nil
+    }
+
+    let (baseDistance, remainder) = linearPosition.quotientAndRemainder(dividingBy: 2)
+    let baseIndex = base.index(offsetFromStartBy: baseDistance)
+    precondition(baseIndex < base.endIndex)
+    switch remainder == 0 {
+    case true:
+      return .element(baseIndex)
+    case false:
+      let nextBaseIndex = base.index(after: baseIndex)
+      return .interposition(
+        InternalPosition.Interposition(
+          precedingElement: baseIndex,
+          subsequentElement: nextBaseIndex
+        )
+      )
     }
   }
 
@@ -205,29 +243,37 @@ extension InterposeSequence: Collection where Base: Collection {
 // MARK: - BidirectionalCollection
 // ------------------------------------------------------------------------- //
 
-extension InterposeSequence: BidirectionalCollection where Base: BidirectionalCollection {
+extension InterposeSequence: 
+  BidirectionalCollection,
+  InternalPositionBidirectionalCollection
+where Base: BidirectionalCollection
+{
   
   @inlinable
-  public func index(
-    before i: Index
-  ) -> Index {
-    switch i.position {
-    case .none:
-      guard let baseIndex = base.finalSubscriptableIndex else {
-        fatalAttemptToGoBackFromStartIndex(i)
+  package func internalPosition(
+    before position: InternalPosition
+  ) -> InternalPosition? {
+    switch position {
+    case .element(let elementIndex):
+      guard let previousElementIndex = base.subscriptableIndex(before: elementIndex) else {
+        preconditionFailure("Attempted to go back from the start position.")
       }
-      return Index(index: baseIndex)
-    case .some(.element(let baseIndex)):
-      return Index(
-        interposition: Index.Interposition(
-          precedingElement: base.index(before: baseIndex),
-          subsequentElement: baseIndex
+      
+      return .interposition(
+        InternalPosition.Interposition(
+          precedingElement: previousElementIndex,
+          subsequentElement: elementIndex
         )
       )
-    case .some(.interposition(let baseInterposition)):
-      return Index(index: baseInterposition.precedingElement)
+    case .interposition(let interposition):
+      precondition(interposition.precedingElement >= base.startIndex)
+      return .element(interposition.precedingElement)
     }
   }
+  
 }
 
-extension InterposeSequence: RandomAccessCollection where Base: RandomAccessCollection { }
+extension InterposeSequence: 
+  RandomAccessCollection,
+  InternalPositionRandomAccessCollection
+where Base: RandomAccessCollection { }

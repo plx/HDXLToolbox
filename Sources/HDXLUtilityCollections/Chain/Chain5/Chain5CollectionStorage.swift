@@ -3,14 +3,15 @@ import HDXLEssentialPrecursors
 import HDXLCollectionSupport
 import HDXLAlgebraicTypes
 import HDXLEssentialMacros
+import HDXLToolboxPackageMacros
 
 // -------------------------------------------------------------------------- //
 // MARK: Chain5CollectionStorage - Definition
 // -------------------------------------------------------------------------- //
 
 @usableFromInline
-@AddChainCollectionStorageImplementation
-@AddFixedChainCollectionStorageComponents
+@AddChainCollectionStorageVariableComponents
+@AddChainCollectionStorageFixedComponents
 @AddArity5ChainCollectionStorageImplementation
 internal final class Chain5CollectionStorage<A,B,C,D,E>
 where

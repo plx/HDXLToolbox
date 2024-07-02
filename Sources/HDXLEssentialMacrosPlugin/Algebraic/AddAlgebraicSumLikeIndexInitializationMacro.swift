@@ -18,11 +18,10 @@ extension AddAlgebraicSumLikeIndexInitializationMacro: ContextualizedMemberMacro
 
   // TODO: let classes adopt this (as convenience inits)
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some MemberMacroContextProtocol
   ) throws -> [DeclSyntax] {
-    let genericParameters = try attachmentContext.expansionRequirement(
-      property: \.simpleGenericParameterNames,
+    let genericParameters = try attachmentContext.requireNonEmptyProperty(
+      \.simpleGenericParameterNames,
       of: attachmentContext.declaration
     )
     

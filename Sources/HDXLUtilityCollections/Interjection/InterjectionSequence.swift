@@ -33,6 +33,12 @@ extension Sequence {
 /// ...(yeah, yeah, yeah).
 ///
 @frozen
+@ConditionallySendableNeedsBaseElement
+@ConditionallyEquatableNeedsBaseElement
+@ConditionallyHashableNeedsBaseElement
+@ConditionallyEncodableNeedsBaseElement
+@ConditionallyDecodableNeedsBaseElement
+@ConditionallyAutoIdentifiableNeedsBaseElement
 @ConstructorDebugDescription
 public struct InterjectionSequence<Base>: Sequence where Base: Sequence {
   public typealias Element = Base.Element
@@ -62,18 +68,6 @@ public struct InterjectionSequence<Base>: Sequence where Base: Sequence {
     )
   }
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: - Synthesized Properties
-// ------------------------------------------------------------------------- //
-
-extension InterjectionSequence: Sendable where Base: Sendable, Base.Element: Sendable {}
-extension InterjectionSequence: Equatable where Base: Equatable, Base.Element: Equatable {}
-extension InterjectionSequence: Hashable where Base: Hashable, Base.Element: Hashable {}
-extension InterjectionSequence: Encodable where Base: Encodable, Base.Element: Encodable {}
-extension InterjectionSequence: Decodable where Base: Decodable, Base.Element: Decodable {}
-
-extension InterjectionSequence: Identifiable, AutoIdentifiable where Base: Hashable, Base.Element: Hashable {}
 
 // ------------------------------------------------------------------------- //
 // MARK: - CustomStringConvertible
@@ -245,5 +239,5 @@ where Base: BidirectionalCollection {
 
 extension InterjectionSequence: 
   RandomAccessCollection,
-  InternalPositionRandomAcccessCollection
+  InternalPositionRandomAccessCollection
 where Base: RandomAccessCollection { }

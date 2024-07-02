@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import HDXLTestingSupport
+import HDXLEssentialPrecursors
 @testable import HDXLSemanticEquivalence
 
 /// Dummy class for testing the semantic-equivalence system: `label` is used as

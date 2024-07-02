@@ -14,14 +14,12 @@ extension COWStorageMacro : ContextualizedAttachedMacro {
 extension COWStorageMacro: ContextualizedExtensionMacro {
   
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some ExtensionMacroContextProtocol
   ) throws -> [ExtensionDeclSyntax] {
     return [
       try ExtensionDeclSyntax(
         """
-        extension \(type.trimmed): CloneableObject {
+        extension \(attachmentContext.extendedType.trimmed): CloneableObject {
         
         }
         """
@@ -34,59 +32,16 @@ extension COWStorageMacro: ContextualizedExtensionMacro {
 extension COWStorageMacro: ContextualizedMemberMacro {
   
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some MemberMacroContextProtocol
   ) throws -> [DeclSyntax] {
-    let classDeclaration = try attachmentContext.expansionRequirement(
-      declarationAs: ClassDeclSyntax.self
+    let classDeclaration = try attachmentContext.requireDeclaration(
+      as: ClassDeclSyntax.self
     )
-
-    let initializerBlock = try attachmentContext.expansionRequirement(
-      "declarationAs: ClassDeclSyntax.self"
+    
+    let initializer = try attachmentContext.requireProperty(
+      \.preferredDesignatedInitializerDeclarationIfAvailable,
+       of: classDeclaration
     )
-  }
-
-  public static func expansion(
-    of node: AttributeSyntax,
-    providingMembersOf declaration: some DeclGroupSyntax,
-    conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
-  ) throws -> [DeclSyntax] {
-    guard
-      let classDeclaration = declaration.as(ClassDeclSyntax.self)
-    else {
-      // TODO: real errors!
-      fatalError("This only works for classes!")
-    }
-    
-    guard
-      let initializerDeclarations = classDeclaration
-        .memberBlock
-        .members
-        .compactMap({ (member) in
-          member
-            .decl
-            .as(InitializerDeclSyntax.self)
-        }).unlessEmpty
-    else {
-      fatalError("Couldn't find any initializers!")
-    }
-    
-    let candidates = initializerDeclarations.filter { initializer in
-      let isRequired = initializer.modifiers.anySatisfy { modifier in
-        modifier.name.text == "required"
-      }
-      
-      let isConvenience = initializer.modifiers.anySatisfy { modifier in
-        modifier.name.text == "convenience"
-      }
-      
-      return isRequired || !isConvenience
-    }
-    
-    guard let initializer = candidates.first else {
-      fatalError("Couldn't find any initializers!")
-    }
     
     let invocation = initializer
       .signature
@@ -113,4 +68,5 @@ extension COWStorageMacro: ContextualizedMemberMacro {
       """
     ]
   }
+  
 }

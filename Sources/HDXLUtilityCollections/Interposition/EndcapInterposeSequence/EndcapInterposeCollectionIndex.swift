@@ -1,33 +1,44 @@
 import Foundation
 import HDXLEssentialPrecursors
+import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 // ------------------------------------------------------------------------- //
 // MARK: EndcapInterposeCollectionIndex - Definition
 // ------------------------------------------------------------------------- //
 
 @frozen
-public struct EndcapInterposeCollectionIndex<Index> where Index: Comparable {
+@ConditionallySendable
+@AlwaysEquatable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
+public struct EndcapInterposeCollectionIndex<Base>: PositionIndexStorageWrapper where Base: Comparable {
   @usableFromInline
-  internal typealias Position = EndcapInterposeCollectionPosition<Index>
+  package typealias Position = EndcapInterposeCollectionPosition<Base>
   
   @usableFromInline
-  internal typealias Interposition = InterpositionElement<Index>
+  package typealias Interposition = InterpositionElement<Base>
   
   @usableFromInline
-  internal var position: Position?
+  package typealias Storage = PositionIndexStorage<Position>
+  
+  @usableFromInline
+  package var storage: Storage
   
   @inlinable
-  internal init(position: Position) {
-    self.position = position
+  package init(storage: Storage) {
+    self.storage = storage
   }
   
   @inlinable
-  internal init(index: Index) {
+  internal init(index: Base) {
     self.init(position: .element(index))
   }
   
   @inlinable
-  internal init?(possibleIndex: Index?) {
+  internal init?(possibleIndex: Base?) {
     guard let index = possibleIndex else {
       return nil
     }
@@ -38,37 +49,34 @@ public struct EndcapInterposeCollectionIndex<Index> where Index: Comparable {
   internal init(interposition: Interposition) {
     self.init(position: .interposition(interposition))
   }
-  
+
   @inlinable
-  internal init(__unsafePosition position: Position?) {
-    self.position = position
+  internal init(interpositionBetween precedingIndex: Base, _ subsequentIndex: Base) {
+    self.init(
+      position: .interposition(
+        Interposition(
+          precedingElement: precedingIndex,
+          subsequentElement: subsequentIndex
+        )
+      )
+    )
+  }
+
+  @inlinable
+  internal static var endIndex: Self {
+    Self(storage: .endIndex)
   }
   
   @inlinable
-  internal static var endIndex: EndcapInterposeCollectionIndex<Index> {
-    EndcapInterposeCollectionIndex<Index>(__unsafePosition: nil)
+  internal static var intro: Self {
+    Self(position: .intro)
   }
   
   @inlinable
-  internal static var intro: EndcapInterposeCollectionIndex<Index> {
-    EndcapInterposeCollectionIndex<Index>(position: .intro)
-  }
-  
-  @inlinable
-  internal static var outro: EndcapInterposeCollectionIndex<Index> {
-    EndcapInterposeCollectionIndex<Index>(position: .outro)
+  internal static var outro: Self {
+    Self(position: .outro)
   }
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: EndcapInterposeCollectionIndex - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension EndcapInterposeCollectionIndex: Sendable where Index: Sendable { }
-extension EndcapInterposeCollectionIndex: Equatable { }
-extension EndcapInterposeCollectionIndex: Hashable where Index: Hashable { }
-extension EndcapInterposeCollectionIndex: Encodable where Index: Encodable { }
-extension EndcapInterposeCollectionIndex: Decodable where Index: Decodable { }
 
 // ------------------------------------------------------------------------- //
 // MARK: EndcapInterposeCollectionIndex - Comparable
@@ -77,19 +85,10 @@ extension EndcapInterposeCollectionIndex: Decodable where Index: Decodable { }
 extension EndcapInterposeCollectionIndex: Comparable {
   @inlinable
   public static func < (
-    lhs: EndcapInterposeCollectionIndex<Index>,
-    rhs: EndcapInterposeCollectionIndex<Index>
+    lhs: Self,
+    rhs: Self
   ) -> Bool {
-    switch (lhs.position, rhs.position) {
-    case (.none, .none):
-      false
-    case (.some, .none):
-      true
-    case (.none, .some):
-      false
-    case (.some(let lPosition), .some(let rPosition)):
-      lPosition < rPosition
-    }
+    lhs.storage < rhs.storage
   }
 }
 
@@ -100,12 +99,7 @@ extension EndcapInterposeCollectionIndex: Comparable {
 extension EndcapInterposeCollectionIndex: CustomStringConvertible {
   @inlinable
   public var description: String {
-    switch position {
-    case .none:
-      "end-index"
-    case .some(let position):
-      String(describing: position)
-    }
+    String(describing: storage)
   }
 }
 
@@ -116,7 +110,7 @@ extension EndcapInterposeCollectionIndex: CustomStringConvertible {
 extension EndcapInterposeCollectionIndex: CustomDebugStringConvertible {
   @inlinable
   public var debugDescription: String {
-    "\(String(reflecting: type(of: self)))(position: \(String(reflecting: position)))"
+    "\(String(reflecting: type(of: self)))(storage: \(String(reflecting: storage)))"
   }
 }
 

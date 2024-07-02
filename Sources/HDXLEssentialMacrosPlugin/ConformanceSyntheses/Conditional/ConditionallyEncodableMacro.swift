@@ -8,5 +8,5 @@ import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
 public struct ConditionallyEncodableMacro: SingleProtocolConditionalConformanceMacro {
-  public static let associatedProtocol: String = "Decodable"
+  public static let associatedProtocol: String = "Encodable"
 }

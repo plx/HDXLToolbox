@@ -12,12 +12,12 @@ extension AttributeListSyntax.Element {
   }
   
   @inlinable
-  public var isPreferredMememberwiseInitializer: Bool {
+  public var isPreferredMemberwiseInitializer: Bool {
     guard case .attribute(let attributeSyntax) = self else {
       return false
     }
     
-    return attributeSyntax.isPreferredMememberwiseInitializer
+    return attributeSyntax.isPreferredMemberwiseInitializer
   }
   
 }

@@ -1,112 +1,58 @@
 import Foundation
 import HDXLEssentialPrecursors
-
-// ------------------------------------------------------------------------- //
-// MARK: InterposeCollectionIndex
-// ------------------------------------------------------------------------- //
+import HDXLCollectionSupport
+import HDXLEssentialMacros
 
 @frozen
-public struct InterposeCollectionIndex<Index> where Index: Comparable {
-  @usableFromInline
-  internal typealias Position = InterposeCollectionPosition<Index>
+@ConditionallySendable
+@AlwaysEquatable
+@AlwaysComparable
+@ConditionallyHashable
+@ConditionallyEncodable
+@ConditionallyDecodable
+@ConditionallyAutoIdentifiable
+public struct InterposeCollectionIndex<Base>: PositionIndexStorageWrapper where Base: Comparable {
   
   @usableFromInline
-  internal typealias Interposition = InterpositionElement<Index>
-
+  package typealias Position = InterposeCollectionPosition<Base>
+  
   @usableFromInline
-  internal var position: Position?
+  package typealias Interposition = InterpositionElement<Base>
+  
+  @usableFromInline
+  package typealias Storage = PositionIndexStorage<Position>
+  
+  @usableFromInline
+  package var storage: Storage
   
   @inlinable
-  internal init(position: Position) {
-    self.position = position
-  }
-  
-  @inlinable
-  internal init(index: Index) {
-    self.init(position: .element(index))
-  }
-
-  @inlinable
-  internal init?(possibleIndex: Index?) {
-    guard let index = possibleIndex else {
-      return nil
-    }
-    self.init(index: index)
-  }
-
-  @inlinable
-  internal init(interposition: Interposition) {
-    self.init(position: .interposition(interposition))
-  }
-
-  @inlinable
-  internal init(__unsafePosition position: Position?) {
-    self.position = position
+  package init(storage: Storage) {
+    self.storage = storage
   }
   
   @inlinable
-  internal static var endIndex: InterposeCollectionIndex<Index> {
-    InterposeCollectionIndex<Index>(__unsafePosition: nil)
+  internal static func element(at baseIndex: Base) -> Self {
+    Self(
+      storage: .position(
+        .element(baseIndex)
+      )
+    )
   }
-}
-
-// ------------------------------------------------------------------------- //
-// MARK: - Synthesized Conformances
-// ------------------------------------------------------------------------- //
-
-extension InterposeCollectionIndex: Sendable where Index: Sendable { }
-extension InterposeCollectionIndex: Equatable { }
-extension InterposeCollectionIndex: Hashable where Index: Hashable { }
-extension InterposeCollectionIndex: Encodable where Index: Encodable { }
-extension InterposeCollectionIndex: Decodable where Index: Decodable { }
-
-// ------------------------------------------------------------------------- //
-// MARK: InterposeCollectionIndex - Comparable
-// ------------------------------------------------------------------------- //
-
-extension InterposeCollectionIndex: Comparable {
+  
   @inlinable
-  public static func < (
-    lhs: InterposeCollectionIndex<Index>,
-    rhs: InterposeCollectionIndex<Index>
-  ) -> Bool {
-    switch (lhs.position, rhs.position) {
-    case (.none, .none):
-      false
-    case (.some, .none):
-      true
-    case (.none, .some):
-      false
-    case (.some(let lPosition), .some(let rPosition)):
-      lPosition < rPosition
-    }
+  internal static func interposition(
+    precedingElement: Base,
+    subsequentElement: Base
+  ) -> Self {
+    Self(
+      storage: .position(
+        .interposition(
+          Interposition(
+            precedingElement: precedingElement,
+            subsequentElement: subsequentElement
+          )
+        )
+      )
+    )
   }
 }
-
-// ------------------------------------------------------------------------- //
-// MARK: - CustomStringConvertible
-// ------------------------------------------------------------------------- //
-
-extension InterposeCollectionIndex: CustomStringConvertible {
-  @inlinable
-  public var description: String {
-    switch position {
-    case .none:
-      "end-index"
-    case .some(let position):
-      String(describing: position)
-    }
-  }
-}
-
-// ------------------------------------------------------------------------- //
-// MARK: - CustomDebugStringConvertible
-// ------------------------------------------------------------------------- //
-
-extension InterposeCollectionIndex: CustomDebugStringConvertible {
-  @inlinable
-  public var debugDescription: String {
-    "\(String(reflecting: type(of: self)))(position: \(String(reflecting: position)))"
-  }
-}
-

@@ -13,8 +13,7 @@ extension COWWrapperMacro: ContextualizedMemberMacro {
   public static let structAttachmentDisposition: AttachmentDisposition = .required
   
   public static func contextualizedExpansion(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    conformingTo protocols: [TypeSyntax]
+    in attachmentContext: some MemberMacroContextProtocol
   ) throws -> [DeclSyntax] {
     [
       """
