@@ -183,6 +183,48 @@ extension AttachedMacroContext {
       return value
     }
   }
+  
+  public func expansionRequirement<T,R>(
+    nonEmptyProperty property: KeyPath<T,R?>,
+    of source: T,
+    messageIdentifier: @autoclosure () -> String = .requiredPropertyWasNil,
+    function: StaticString = #function,
+    fileID: StaticString = #fileID,
+    line: UInt = #line,
+    column: UInt = #column
+  ) throws -> R where T: SyntaxProtocol, R: Collection {
+    try withAutomaticRecordingForRequiredOperation(
+      messageIdentifier: messageIdentifier(),
+      explanation: "Couldn't obtain \(property) from \(source)!",
+      subject: source
+    ) {
+      guard
+        let value = source[keyPath: property]
+      else {
+        throw MacroExpansionFailure(
+          explanation: "Couldn't obtain \(property) from \(source)!",
+          details: nil,
+          function: function,
+          fileID: fileID,
+          line: line,
+          column: column
+        )
+      }
+      
+      guard !value.isEmpty else {
+        throw MacroExpansionFailure(
+          explanation: "Need \(property) to resolve to a non-empty value on \(source)!",
+          details: nil,
+          function: function,
+          fileID: fileID,
+          line: line,
+          column: column
+        )
+      }
+      
+      return value
+    }
+  }
 
   public func expansionRequirement<T,V,R>(
     property: KeyPath<T,V>,

@@ -7,39 +7,33 @@ import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-public struct AddChainCollectionIndexCaseIterableMacro: ExtensionMacro {  
+public struct AddChainCollectionIndexCaseIterableMacro: DiagnosticDomainAwareMacro {}
+
+extension AddChainCollectionIndexCaseIterableMacro: SingleProtocolConditionalConformanceMacro {
+  
+  public static let associatedProtocol: String = "CaseIterable"
+  
   public static func expansion(
-    of node: AttributeSyntax,
-    attachedTo declaration: some DeclGroupSyntax,
+    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
     providingExtensionsOf type: some TypeSyntaxProtocol,
     conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
-  ) throws -> [ExtensionDeclSyntax] {
-    guard
-      let genericParameters = declaration.simpleGenericParameterNames,
-      !genericParameters.isEmpty
-    else {
-      // TODO: real errors!
-      fatalError("We'll be back!")
-    }
+    parameters: AllOrNoneConditionalConformanceParameters
+  ) throws -> [DeclSyntax] {
+    
+    // we deliberately only refer to `parameters.genericParameterNames` for this one
+    let genericParameters = try attachmentContext.expansionRequirement(
+      mustNotBeEmpty: parameters.genericParameterNames
+    )
     
     return [
-      try ExtensionDeclSyntax(
-        """
-        extension \(type.trimmed) : CaseIterable
-        where
-        \(raw: genericParameters.map { "\($0): CaseIterable " }.joined(separator: ",\n") )
-        {
-          @inlinable
-          public static var allCases: some Collection<Self> {
-            ChainCollection(
-              \(raw: genericParameters.map { "\($0).allCases.onDemandMap(Self.init(\($0.lowercased()):))" }.joined(separator: ",\n") )
-            )
-          }
-
-        }
-        """
-      )
+      """
+      @inlinable
+      public static var allCases: some Collection<Self> {
+        ChainCollection(
+          \(raw: genericParameters.map { "\($0).allCases.onDemandMap(Self.init(\($0.lowercased()):))" }.joined(separator: ",\n") )
+        )
+      }
+      """
     ]
   }
   

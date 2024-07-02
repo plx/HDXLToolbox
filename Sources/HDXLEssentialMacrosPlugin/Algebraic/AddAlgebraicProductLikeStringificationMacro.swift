@@ -7,42 +7,35 @@ import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-public struct AddAlgebraicProductLikeStringificationMacro: ExtensionMacro {
+public struct AddAlgebraicProductLikeStringificationMacro: DiagnosticDomainAwareMacro { }
+
+extension AddAlgebraicProductLikeStringificationMacro: UnconditionalConformanceMacro {
+  public static let conformedProtocolNames: [String] = ["CustomStringConvertible", "CustomDebugStringConvertible"]
   
-  public static func expansion(
-    of node: AttributeSyntax,
-    attachedTo declaration: some DeclGroupSyntax,
+  public static func unconditionalExtensions(
+    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
     providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
+    conformingTo protocols: [TypeSyntax]
   ) throws -> [ExtensionDeclSyntax] {
-    // TODO: reintroduce some attachment-site validation
-    guard
-      let structDeclaration = declaration.as(StructDeclSyntax.self)
-    else {
-      // TODO: real errors!
-      fatalError("We'll be back!")
-    }
+    let genericParameters = try attachmentContext.expansionRequirement(
+      nonEmptyProperty: \.simpleGenericParameterNames,
+      of: attachmentContext.declaration
+    )
     
-    guard
-      let genericParameters = structDeclaration.simpleGenericParameterNames,
-      !genericParameters.isEmpty
-    else {
-      // TODO: real errors!
-      fatalError("We'll be back!")
-    }
+    let labeledArgumentList = try attachmentContext.expansionRequirement(
+      property: \.arguments,
+      of: attachmentContext.attributeNode,
+      as: LabeledExprListSyntax.self
+    )
     
-    guard
-      let nodeArguments = node.arguments,
-      let labeledArgumentList = nodeArguments.as(LabeledExprListSyntax.self),
-      let captionArgument = labeledArgumentList.first,
-      let captionExpression = captionArgument.expression.as(StringLiteralExprSyntax.self)
-    else {
-      fatalError("real errors eventually!")
-    }
+    let captionExpression = try attachmentContext.expansionRequirement(
+      property: \.first,
+      of: labeledArgumentList,
+      as: StringLiteralExprSyntax.self
+    )
     
     let constituentTupleText = genericParameters.map { $0.lowercased() }.joined(separator: ", ")
-
+    
     return [
       try ExtensionDeclSyntax(
         """
@@ -80,7 +73,7 @@ public struct AddAlgebraicProductLikeStringificationMacro: ExtensionMacro {
         """
       )
     ]
+    
   }
   
 }
-

@@ -22,11 +22,11 @@ public protocol UnconditionalConformanceMacro : ContextualizedExtensionMacro, Di
     conformingTo protocols: [TypeSyntax]
   ) throws -> InheritanceClauseSyntax
 
-  static func unconditionalExtension(
+  static func unconditionalExtensions(
     in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
     providingExtensionsOf type: some TypeSyntaxProtocol,
     conformingTo protocols: [TypeSyntax]
-  ) throws -> ExtensionDeclSyntax
+  ) throws -> [ExtensionDeclSyntax]
 }
 
 extension UnconditionalConformanceMacro {
@@ -49,39 +49,15 @@ extension UnconditionalConformanceMacro {
     InheritanceClauseSyntax.forInheritedTypeNames(conformedProtocolNames)
   }
 
-  public static func unconditionalExtension(
-    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
-    providingExtensionsOf type: some TypeSyntaxProtocol,
-    conformingTo protocols: [TypeSyntax]
-  ) throws -> ExtensionDeclSyntax {
-    ExtensionDeclSyntax(
-      extendedType: type,
-      inheritanceClause: try unconditionalInheritanceClause(
-        in: attachmentContext,
-        providingExtensionsOf: type,
-        conformingTo: protocols
-      ),
-      memberBlock: MemberBlockSyntax(
-        declarations: try conditionalConformanceDeclarations(
-          in: attachmentContext,
-          providingExtensionsOf: type,
-          conformingTo: protocols
-        )
-      )
-    )
-  }
-
   public static func contextualizedExpansion(
     in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
     providingExtensionsOf type: some TypeSyntaxProtocol,
     conformingTo protocols: [TypeSyntax]
   ) throws -> [ExtensionDeclSyntax] {
-    return [
-      try unconditionalExtension(
-        in: attachmentContext,
-        providingExtensionsOf: type,
-        conformingTo: protocols
-      )
-    ]
+    try unconditionalExtensions(
+      in: attachmentContext,
+      providingExtensionsOf: type,
+      conformingTo: protocols
+    )
   }
 }

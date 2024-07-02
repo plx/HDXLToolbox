@@ -40,6 +40,17 @@ extension AttachedMacroContext where Declaration: DeclGroupSyntax {
   public var inlinabilityDisposition: InlinabilityDisposition? {
     declaration.inlinabilityDisposition
   }
+  
+  public var functionOrMethodGenerationDetails: (VisibilityLevel, InlinabilityDisposition?) {
+    let visibilityLevel = visibilityLevel
+    
+    let inlinabilityDisposition = InlinabilityDisposition.strongestAvailableFunctionOrMethodInlinability(
+      visibilityLevel: visibilityLevel,
+      inlinabilityDisposition: declaration.inlinabilityDisposition
+    )
+    
+    return (visibilityLevel, inlinabilityDisposition)
+  }
 }
 
 extension AttachedMacroContext {

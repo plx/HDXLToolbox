@@ -7,28 +7,26 @@ import SwiftDiagnostics
 import HDXLEssentialPrecursors
 import HDXLMacroSupport
 
-public struct AddAlgebraicSumLikeIndexInitializationMacro { }
+public struct AddAlgebraicSumLikeIndexInitializationMacro: DiagnosticDomainAwareMacro { }
 
-extension AddAlgebraicSumLikeIndexInitializationMacro: MemberMacro {
-  public static func expansion(
-    of node: AttributeSyntax,
-    providingMembersOf declaration: some DeclGroupSyntax,
-    conformingTo protocols: [TypeSyntax],
-    in context: some MacroExpansionContext
+extension AddAlgebraicSumLikeIndexInitializationMacro: ContextualizedMemberMacro {
+  
+  public static let classAttachmentDisposition: AttachmentDisposition = .excluded
+  public static let actorAttachmentDisposition: AttachmentDisposition = .excluded
+  public static let protocolAttachmentDisposition: AttachmentDisposition = .excluded
+  public static let enumAttachmentDisposition: AttachmentDisposition = .excluded
+
+  // TODO: let classes adopt this (as convenience inits)
+  public static func contextualizedExpansion(
+    in attachmentContext: AttachedMacroContext<some DeclGroupSyntax, some MacroExpansionContext>,
+    conformingTo protocols: [TypeSyntax]
   ) throws -> [DeclSyntax] {
-    guard
-      let genericParameters = declaration.simpleGenericParameterNames,
-      let visibilityLevel = declaration.visibilityLevel
-    else {
-      // TODO: real errors!
-      fatalError("We'll be back!")
-    }
-    
-    let inlinabilityDisposition = InlinabilityDisposition.strongestAvailableFunctionOrMethodInlinability(
-      visibilityLevel: visibilityLevel,
-      inlinabilityDisposition: declaration.inlinabilityDisposition
+    let genericParameters = try attachmentContext.expansionRequirement(
+      property: \.simpleGenericParameterNames,
+      of: attachmentContext.declaration
     )
     
+    let (visibilityLevel, inlinabilityDisposition) = attachmentContext.functionOrMethodGenerationDetails
     let inlinabilityDispositionSyntax = inlinabilityDisposition?.sourceCodeStringRepresentation ?? ""
     
     return genericParameters.map { parameter in
@@ -42,5 +40,7 @@ extension AddAlgebraicSumLikeIndexInitializationMacro: MemberMacro {
       }
       """
     }
+    
   }
+  
 }
